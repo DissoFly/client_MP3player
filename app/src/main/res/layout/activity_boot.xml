@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="202dp"
         android:text="Welcome to use MP3plyaer!"
         android:textSize="22dp"/>
 </RelativeLayout>
