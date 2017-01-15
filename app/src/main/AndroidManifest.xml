@@ -11,10 +11,13 @@
         <activity android:name=".BootActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.example.mp3player.login.LoginActivity"/>
+        <activity android:name="com.example.mp3player.login.ForgetPasswordActivity"/>
+        <activity android:name="com.example.mp3player.login.RegisterActivity"/>
+        <activity android:name="com.example.mp3player.MainActivity"/>
     </application>
 
 </manifest>
