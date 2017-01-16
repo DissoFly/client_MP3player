@@ -10,6 +10,8 @@ import com.example.mp3player.login.LoginActivity;
 
 public class BootActivity extends AppCompatActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
