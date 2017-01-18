@@ -40,7 +40,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     LinearLayout drawableLayout;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +47,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         drawable=(DrawerLayout)findViewById(drawer_main);
         drawableLayout=(LinearLayout)findViewById(R.id.left_drawer);
-
-
+        drawable.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         initData();
-
         mineFragment.setOnBtnLocalMusicClickedListener(new MineFragment.OnBtnLocalMusicClickedListener() {
             @Override
             public void OnBtnLocalMusicClicked() {

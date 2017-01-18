@@ -41,5 +41,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="btn_local_music_find_music"/>
+    <ListView
+        android:id="@+id/list_local_music"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

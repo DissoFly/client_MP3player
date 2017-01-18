@@ -1,6 +1,7 @@
 package com.example.mp3player.main.inPage.localMusic;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -9,7 +10,14 @@ import android.widget.TextView;
 
 import com.example.mp3player.R;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,19 +44,29 @@ public class FindMusicInLocalActivity extends Activity {
             public void onClick(View view) {
                 handler=new Handler();
                 LooperThread thread = new LooperThread();
-
                 thread.start();
 
             }
         });
     }
 
-    public class LooperThread extends Thread {                                                    //�߳�
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        load();
+        textResult.setText("共" + audioList.size() + "首");
+
+    }
+
+    ////////////////////////////////////搜索本地文件↓////////////////////////////////////
+    public class LooperThread extends Thread {
         @Override
         public void run() {
             audioList = new ArrayList<String>();
-            isSearch=true;
+            isSearch=true;      //更新数据ui放getFiles()内会显示错乱
             getFiles(Environment.getExternalStorageDirectory() + "/");
+            save();
             isSearch=false;
         }
     }
@@ -86,7 +104,7 @@ public class FindMusicInLocalActivity extends Activity {
 
     }
 
-    Runnable runnableUi=new Runnable() {
+    Runnable runnableUi=new Runnable() {                //更新ui
         @Override
         public void run() {
 
@@ -101,5 +119,52 @@ public class FindMusicInLocalActivity extends Activity {
             return true;
         }
         return false;
+    }
+
+    //////////////////////////////////搜索本地文件↑//////////////////////////////////////
+    /////////////////////////////////本地文件路径储存↓///////////////////////////////////////
+
+    public void save(){							//写入文件
+        FileOutputStream out=null;
+        BufferedWriter writer=null;
+        try{
+            out=openFileOutput("localMusicData", Context.MODE_PRIVATE);
+            writer=new BufferedWriter(new OutputStreamWriter(out));
+            for(int i=0;i<audioList.size();i++){
+
+                writer.write(audioList.get(i)+"###");
+                writer.newLine();
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }finally{
+            try{
+                if(writer!=null){
+                    writer.close();
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void load(){
+        FileInputStream in =null;
+        BufferedReader reader=null;
+        StringBuilder content=new StringBuilder();
+        audioList = new ArrayList<String>();
+        try{
+            in=openFileInput("localMusicData");
+            reader=new BufferedReader(new InputStreamReader(in));
+            String line="";
+            while((line=reader.readLine())!=null)
+                content.append(line);
+            String s1[] =content.toString().split("###");
+            for(int c=0;c<s1.length;c++)
+                audioList.add(s1[c]);
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 }
