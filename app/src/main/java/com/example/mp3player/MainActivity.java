@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.example.mp3player.main.inPage.LocalMusicFragment;
 import com.example.mp3player.main.page.FindMusicFragment;
 import com.example.mp3player.main.page.FriendsFragment;
 import com.example.mp3player.main.page.MineFragment;
@@ -16,6 +17,9 @@ import static com.example.mp3player.R.id.btn_main_header_drawer;
 import static com.example.mp3player.R.id.btn_main_header_find_music;
 import static com.example.mp3player.R.id.btn_main_header_friends;
 import static com.example.mp3player.R.id.btn_main_header_mine;
+import static com.example.mp3player.R.id.drawer_main;
+import static com.example.mp3player.R.id.main_content_inside;
+import static com.example.mp3player.R.id.main_header;
 
 /**
  * Created by DissoCapB on 2017/1/16.
@@ -23,9 +27,14 @@ import static com.example.mp3player.R.id.btn_main_header_mine;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
+    int openFragInMain=0;
+    final int OPEN_LOCAL_MUSIC_FRAGMENT=11;
+    //page
     FindMusicFragment findMusicFragment=new FindMusicFragment();
     MineFragment mineFragment=new MineFragment();
     FriendsFragment friendsFragment =new FriendsFragment();
+    //inPage
+    LocalMusicFragment localMusicFragment=new LocalMusicFragment();
 
     DrawerLayout drawable;
     LinearLayout drawableLayout;
@@ -37,11 +46,45 @@ public class MainActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        drawable=(DrawerLayout)findViewById(R.id.drawer_main);
+        drawable=(DrawerLayout)findViewById(drawer_main);
         drawableLayout=(LinearLayout)findViewById(R.id.left_drawer);
+
 
         initData();
 
+        mineFragment.setOnBtnLocalMusicClickedListener(new MineFragment.OnBtnLocalMusicClickedListener() {
+            @Override
+            public void OnBtnLocalMusicClicked() {
+                openFragInMain=mineFragment.getOpenFragmentInMain();
+                openNewFragInMain();
+            }
+        });
+
+        drawable.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+            }
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                drawable.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            }
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                drawable.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+    }
+
+    private void openNewFragInMain(){
+        switch (openFragInMain){
+            case OPEN_LOCAL_MUSIC_FRAGMENT:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.main_content_outside,localMusicFragment).addToBackStack(null).commit();
+        }
 
     }
 
@@ -50,6 +93,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         findViewById(btn_main_header_find_music).setOnClickListener(this);
         findViewById(btn_main_header_mine).setOnClickListener(this);
         findViewById(btn_main_header_friends).setOnClickListener(this);
+        findViewById(main_header).setOnClickListener(this);
     }
 
     @Override
@@ -61,18 +105,23 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 break;
             case btn_main_header_find_music :
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.main_content,findMusicFragment).commit();
+                        .replace(main_content_inside,findMusicFragment).commit();
                 break;
             case btn_main_header_mine :
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.main_content,mineFragment).commit();
+                        .replace(main_content_inside,mineFragment).commit();
                 break;
             case btn_main_header_friends :
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.main_content,friendsFragment).commit();
+                        .replace(main_content_inside,friendsFragment).commit();
                 break;
             default:
                 break;
         }
     }
+
+
+
+
+
 }

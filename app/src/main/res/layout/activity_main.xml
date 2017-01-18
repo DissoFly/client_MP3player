@@ -58,7 +58,22 @@
                     android:layout_height="40dp"
                     android:src="@mipmap/ic_launcher"/>
             </LinearLayout>
+
+
         </RelativeLayout>
+
+
+        <FrameLayout
+            android:id="@+id/main_content_inside"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/main_header"
+            android:background="#eee"/>
+
+        <FrameLayout
+            android:id="@+id/main_content_outside"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <RelativeLayout
             android:id="@+id/main_footer"
@@ -76,13 +91,7 @@
                 android:textColor="#fff"/>
         </RelativeLayout>
 
-        <FrameLayout
-            android:id="@+id/main_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/main_footer"
-            android:layout_below="@id/main_header"
-            android:background="#eee"/>
+
     </RelativeLayout>
 
 
@@ -94,6 +103,7 @@
         android:background="#eee"
         android:clickable="true"
         android:orientation="vertical">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="240dp"
@@ -104,6 +114,7 @@
                 android:layout_height="wrap_content"
                 android:text="this is user message"/>
         </RelativeLayout>
+
         <ListView
             android:id="@+id/main_drawer_list"
             android:layout_width="wrap_content"

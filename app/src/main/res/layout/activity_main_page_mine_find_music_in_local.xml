@@ -5,15 +5,20 @@
               android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="this is mine"
-        />
+        android:text="this is find music in local"/>
 
     <Button
-        android:id="@+id/btn_local_music"
+        android:id="@+id/btn_find_music_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Local Music"/>
+        android:text="Button"/>
+    <TextView
+        android:id="@+id/text_find_music_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="this is find music in local"/>
+
 </LinearLayout>
