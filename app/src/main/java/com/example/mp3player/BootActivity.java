@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.example.mp3player.login.LoginActivity;
+import com.example.mp3player.service.MusicPlayerService;
 
 public class BootActivity extends AppCompatActivity {
 
@@ -48,4 +49,11 @@ public class BootActivity extends AppCompatActivity {
             }
         },2000);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startService(new Intent(this, MusicPlayerService.class));
+    }
+
 }

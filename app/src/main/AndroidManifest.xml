@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <service android:name=".service.MusicPlayerService"
+                 />
+                 <!--android:process=":remote"-->
+
         <activity android:name="com.example.mp3player.login.LoginActivity"/>
         <activity android:name="com.example.mp3player.login.ForgetPasswordActivity"/>
         <activity android:name="com.example.mp3player.login.RegisterActivity"/>
