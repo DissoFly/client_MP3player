@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mp3player.R;
 import com.example.mp3player.service.MusicPlayerService;
@@ -81,11 +80,11 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case btn_footer_play:
-                Toast.makeText(getActivity(), "connect success!"+messenger.getConnect(), Toast.LENGTH_SHORT).show();
+                messenger.playOrPause();
 
                 break;
             case btn_footer_next:
-
+                messenger.next();
                 break;
             case btn_footer_list:
                 openFragInMain = OPEN_FOOTER_PLAYING_LIST_FRAGMENT;

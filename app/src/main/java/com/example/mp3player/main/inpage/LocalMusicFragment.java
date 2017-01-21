@@ -112,8 +112,6 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
 
     void onItemClicked(int position) {
         messenger.setNewMusic(position,audioList);
-
-
     }
 
     private void initData() {

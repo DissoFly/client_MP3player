@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,20 +25,28 @@ import java.util.Random;
  */
 
 public class MusicPlayerService extends Service {
-    MediaPlayer player;
+    MediaPlayer player=new MediaPlayer();
     private List<String> audioList = null;
     private int listPosition=-1;
     private final IBinder binder=new ServiceBinder();
     String text="000";
+
 
     @Override
     public IBinder onBind(Intent intent) {
         Toast.makeText(getApplicationContext(), "Binding MusicService1", Toast.LENGTH_SHORT).show();
         load();
         if (audioList.size()>0) {
-            listPosition=1;
             listPosition = new Random().nextInt(audioList.size());
+            initMediaPlayer();
         }
+        //播放完成事件
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+
+            }
+        });
         return binder;
     }
 
@@ -46,6 +55,8 @@ public class MusicPlayerService extends Service {
             return MusicPlayerService.this;
         }
     }
+
+
 
 
 
@@ -59,6 +70,8 @@ public class MusicPlayerService extends Service {
         listPosition=position;
         audioList=list;
         save();
+        start();
+
     }
 
     //返回列表
@@ -79,6 +92,69 @@ public class MusicPlayerService extends Service {
     public void onDestroy() {
         super.onDestroy();
     }
+
+    /////////////////////////////////播放方法↓///////////////////////////////////////
+    private void initMediaPlayer(){             //初始化
+        try {
+            File file=new File(audioList.get(listPosition));
+            player.setDataSource(file.getAbsolutePath());
+            player.prepare();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void start(){
+        player.reset();
+        if (listPosition >= 0) {
+            initMediaPlayer();
+            play();
+        }
+    }
+    public void start(int position){
+        listPosition=position;
+        player.reset();
+        if (listPosition >= 0) {
+            initMediaPlayer();
+            play();
+        }
+    }
+    public void stop(){
+        player.reset();
+        listPosition=-1;
+    }
+
+    public void playOrPause(){
+        if(player.isPlaying())
+            pause();
+        else
+            play();
+    }
+
+    public void play() {
+        if (listPosition >= 0)
+            player.start();
+    }
+
+    public void pause() {
+        if (listPosition >= 0)
+            player.pause();
+    }
+    public void next(){
+        if (listPosition>=0){
+            listPosition =
+                    listPosition >= audioList.size() - 1 ?
+                            0 : listPosition + 1;
+            player.reset();
+            initMediaPlayer();
+            play();
+        }
+
+    }
+
+
+
+    /////////////////////////////////播放方法↑///////////////////////////////////////
 
     /////////////////////////////////正在播放音乐列表路径储存↓///////////////////////////////////////
 

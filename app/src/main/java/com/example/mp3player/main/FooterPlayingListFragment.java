@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,10 +42,21 @@ public class FooterPlayingListFragment extends Fragment implements View.OnClickL
             listView=(ListView)view.findViewById(R.id.footer_playing_list);
             initData();
             listView.setAdapter(listAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    onItemClicked(position);
+
+                }
+            });
         }
         return view;
     }
-
+    void onItemClicked(int position) {
+        messenger.start(position);
+        getActivity().onBackPressed();
+    }
     private ServiceConnection connection = new ServiceConnection() {
 
         public void onServiceDisconnected(ComponentName name) {
