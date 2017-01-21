@@ -1,4 +1,4 @@
-package com.example.mp3player.main.inPage.localMusic;
+package com.example.mp3player.main.page.mine.localMusic;
 
 import android.app.Activity;
 import android.content.Context;

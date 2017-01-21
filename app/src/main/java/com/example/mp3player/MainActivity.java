@@ -14,8 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.mp3player.main.FooterPlayerFragment;
-import com.example.mp3player.main.FooterPlayingListFragment;
-import com.example.mp3player.main.inPage.LocalMusicFragment;
+import com.example.mp3player.main.page.mine.localMusic.LocalMusicFragment;
 import com.example.mp3player.main.page.FindMusicFragment;
 import com.example.mp3player.main.page.FriendsFragment;
 import com.example.mp3player.main.page.MineFragment;
