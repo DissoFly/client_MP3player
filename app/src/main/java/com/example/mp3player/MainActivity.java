@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.mp3player.main.FooterPlayerFragment;
+import com.example.mp3player.main.FooterPlayingListFragment;
 import com.example.mp3player.main.inPage.LocalMusicFragment;
 import com.example.mp3player.main.page.FindMusicFragment;
 import com.example.mp3player.main.page.FriendsFragment;
@@ -38,7 +39,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     int openFragInMain = 0;
     final int OPEN_LOCAL_MUSIC_FRAGMENT = 11;
+    final int OPEN_FOOTER_PLAYING_LIST_FRAGMENT = 12;
 
+    FooterPlayingListFragment footerPlayingListFragment=new FooterPlayingListFragment();
     FooterPlayerFragment footerPlayerFragment = new FooterPlayerFragment();
     //page
     FindMusicFragment findMusicFragment = new FindMusicFragment();
@@ -79,6 +82,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         });
 
+        footerPlayerFragment.setOnBtnPlayingListClickedListener(new FooterPlayerFragment.OnBtnPlayingListClickedListener(){
+
+            @Override
+            public void OnBtnPlayingListClicked() {
+                openFragInMain = footerPlayerFragment.getOpenFragmentInMain();
+                openNewFragInMain();
+            }
+        });
+
         drawable.setDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -106,6 +118,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case OPEN_LOCAL_MUSIC_FRAGMENT:
                 getFragmentManager().beginTransaction()
                         .replace(R.id.main_content_outside, localMusicFragment).addToBackStack(null).commit();
+                break;
+            case OPEN_FOOTER_PLAYING_LIST_FRAGMENT:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.main_outside, footerPlayingListFragment).addToBackStack(null).commit();
+                break;
+
+
         }
 
     }
@@ -130,7 +149,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         public void onServiceConnected(ComponentName name, IBinder service) {
-            messenger=((MusicPlayerService.ServiceBinder) service).getService();//new Messenger(service);//
+            //绑定后可调用MusicPlayerService的方法来达到控制
+            messenger=((MusicPlayerService.ServiceBinder) service).getService();
+
             Toast.makeText(getApplicationContext(), "success!", Toast.LENGTH_SHORT).show();
             bound=true;
         }
