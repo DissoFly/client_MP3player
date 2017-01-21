@@ -1,7 +1,12 @@
 package com.example.mp3player.main;
 
 import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.mp3player.R;
+import com.example.mp3player.service.MusicPlayerService;
 
 import java.util.List;
 
@@ -22,6 +28,8 @@ import java.util.List;
 public class FooterPlayingListFragment extends Fragment implements View.OnClickListener{
     View view;
     ListView listView;
+    MusicPlayerService messenger;
+    boolean bound;
     private List<String> audioList = null;
 
     @Nullable
@@ -29,12 +37,34 @@ public class FooterPlayingListFragment extends Fragment implements View.OnClickL
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view==null) {
             view = inflater.inflate(R.layout.fragment_main_footer_playing_list, null);
+            getActivity().bindService(new Intent(getActivity(),MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
             listView=(ListView)view.findViewById(R.id.footer_playing_list);
             initData();
             listView.setAdapter(listAdapter);
-
         }
         return view;
+    }
+
+    private ServiceConnection connection = new ServiceConnection() {
+
+        public void onServiceDisconnected(ComponentName name) {
+            messenger=null;
+            bound = false;
+        }
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            messenger=((MusicPlayerService.ServiceBinder) service).getService();
+            audioList=messenger.getAudioList();
+            setTipsWithNoMusic();
+            bound=true;
+        }
+    };
+
+    void setTipsWithNoMusic(){
+        if (audioList.size()>0)
+            view.findViewById(R.id.text_footer_no_music).setVisibility(View.GONE);
+        else
+            view.findViewById(R.id.text_footer_no_music).setVisibility(View.VISIBLE);
     }
 
     BaseAdapter listAdapter = new BaseAdapter() {

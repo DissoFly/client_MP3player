@@ -34,8 +34,10 @@ public class MusicPlayerService extends Service {
     public IBinder onBind(Intent intent) {
         Toast.makeText(getApplicationContext(), "Binding MusicService1", Toast.LENGTH_SHORT).show();
         load();
-        if (audioList.size()>0)
-            musicFile= new Random().nextInt(audioList.size());
+        if (audioList.size()>0) {
+            musicFile=1;
+            musicFile = new Random().nextInt(audioList.size());
+        }
         return binder;
     }
 
@@ -52,19 +54,16 @@ public class MusicPlayerService extends Service {
         return text;
     }
 
-    public void setConnect(String i){
-        text=i;
-    }
-
-
-
-    public List<String> getAudioList() {
-        return audioList;
-    }
-
-    public void setAudioList(List<String> audioList) {
-        this.audioList = audioList;
+    public void setNewMusic(int position,List<String> list){
+        musicFile=position;
+        audioList=list;
         save();
+        Toast.makeText(getApplicationContext(), "save!"+position, Toast.LENGTH_SHORT).show();
+    }
+
+    public List<String> getAudioList(){
+        load();
+        return audioList;
     }
 
     @Override
@@ -99,6 +98,7 @@ public class MusicPlayerService extends Service {
     }
 
     public void load(){
+        musicFile=-1;
         FileInputStream in =null;
         BufferedReader reader=null;
         StringBuilder content=new StringBuilder();
@@ -110,8 +110,10 @@ public class MusicPlayerService extends Service {
             while((line=reader.readLine())!=null)
                 content.append(line);
             String s1[] =content.toString().split("###");
-            for(int c=0;c<s1.length;c++)
+            for(int c=0;c<s1.length;c++) {
+                musicFile=0;
                 audioList.add(s1[c]);
+            }
 
         }catch(IOException e){
             e.printStackTrace();

@@ -12,13 +12,15 @@
     <LinearLayout
         android:id="@+id/layout_in"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="400dp"
+
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         android:background="#fff">
         <TextView
             android:id="@+id/text_footer_no_music"
             android:layout_width="match_parent"
+
             android:layout_height="60dp"
             android:text="这里还没有音乐呢，快去挑选点音乐吧"
             android:gravity="center"/>
@@ -26,6 +28,7 @@
             android:id="@+id/footer_playing_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             />
     </LinearLayout>
 
