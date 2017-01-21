@@ -8,6 +8,7 @@
         android:id="@+id/text_footer_music_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="音乐，让生活更美好"/>
 
     <Button

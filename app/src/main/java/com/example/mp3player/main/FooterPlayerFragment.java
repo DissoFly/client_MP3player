@@ -6,15 +6,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mp3player.R;
 import com.example.mp3player.service.MusicPlayerService;
+
+import java.util.List;
 
 import static com.example.mp3player.R.id.btn_footer_list;
 import static com.example.mp3player.R.id.btn_footer_next;
@@ -30,6 +34,12 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
     boolean bound;
     int openFragInMain = 0;
     final int OPEN_FOOTER_PLAYING_LIST_FRAGMENT = 12;
+    int REFLASH_TIME=100;
+
+    private List<String> audioList = null;
+    private int listPosition=-1;
+
+    TextView musicName;
 
     @Nullable
     @Override
@@ -37,6 +47,7 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
         if(view==null){
             view = inflater.inflate(R.layout.fragment_main_footer, null);
             getActivity().bindService(new Intent(getActivity(),MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
+            musicName=(TextView)view.findViewById(R.id.text_footer_music_name);
             initData();
         }
         return view;
@@ -54,6 +65,7 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
         public void onServiceConnected(ComponentName name, IBinder service) {
             //绑定后可调用MusicPlayerService的方法来达到控制
             messenger=((MusicPlayerService.ServiceBinder) service).getService();
+            handler.postDelayed(runnable, REFLASH_TIME);
             bound=true;
         }
     };
@@ -84,11 +96,11 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
                 break;
         }
     }
+
+    /////////////////////////////////////////返回调取此fragment的方法↓/////////////////////////////////////////////////
     public int getOpenFragmentInMain() {
         return openFragInMain;
     }
-
-
 
     public static interface OnBtnPlayingListClickedListener {
         void OnBtnPlayingListClicked();
@@ -99,4 +111,27 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
     public void setOnBtnPlayingListClickedListener(OnBtnPlayingListClickedListener onBtnPlayingListClickedListener) {
         this.OnBtnPlayingListClickedListener = onBtnPlayingListClickedListener;
     }
+    /////////////////////////////////////////返回调取此fragment的方法↑/////////////////////////////////////////////////
+    /////////////////////////////////////////定时刷新↓/////////////////////////////////////////////////
+    Handler handler =new Handler();
+    Runnable runnable =new Runnable() {
+        @Override
+        public void run() {
+            audioList=messenger.getAudioList();
+            listPosition=messenger.getPlayingListPosition();
+
+            if (listPosition==-1)
+                musicName.setText("音乐，让生活更美好");
+            else
+                musicName.setText(audioList.get(listPosition));
+
+            handler.postDelayed(runnable, REFLASH_TIME);
+        }
+    };
+
+
+
+    /////////////////////////////////////////定时刷新↑/////////////////////////////////////////////////
+
+
 }

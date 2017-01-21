@@ -24,9 +24,9 @@ import java.util.Random;
  */
 
 public class MusicPlayerService extends Service {
-    private List<String> audioList = null;
     MediaPlayer player;
-    private int musicFile=-1;
+    private List<String> audioList = null;
+    private int listPosition=-1;
     private final IBinder binder=new ServiceBinder();
     String text="000";
 
@@ -35,8 +35,8 @@ public class MusicPlayerService extends Service {
         Toast.makeText(getApplicationContext(), "Binding MusicService1", Toast.LENGTH_SHORT).show();
         load();
         if (audioList.size()>0) {
-            musicFile=1;
-            musicFile = new Random().nextInt(audioList.size());
+            listPosition=1;
+            listPosition = new Random().nextInt(audioList.size());
         }
         return binder;
     }
@@ -54,16 +54,25 @@ public class MusicPlayerService extends Service {
         return text;
     }
 
+    //设置新列表
     public void setNewMusic(int position,List<String> list){
-        musicFile=position;
+        listPosition=position;
         audioList=list;
         save();
-        Toast.makeText(getApplicationContext(), "save!"+position, Toast.LENGTH_SHORT).show();
     }
 
+    //返回列表
     public List<String> getAudioList(){
-        load();
-        return audioList;
+        List<String> list=new ArrayList<String>();
+        for(int i=0;i<audioList.size();i++){
+            String s1[] =audioList.get(i).split("/");
+            list.add(s1[s1.length-1]);
+        }
+        return list;
+    }
+    //返回播放列表位置
+    public int getPlayingListPosition(){
+        return listPosition;
     }
 
     @Override
@@ -98,7 +107,7 @@ public class MusicPlayerService extends Service {
     }
 
     public void load(){
-        musicFile=-1;
+        listPosition=-1;
         FileInputStream in =null;
         BufferedReader reader=null;
         StringBuilder content=new StringBuilder();
@@ -111,7 +120,6 @@ public class MusicPlayerService extends Service {
                 content.append(line);
             String s1[] =content.toString().split("###");
             for(int c=0;c<s1.length;c++) {
-                musicFile=0;
                 audioList.add(s1[c]);
             }
 
