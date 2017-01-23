@@ -44,7 +44,16 @@ public class MusicPlayerService extends Service {
         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
+                player.seekTo(0);
+                next();
+            }
+        });
 
+        //出错事件
+        player.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+                return false;
             }
         });
         return binder;
@@ -74,6 +83,9 @@ public class MusicPlayerService extends Service {
 
     }
 
+    public boolean isPlaying(){
+        return  player.isPlaying();
+    }
     //返回列表
     public List<String> getAudioList(){
         List<String> list=new ArrayList<String>();
@@ -83,9 +95,17 @@ public class MusicPlayerService extends Service {
         }
         return list;
     }
-    //返回播放列表位置
+    //返回正在播放音乐所在列表位置
     public int getPlayingListPosition(){
         return listPosition;
+    }
+    //当前播放位置
+    public int getCurrentPosition(){
+            return player.getCurrentPosition();
+    }
+    //总长度
+    public int getDuration(){
+        return player.getDuration();
     }
 
     @Override
@@ -149,7 +169,20 @@ public class MusicPlayerService extends Service {
             initMediaPlayer();
             play();
         }
+    }
+    public void back(){
+        if (listPosition>=0){
+            listPosition =
+                    listPosition <= 0 ?
+                            audioList.size() - 1 : listPosition - 1;
+            player.reset();
+            initMediaPlayer();
+            play();
+        }
+    }
 
+    public void seekTo(int i){
+        player.seekTo(i);
     }
 
 

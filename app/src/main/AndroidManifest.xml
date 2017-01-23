@@ -24,7 +24,8 @@
         <activity android:name="com.example.mp3player.login.ForgetPasswordActivity"/>
         <activity android:name="com.example.mp3player.login.RegisterActivity"/>
         <activity android:name="com.example.mp3player.MainActivity"/>
-        <activity android:name=".main.page.mine.FindMusicInLocalActivity"/>
+        <activity android:name=".main.page.mine.localMusic.FindMusicInLocalActivity"/>
+        <activity android:name=".PlayingActivity"/>
     </application>
 
 </manifest>

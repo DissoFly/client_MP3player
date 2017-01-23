@@ -14,14 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.mp3player.PlayingActivity;
 import com.example.mp3player.R;
 import com.example.mp3player.service.MusicPlayerService;
 
 import java.util.List;
 
-import static com.example.mp3player.R.id.btn_footer_list;
-import static com.example.mp3player.R.id.btn_footer_next;
-import static com.example.mp3player.R.id.btn_footer_play;
+
+
 
 /**
  * Created by DissoCapB on 2017/1/19.
@@ -70,23 +70,27 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
     };
 
     private void initData() {
-        view.findViewById(btn_footer_play).setOnClickListener(this);
-        view.findViewById(btn_footer_next).setOnClickListener(this);
-        view.findViewById(btn_footer_list).setOnClickListener(this);
+        view.findViewById(R.id.to_playing_activity).setOnClickListener(this);
+        view.findViewById(R.id.btn_footer_play).setOnClickListener(this);
+        view.findViewById(R.id.btn_footer_next).setOnClickListener(this);
+        view.findViewById(R.id.btn_footer_list).setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case btn_footer_play:
-                messenger.playOrPause();
-
+            case R.id.to_playing_activity:
+                Intent itnt=new Intent(getActivity(), PlayingActivity.class);
+                startActivity(itnt);
                 break;
-            case btn_footer_next:
+            case R.id.btn_footer_play:
+                messenger.playOrPause();
+                break;
+            case R.id.btn_footer_next:
                 messenger.next();
                 break;
-            case btn_footer_list:
+            case R.id.btn_footer_list:
                 openFragInMain = OPEN_FOOTER_PLAYING_LIST_FRAGMENT;
                 OnBtnPlayingListClickedListener.OnBtnPlayingListClicked();
 
