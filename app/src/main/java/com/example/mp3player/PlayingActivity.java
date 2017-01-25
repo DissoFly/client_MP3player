@@ -12,16 +12,12 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.mp3player.inputcells.SongPictureFragment;
 import com.example.mp3player.service.MusicPlayerService;
 
 import java.util.List;
 
-import static com.example.mp3player.R.id.btn_play_back;
-import static com.example.mp3player.R.id.btn_play_changes;
-import static com.example.mp3player.R.id.btn_play_cycle;
-import static com.example.mp3player.R.id.btn_play_list;
-import static com.example.mp3player.R.id.btn_play_next;
-import static com.example.mp3player.R.id.btn_playing_back;
+
 
 
 /**
@@ -40,6 +36,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
     TextView playingDuration;
     SeekBar musicBar;
     boolean isMusicBarTouch=false;
+    SongPictureFragment songPictureFragment=new SongPictureFragment();
 
 
     @Override
@@ -51,6 +48,9 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
         playingCurrentPosition=(TextView)findViewById(R.id.text_playing_time);
         playingDuration=(TextView)findViewById(R.id.text_max_time);
         musicBar=(SeekBar)findViewById(R.id.play_music_bar) ;
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.frag_song_img, songPictureFragment).commit();
 
         initData();
 
@@ -78,32 +78,32 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
 
 
     private void initData() {
-        findViewById(btn_playing_back).setOnClickListener(this);
-        findViewById(btn_play_cycle).setOnClickListener(this);
-        findViewById(btn_play_back).setOnClickListener(this);
-        findViewById(btn_play_changes).setOnClickListener(this);
-        findViewById(btn_play_next).setOnClickListener(this);
-        findViewById(btn_play_list).setOnClickListener(this);
+        findViewById(R.id.btn_playing_back).setOnClickListener(this);
+        findViewById(R.id.btn_play_cycle).setOnClickListener(this);
+        findViewById(R.id.btn_play_back).setOnClickListener(this);
+        findViewById(R.id.btn_play_changes).setOnClickListener(this);
+        findViewById(R.id.btn_play_next).setOnClickListener(this);
+        findViewById(R.id.btn_play_list).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case btn_playing_back:
+            case R.id.btn_playing_back:
                 finish();
                 break;
-            case btn_play_cycle:
+            case R.id.btn_play_cycle:
                 break;
-            case btn_play_back:
+            case R.id.btn_play_back:
                 messenger.back();
                 break;
-            case btn_play_changes:
+            case R.id.btn_play_changes:
                 messenger.playOrPause();
                 break;
-            case btn_play_next:
+            case R.id.btn_play_next:
                 messenger.next();
                 break;
-            case btn_play_list:
+            case R.id.btn_play_list:
                 break;
             default:
                 break;

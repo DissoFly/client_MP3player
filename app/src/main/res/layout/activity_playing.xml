@@ -3,6 +3,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+    <FrameLayout
+        android:id="@+id/frag_song_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
