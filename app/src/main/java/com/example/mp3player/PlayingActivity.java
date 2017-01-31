@@ -1,5 +1,7 @@
 package com.example.mp3player;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,6 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -16,8 +20,6 @@ import com.example.mp3player.inputcells.SongPictureFragment;
 import com.example.mp3player.service.MusicPlayerService;
 
 import java.util.List;
-
-
 
 
 /**
@@ -29,14 +31,20 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
     boolean bound;
     private List<String> audioList = null;
     private int listPosition=-1;
-    int REFLASH_TIME=100;
+
+    int REFLASH_TIME=50;
 
     TextView playingName;
     TextView playingCurrentPosition;
     TextView playingDuration;
     SeekBar musicBar;
+    FrameLayout songImg;
+    ObjectAnimator rotateAnimation;
+    private float currentValue = 0f;
     boolean isMusicBarTouch=false;
+    int oneReloadPosition=-1;
     SongPictureFragment songPictureFragment=new SongPictureFragment();
+
 
 
     @Override
@@ -48,6 +56,24 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
         playingCurrentPosition=(TextView)findViewById(R.id.text_playing_time);
         playingDuration=(TextView)findViewById(R.id.text_max_time);
         musicBar=(SeekBar)findViewById(R.id.play_music_bar) ;
+        songImg=(FrameLayout)findViewById(R.id.frag_song_img) ;
+        animation();
+//        rotateAnimation.setAnimationListener(new Animation.AnimationListener() {
+//            @Override
+//            public void onAnimationStart(Animation animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                rotateAnimation.start();
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animation animation) {
+//
+//            }
+//        });
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.frag_song_img, songPictureFragment).commit();
@@ -90,6 +116,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_playing_back:
+                rotateAnimation.start();
                 finish();
                 break;
             case R.id.btn_play_cycle:
@@ -104,6 +131,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
                 messenger.next();
                 break;
             case R.id.btn_play_list:
+
                 break;
             default:
                 break;
@@ -119,7 +147,10 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
 
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     private ServiceConnection connection = new ServiceConnection() {
 
@@ -147,20 +178,36 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
                 playingCurrentPosition.setText("00:00");
                 playingDuration.setText("00:00");
             }else {
-                int max=messenger.getDuration();
-                int current=messenger.getCurrentPosition();
-                playingName.setText(audioList.get(listPosition));
-                playingCurrentPosition.setText(showTime(current));
-                playingDuration.setText(showTime(max));
-                musicBar.setMax(max);
-                if(!isMusicBarTouch)
-                    musicBar.setProgress(current);
-
+                play();
             }
 
             handler.postDelayed(runnable, REFLASH_TIME);
         }
     };
+
+    private void play(){
+        int max=messenger.getDuration();
+        int current=messenger.getCurrentPosition();
+        playingName.setText(audioList.get(listPosition));
+        playingCurrentPosition.setText(showTime(current));
+        playingDuration.setText(showTime(max));
+        musicBar.setMax(max);
+        if(!isMusicBarTouch)
+            musicBar.setProgress(current);
+        if(oneReloadPosition!=listPosition){
+            songPictureFragment.setImg(messenger.getImg());
+            oneReloadPosition=listPosition;
+        }
+        if(!rotateAnimation.isPaused()){
+            if(!messenger.isPlaying()){
+                rotateAnimation.pause();
+            }
+        }else{
+            if(messenger.isPlaying()){
+                rotateAnimation.resume();
+            }
+        }
+    }
 
     public String showTime(int time){
         time/=1000;
@@ -169,5 +216,25 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
         return String.format("%02d:%02d", minute, second);
     }
 
+    public void animation(){
+        rotateAnimation = ObjectAnimator.ofFloat(songImg, "rotation", currentValue-360, currentValue);
+        rotateAnimation.setDuration(30000);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setRepeatCount(-1);
+        rotateAnimation.setRepeatMode(ValueAnimator.RESTART);
+        rotateAnimation.start();
+        rotateAnimation.pause();
+        rotateAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                currentValue = (Float) rotateAnimation.getAnimatedValue();
+            }
+        });
+    }
+
+
+
 
 }
+
+

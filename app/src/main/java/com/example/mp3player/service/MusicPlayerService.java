@@ -3,9 +3,14 @@ package com.example.mp3player.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -107,6 +112,56 @@ public class MusicPlayerService extends Service {
     public int getDuration(){
         return player.getDuration();
     }
+
+    public Bitmap getImg(){
+        Bitmap bitmap=null;
+        if (listPosition>=0 ){
+            try {
+                Cursor currentCursor = getCursor(audioList.get(listPosition));
+                int album_id = currentCursor.getInt(currentCursor
+                        .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+                String albumArt = getAlbumArt(album_id);
+
+                bitmap = BitmapFactory.decodeFile(albumArt);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return bitmap;
+    }
+    private Cursor getCursor(String filePath) {
+        String path = null;
+        Cursor c = getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null,
+                MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        if (c.moveToFirst()) {
+            do {
+                // 通过Cursor 获取路径，如果路径相同则break；
+                path = c.getString(c
+                        .getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+                // 查找到相同的路径则返回，此时cursorPosition 便是指向路径所指向的Cursor 便可以返回了
+                if (path.equals(filePath)) {
+                    break;
+                }
+            } while (c.moveToNext());
+        }
+        return c;
+    }
+    private String getAlbumArt(int album_id) {
+        String mUriAlbums = "content://media/external/audio/albums";
+        String[] projection = new String[] { "album_art" };
+        Cursor cur = this.getContentResolver().query(
+                Uri.parse(mUriAlbums + "/" + Integer.toString(album_id)),
+                projection, null, null, null);
+        String album_art = null;
+        if (cur.getCount() > 0 && cur.getColumnCount() > 0) {
+            cur.moveToNext();
+            album_art = cur.getString(0);
+        }
+        cur.close();
+        return album_art;
+    }
+
 
     @Override
     public void onDestroy() {
