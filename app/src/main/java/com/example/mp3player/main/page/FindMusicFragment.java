@@ -45,7 +45,7 @@ public class FindMusicFragment extends Fragment {
     }
 
     void reload() {
-        Request request = HttpService.requestBuilderWithPath("text").get().build();
+        Request request = HttpService.requestBuilderWithPath("").get().build();
         HttpService.getClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {

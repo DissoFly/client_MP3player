@@ -21,7 +21,7 @@ import okhttp3.Request;
 public class HttpService {
     static OkHttpClient client;
 
-    public static String serverAddress = "http://192.168.253.3:8080/app19a/";
+    public static String serverAddress = "http://192.168.253.3:8080/musicCenter/api";
 
     static {
         CookieJar cookieJar = new CookieJar() {
