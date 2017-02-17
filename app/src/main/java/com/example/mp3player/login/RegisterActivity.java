@@ -16,7 +16,7 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MultipartBody;
+import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -46,11 +46,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
         passwordConfirmEdit=(EditText)findViewById(R.id.register_edit_password_confirm);
         emailEdit=(EditText)findViewById(R.id.register_edit_email);
         phoneNumberEdit=(EditText)findViewById(R.id.register_edit_phonenumber);
-        accountEdit.setText("123");
-        passwordEdit.setText("123");
-        passwordConfirmEdit.setText("123");
-        emailEdit.setText("123");
-        phoneNumberEdit.setText("123");
         initData();
     }
 
@@ -110,13 +105,13 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
 
 
     private void connectToService(){
-        MultipartBody.Builder body=new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart("account", account)
-                .addFormDataPart("passwordHash", MD5.getMD5(password))
-                .addFormDataPart("email", email)
-                .addFormDataPart("phoneNumber", String.valueOf(phoneNumber));
-        RequestBody requestBody = body.build();
-        Request request=HttpService.requestBuilderWithPath("register").method("POST", requestBody).post(requestBody).build();
+        RequestBody formBody = new FormBody.Builder()
+                .add("account", account)
+                .add("passwordHash", MD5.getMD5(password))
+                .add("email", email)
+                .add("phoneNumber", String.valueOf(phoneNumber))
+                .build();
+        Request request=HttpService.requestBuilderWithPath("register").post(formBody).build();
         HttpService.getClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {
@@ -134,7 +129,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
                             if(data.equals("success"))
                                 Toast.makeText(getApplication(),"success register!",Toast.LENGTH_LONG).show();
                             else
-                                Toast.makeText(getApplication(),"error1 register!",Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplication(),data,Toast.LENGTH_LONG).show();
+                            System.out.println(data);
                         }
                     });
                 } catch (Exception e) {
