@@ -93,7 +93,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
         }
         if (errorOutput.equals("")) {
             System.out.println("111");
-            connectToService();
+            connectToHttp();
         }
         else {
             System.out.println("222");
@@ -104,7 +104,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
     }
 
 
-    private void connectToService(){
+    private void connectToHttp(){
         RequestBody formBody = new FormBody.Builder()
                 .add("account", account)
                 .add("passwordHash", MD5.getMD5(password))
@@ -115,7 +115,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
         HttpService.getClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {
-                Toast.makeText(getApplication(),"error2 register!",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(),e.toString(),Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -126,11 +126,11 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(data.equals("success"))
-                                Toast.makeText(getApplication(),"success register!",Toast.LENGTH_LONG).show();
-                            else
+                            if(data.equals("SUCCESS_IN_REGISTER")) {
+                                Toast.makeText(getApplication(), "success register!", Toast.LENGTH_LONG).show();
+                                finish();
+                            }else
                                 Toast.makeText(getApplication(),data,Toast.LENGTH_LONG).show();
-                            System.out.println(data);
                         }
                     });
                 } catch (Exception e) {

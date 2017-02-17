@@ -10,10 +10,10 @@
         android:text="This is login_activity"/>
 
     <EditText
-        android:id="@+id/edit_username"
+        android:id="@+id/edit_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="edit_username"
+        android:hint="edit_account"
         android:inputType="textPersonName"
         />
 
