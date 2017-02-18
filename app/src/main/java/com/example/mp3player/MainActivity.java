@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.mp3player.main.FooterPlayerFragment;
+import com.example.mp3player.main.LeftDrawerHeadMessageFragment;
 import com.example.mp3player.main.page.FindMusicFragment;
 import com.example.mp3player.main.page.FriendsFragment;
 import com.example.mp3player.main.page.MineFragment;
@@ -21,7 +22,6 @@ import static com.example.mp3player.R.id.btn_main_header_mine;
 import static com.example.mp3player.R.id.btn_main_header_search;
 import static com.example.mp3player.R.id.drawer_main;
 import static com.example.mp3player.R.id.main_content_inside;
-import static com.example.mp3player.R.id.main_footer;
 import static com.example.mp3player.R.id.main_header;
 
 /**
@@ -34,8 +34,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     final int OPEN_LOCAL_MUSIC_FRAGMENT = 11;
     final int OPEN_FOOTER_PLAYING_LIST_FRAGMENT = 12;
 
-
-    FooterPlayingListFragment footerPlayingListFragment=new FooterPlayingListFragment();
+    LeftDrawerHeadMessageFragment leftDrawerHeadMessageFragment=new LeftDrawerHeadMessageFragment();
+    FooterPlayingListFragment footerPlayingListFragment = new FooterPlayingListFragment();
     FooterPlayerFragment footerPlayerFragment = new FooterPlayerFragment();
     //page
     FindMusicFragment findMusicFragment = new FindMusicFragment();
@@ -48,8 +48,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     LinearLayout drawableLayout;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,11 +57,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         drawableLayout = (LinearLayout) findViewById(R.id.left_drawer);
 
 
-
         getFragmentManager().beginTransaction()
                 .replace(main_content_inside, findMusicFragment).commit();
+        //需要解决一开始点击findmusic会崩问题
         getFragmentManager().beginTransaction()
-                .replace(main_footer, footerPlayerFragment).commit();
+                .replace(R.id.main_footer, footerPlayerFragment).commit();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.left_drawer_head_message,leftDrawerHeadMessageFragment).commit();
 
         drawable.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         initData();
@@ -76,7 +76,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         });
 
-        footerPlayerFragment.setOnBtnPlayingListClickedListener(new FooterPlayerFragment.OnBtnPlayingListClickedListener(){
+        footerPlayerFragment.setOnBtnPlayingListClickedListener(new FooterPlayerFragment.OnBtnPlayingListClickedListener() {
 
             @Override
             public void OnBtnPlayingListClicked() {
@@ -123,10 +123,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-
-
-
-
+    @Override
+    public void finish() {
+        Intent home = new Intent(Intent.ACTION_MAIN);
+        home.addCategory(Intent.CATEGORY_HOME);
+        startActivity(home);
+    }
 
     private void initData() {
         findViewById(btn_main_header_drawer).setOnClickListener(this);
@@ -139,7 +141,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        Intent itnt;
         switch (view.getId()) {
             case btn_main_header_drawer:
                 drawable.openDrawer(Gravity.LEFT);
@@ -159,15 +160,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case btn_main_header_search:
 
 
-
                 break;
             default:
                 break;
         }
     }
-
-
-
 
 
 }

@@ -1,9 +1,12 @@
 package com.example.mp3player.login;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
@@ -14,6 +17,7 @@ import com.example.mp3player.MainActivity;
 import com.example.mp3player.R;
 import com.example.mp3player.entity.AutoLoginSign;
 import com.example.mp3player.service.HttpService;
+import com.example.mp3player.service.LoginService;
 import com.google.gson.Gson;
 
 import java.io.BufferedWriter;
@@ -46,6 +50,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         accountEdit=(EditText)findViewById(R.id.edit_account);
         passwordEdit=(EditText)findViewById(R.id.edit_password);
         initData();
+        bindService(new Intent(this,LoginService.class), connection, Context.BIND_AUTO_CREATE);
     }
 
     private void initData() {
@@ -115,6 +120,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                                     loginSign.setSign(sign);
                                     save(loginSign);
                                     Toast.makeText(getApplication(),"欢迎，"+account,Toast.LENGTH_LONG).show();
+                                    messenger.login();
                                     Intent itnt=new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(itnt);
                                     finish();
@@ -160,5 +166,21 @@ public class LoginActivity extends Activity implements View.OnClickListener{
             }
         }
     }
+
+    LoginService messenger;
+    boolean bound;
+
+    private ServiceConnection connection = new ServiceConnection() {
+
+        public void onServiceDisconnected(ComponentName name) {
+            messenger=null;
+            bound = false;
+        }
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            messenger=((LoginService.ServicesBinder) service).getService();
+            bound=true;
+        }
+    };
 
 }

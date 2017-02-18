@@ -1,18 +1,23 @@
 package com.example.mp3player.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
 
 import com.example.mp3player.entity.AutoLoginSign;
+import com.example.mp3player.entity.User;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,18 +32,17 @@ import okhttp3.Response;
 
 public class LoginService extends Service {
 
+    Boolean isFinishConnect=false;
+    boolean isGetFinishConnect=false;
+    String connectResult;
     AutoLoginSign readSign = null;
+    User user;
     private final IBinder binder = new ServicesBinder();
 
     @Override
     public IBinder onBind(Intent intent) {
         System.out.println("------------LoginService Building--------------------");
-        load();
-        if (readSign == null)
-            Toast.makeText(getApplication(), "无sign", Toast.LENGTH_SHORT).show();//无sign
-        else
-            connect();
-
+        login();
         return binder;
     }
 
@@ -48,6 +52,17 @@ public class LoginService extends Service {
         }
     }
 
+    public void login(){
+        isFinishConnect=false;
+        isGetFinishConnect=false;
+        load();
+        if (readSign == null) {
+            connectResult="请登录";
+            isFinishConnect = true;
+            Toast.makeText(getApplication(), "无sign", Toast.LENGTH_SHORT).show();//无sign
+        }else
+            connect();
+    }
 
     public void load() {
         FileInputStream in = null;
@@ -60,9 +75,8 @@ public class LoginService extends Service {
             while ((line = reader.readLine()) != null)
                 content.append(line);
             System.out.println("读取:" + content.toString());
-            readSign = new Gson().fromJson(content.toString(), AutoLoginSign.class);
-
-
+            if(content.toString().endsWith("}"))
+                readSign = new Gson().fromJson(content.toString(), AutoLoginSign.class);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("读取失败：可能没sign");
@@ -79,6 +93,7 @@ public class LoginService extends Service {
             @Override
             public void onFailure(final Call call, final IOException e) {
                 System.out.println(e);
+                isFinishConnect=true;
             }
 
             @Override
@@ -87,8 +102,11 @@ public class LoginService extends Service {
                     final String data = response.body().string();
                     System.out.println(data);
                     getRequest(data);
+
                 } catch (Exception e) {
                     System.out.println(e);
+                }finally {
+                    isFinishConnect=true;
                 }
             }
         });
@@ -97,21 +115,71 @@ public class LoginService extends Service {
     public void getRequest(final String data) {
         if (data.endsWith("}")) {
             System.out.println("可以自動登陸");
+            connectResult="SUCCESS_IN_AUTOLOGIN";
+            user=new Gson().fromJson(data,User.class);
         } else {
             switch (data) {
                 case "FAIL_WITH_NO_SIGN":
                     System.out.println("需要重新登录");
+                    connectResult="FAIL_WITH_NO_SIGN";
                     break;
                 case "FAIL_WITH_LOGIN_OUTTIME":
                     System.out.println("长时间未手动登录");
+                    connectResult="FAIL_WITH_LOGIN_OUTTIME";
                     break;
                 case "FAIL_WITH_DIFFERENT_SIGN":
                     System.out.println("在其他地方登录过，需要重新登录");
+                    connectResult="FAIL_WITH_DIFFERENT_SIGN";
                     break;
                 default:
                     System.out.println("未知错误，请重新登录");
+                    connectResult="FAIL_WITH_UNKNOW_WRONG";
                     break;
             }
+            cleanSign();
         }
+
+    }
+
+    public Boolean getFinishConnect() {
+        if(isGetFinishConnect&&isFinishConnect)
+            return true;
+        else {
+            isGetFinishConnect=isFinishConnect;
+            return false;
+        }
+    }
+
+    public String getConnectResult(){
+        return  connectResult;
+    }
+
+    public User getUser() {
+        if(connectResult.equals("SUCCESS_IN_AUTOLOGIN"))
+            return user;
+        else
+            return null;
+    }
+
+    public void cleanSign(){
+        //清空sign
+        BufferedWriter writer=null;
+        try{
+            FileOutputStream out=openFileOutput("autoLoginSign", Context.MODE_PRIVATE);
+            writer=new BufferedWriter(new OutputStreamWriter(out));
+            writer.write("");
+            writer.newLine();
+        }catch(IOException e){
+            e.printStackTrace();
+        }finally{
+            try{
+                if(writer!=null){
+                    writer.close();
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+        System.out.println("-----------------clean sign------------------");
     }
 }

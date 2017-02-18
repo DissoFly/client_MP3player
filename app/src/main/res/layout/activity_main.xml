@@ -99,16 +99,13 @@
         android:clickable="true"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <FrameLayout
+            android:id="@+id/left_drawer_head_message"
             android:layout_width="match_parent"
             android:layout_height="240dp"
             android:background="#fff">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="this is user message"/>
-        </RelativeLayout>
+        </FrameLayout>
 
         <ListView
             android:id="@+id/main_drawer_list"

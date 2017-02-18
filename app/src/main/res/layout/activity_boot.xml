@@ -19,19 +19,19 @@
         android:text="Welcome to use MP3plyaer!"
         android:textSize="22dp"/>
 
-    <Button
-        android:id="@+id/main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="main"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"/>
+    <!--<Button-->
+        <!--android:id="@+id/main"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="main"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentStart="true"/>-->
 
-    <Button
-        android:id="@+id/login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="login"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"/>
+    <!--<Button-->
+        <!--android:id="@+id/login"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="login"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"/>-->
 </RelativeLayout>
