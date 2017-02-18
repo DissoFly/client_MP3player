@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.provider.MediaStore;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -39,7 +38,7 @@ public class MusicPlayerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Toast.makeText(getApplicationContext(), "Binding MusicService1", Toast.LENGTH_SHORT).show();
+        System.out.println("------------MusicPlayerService Building--------------------");
         load();
         if (audioList.size()>0) {
             listPosition = new Random().nextInt(audioList.size());
@@ -71,13 +70,6 @@ public class MusicPlayerService extends Service {
     }
 
 
-
-
-
-    public String getConnect(){
-        Toast.makeText(getApplicationContext(), "connect success!", Toast.LENGTH_SHORT).show();
-        return text;
-    }
 
     //设置新列表
     public void setNewMusic(int position,List<String> list){

@@ -1,8 +1,10 @@
 package com.example.mp3player.login;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -10,9 +12,14 @@ import android.widget.Toast;
 import com.example.mp3player.MD5;
 import com.example.mp3player.MainActivity;
 import com.example.mp3player.R;
+import com.example.mp3player.entity.AutoLoginSign;
 import com.example.mp3player.service.HttpService;
+import com.google.gson.Gson;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -77,9 +84,14 @@ public class LoginActivity extends Activity implements View.OnClickListener{
     }
 
     private void connectToHttp(){
+        String meid=((TelephonyManager) getSystemService(TELEPHONY_SERVICE))
+                .getDeviceId();
+        System.out.println("号码："+meid);
+        final String sign=MD5.getMD5(meid+account+password);
         RequestBody formBody = new FormBody.Builder()
                 .add("account", account)
                 .add("passwordHash", MD5.getMD5(password))
+                .add("meid",sign)
                 .build();
         Request request= HttpService.requestBuilderWithPath("login").post(formBody).build();
         HttpService.getClient().newCall(request).enqueue(new Callback() {
@@ -96,18 +108,27 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(data.equals("SUCCESS_IN_LOGIN")) {
-                                Toast.makeText(getApplication(),"欢迎，"+account,Toast.LENGTH_LONG).show();
-                                Intent itnt=new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(itnt);
-                                finish();
-                            }else if(data.equals("FAIL_WITH_NO_ACCOUNT"))
-                                Toast.makeText(getApplication(),"此用户名未注册",Toast.LENGTH_LONG).show();
-                            else if(data.equals("FAIL_WITH_WRONG_PASSWORD"))
-                                Toast.makeText(getApplication(),"密码错误",Toast.LENGTH_LONG).show();
-                            else {
-                                Toast.makeText(getApplication(), data, Toast.LENGTH_LONG).show();
-                                System.out.println(data);
+                            switch (data) {
+                                case "SUCCESS_IN_LOGIN":
+                                    AutoLoginSign loginSign=new AutoLoginSign();
+                                    loginSign.setAccount(account);
+                                    loginSign.setSign(sign);
+                                    save(loginSign);
+                                    Toast.makeText(getApplication(),"欢迎，"+account,Toast.LENGTH_LONG).show();
+                                    Intent itnt=new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(itnt);
+                                    finish();
+                                    break;
+                                case "FAIL_WITH_NO_ACCOUNT":
+                                    Toast.makeText(getApplication(),"此用户名未注册",Toast.LENGTH_LONG).show();
+                                    break;
+                                case "FAIL_WITH_WRONG_PASSWORD":
+                                    Toast.makeText(getApplication(),"密码错误",Toast.LENGTH_LONG).show();
+                                    break;
+                                default:
+                                    Toast.makeText(getApplication(), data, Toast.LENGTH_LONG).show();
+                                    System.out.println(data);
+                                    break;
                             }
                         }
                     });
@@ -118,6 +139,26 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         });
     }
 
-
+    public void save(AutoLoginSign loginSign){							//写入文件
+        FileOutputStream out=null;
+        BufferedWriter writer=null;
+        try{
+            out=openFileOutput("autoLoginSign", Context.MODE_PRIVATE);
+            writer=new BufferedWriter(new OutputStreamWriter(out));
+            writer.write(new Gson().toJson(loginSign));
+            System.out.println(new Gson().toJson(loginSign));
+            writer.newLine();
+        }catch(IOException e){
+            e.printStackTrace();
+        }finally{
+            try{
+                if(writer!=null){
+                    writer.close();
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
 
 }

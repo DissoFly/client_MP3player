@@ -29,4 +29,5 @@ dependencies {
     compile files('libs/okhttp-urlconnection-3.4.1.jar')
     compile files('libs/okio-1.11.0.jar')
     compile 'junit:junit:4.12'
+    compile files('libs/gson-2.7.jar')
 }

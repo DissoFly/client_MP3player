@@ -1,12 +1,17 @@
 package com.example.mp3player;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.example.mp3player.login.LoginActivity;
+import com.example.mp3player.service.LoginService;
 import com.example.mp3player.service.MusicPlayerService;
 
 public class BootActivity extends AppCompatActivity {
@@ -37,12 +42,15 @@ public class BootActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         Handler handler=new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (true){
-                    //直接登录，跳转到主页面
+                    bindService(new Intent(BootActivity.this,LoginService.class), connection, Context.BIND_AUTO_CREATE);
+                    Intent intent=new Intent(BootActivity.this, MainActivity.class);
+                    startActivity(intent);//直接登录，跳转到主页面
                 }else{
                     //登录界面
                 }
@@ -53,7 +61,26 @@ public class BootActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        System.out.println("------------LoginService and MusicPlayerService--------------------");
         startService(new Intent(this, MusicPlayerService.class));
+        startService(new Intent(this, LoginService.class));
     }
+
+    LoginService messenger;
+    boolean bound;
+
+    private ServiceConnection connection = new ServiceConnection() {				//判断有没有绑定Service
+
+        public void onServiceDisconnected(ComponentName name) {
+            messenger=null;
+            bound = false;
+        }
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //绑定后可调用MusicPlayerService的方法来达到控制
+            messenger=((LoginService.ServicesBinder) service).getService();
+            bound=true;
+        }
+    };
 
 }
