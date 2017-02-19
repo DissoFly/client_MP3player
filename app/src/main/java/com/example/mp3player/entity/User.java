@@ -14,6 +14,15 @@ public class User extends DateRecord implements Serializable {
     String email;
     Long phoneNumber;
     Boolean isAdmin;
+    String avatar;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
     public int getUserId() {
         return userId;

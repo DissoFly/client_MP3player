@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.example.mp3player.MD5;
 import com.example.mp3player.R;
+import com.example.mp3player.inputcells.PictureInputCellFragment;
 import com.example.mp3player.service.HttpService;
 
 import java.io.IOException;
@@ -16,7 +17,8 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -37,6 +39,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
     String passwordConfirm;
     String email;
     long phoneNumber;
+
+    PictureInputCellFragment fragInputAvatar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +51,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
         passwordConfirmEdit=(EditText)findViewById(R.id.register_edit_password_confirm);
         emailEdit=(EditText)findViewById(R.id.register_edit_email);
         phoneNumberEdit=(EditText)findViewById(R.id.register_edit_phonenumber);
+        fragInputAvatar=(PictureInputCellFragment) getFragmentManager().findFragmentById(R.id.register_avatar);
         initData();
     }
 
@@ -105,13 +111,22 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
 
 
     private void connectToHttp(){
-        RequestBody formBody = new FormBody.Builder()
-                .add("account", account)
-                .add("passwordHash", MD5.getMD5(password))
-                .add("email", email)
-                .add("phoneNumber", String.valueOf(phoneNumber))
-                .build();
-        Request request=HttpService.requestBuilderWithPath("register").post(formBody).build();
+        MultipartBody.Builder formBody = new MultipartBody.Builder()
+                .addFormDataPart("account", account)
+                .addFormDataPart("passwordHash", MD5.getMD5(password))
+                .addFormDataPart("email", email)
+                .addFormDataPart("phoneNumber", String.valueOf(phoneNumber))
+
+                ;
+        if (fragInputAvatar.getPngData() != null) {
+            formBody
+                    .addFormDataPart(
+                            "avatar", "avatar",
+                            RequestBody
+                                    .create(MediaType.parse("image/png"),
+                                            fragInputAvatar.getPngData()));
+        }
+        Request request=HttpService.requestBuilderWithPath("register").post(formBody.build()).build();
         HttpService.getClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {

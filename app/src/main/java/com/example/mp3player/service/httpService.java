@@ -24,6 +24,8 @@ public class HttpService {
     public static String serverAddress = "http://192.168.253.3:8080/musicCenter/api";
 
     static {
+
+
         CookieJar cookieJar = new CookieJar() {
             Map<HttpUrl, List<Cookie>> cookiemap = new HashMap<HttpUrl, List<Cookie>>();
 
