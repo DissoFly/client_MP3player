@@ -296,7 +296,7 @@ public class MusicPlayerService extends Service {
     public void loads(){
         OkHttpClient client = HttpService.getClient();
         Request request = new Request.Builder()
-                .url(HttpService.serverAddress +"upload/1.mp3")
+                .url(HttpService.serverAddress +"api/test_download")
                 .method("GET", null)
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -310,7 +310,7 @@ public class MusicPlayerService extends Service {
                 {
                     is = response.body().byteStream();
                     System.out.println("-----------1");
-                    File file = new File(Environment.getExternalStorageDirectory() + "/MP3player/music", "1.mp3");
+                    File file = new File(Environment.getExternalStorageDirectory() + "/MP3player/music", "2.mp3");
                     System.out.println("-----------2");
                     fos = new FileOutputStream(file);
                     while ((len = is.read(buf)) != -1)
@@ -361,9 +361,11 @@ public class MusicPlayerService extends Service {
             player.reset();
             System.out.println(audioList.get(listPosition));
             System.out.println(Environment.getExternalStorageDirectory() + "/MP3player/music"+ "/1.mp3");
-            File file=new File(Environment.getExternalStorageDirectory() + "/MP3player/music"+ "/1.mp3");
+            File file=new File(Environment.getExternalStorageDirectory() + "/MP3player/music"+ "/2.mp3");
 //            File file=new File(audioList.get(listPosition));
-            player.setDataSource(file.getAbsolutePath());
+
+            player.setDataSource(HttpService.serverAddress +"api/test_download");
+
             player.prepare();
             player.start();
 
