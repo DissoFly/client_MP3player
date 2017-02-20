@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.mp3player.R;
+import com.example.mp3player.inputcells.AvatarView;
 import com.example.mp3player.login.LoginActivity;
 import com.example.mp3player.service.LoginService;
 
@@ -25,6 +26,7 @@ import com.example.mp3player.service.LoginService;
 public class LeftDrawerHeadMessageFragment extends Fragment implements View.OnClickListener{
     View view;
     TextView headAccount;
+    AvatarView headAvatar;
     int REFLASH_TIME=300;
     @Nullable
     @Override
@@ -33,6 +35,7 @@ public class LeftDrawerHeadMessageFragment extends Fragment implements View.OnCl
             view = inflater.inflate(R.layout.fragment_main_leftdrawer_head_message, null);
             getActivity().bindService(new Intent(getActivity(),LoginService.class), connection, Context.BIND_AUTO_CREATE);
             headAccount=(TextView)view.findViewById(R.id.text_head_account);
+            headAvatar=(AvatarView)view.findViewById(R.id.head_avatar);
             headAccount.setText("正在登录");
             initData();
         }
@@ -80,6 +83,7 @@ public class LeftDrawerHeadMessageFragment extends Fragment implements View.OnCl
                 if (!isChanges) {
                     if (messenger.getConnectResult().equals("SUCCESS_IN_AUTOLOGIN")) {
                         headAccount.setText("你好，" + messenger.getUser().getAccount());
+                        headAvatar.load(messenger.getUser());
                     } else {
                         headAccount.setText(messenger.getConnectResult());
                     }

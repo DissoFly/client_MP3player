@@ -21,7 +21,7 @@ import okhttp3.Request;
 public class HttpService {
     static OkHttpClient client;
 
-    public static String serverAddress = "http://192.168.253.3:8080/musicCenter/api";
+    public static String serverAddress = "http://192.168.253.3:8080/musicCenter/";
 
     static {
 
@@ -60,7 +60,7 @@ public class HttpService {
     }
 
     public static Request.Builder requestBuilderWithPath(String path) {
-        return new Request.Builder().url(serverAddress + "/" + path);
+        return new Request.Builder().url(serverAddress + "/api/" + path);
     }
 
 
