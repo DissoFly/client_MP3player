@@ -73,6 +73,10 @@ public class AvatarView extends View{
 
 
     public void load(String url){
+        if (url==null){
+            setBitmap(null);
+            return;
+        }
         OkHttpClient client = HttpService.getClient();
 
         Request request = new Request.Builder()
@@ -109,7 +113,6 @@ public class AvatarView extends View{
                         setBitmap(null);
                     }
                 });
-                System.out.println("------onFailure");
             }
         });
     }

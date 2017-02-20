@@ -36,9 +36,10 @@ public class LoginService extends Service {
     boolean isGetFinishConnect=false;
     String connectResult;
     AutoLoginSign readSign = null;
-    User user;
+    User user=null;;
     private final IBinder binder = new ServicesBinder();
 
+    //
     @Override
     public IBinder onBind(Intent intent) {
         System.out.println("------------LoginService Building--------------------");
@@ -58,10 +59,21 @@ public class LoginService extends Service {
         load();
         if (readSign == null) {
             connectResult="请登录";
+            user=null;
             isFinishConnect = true;
             Toast.makeText(getApplication(), "无sign", Toast.LENGTH_SHORT).show();//无sign
         }else
             connect();
+    }
+
+    public void logout(){
+        isFinishConnect=false;
+        isGetFinishConnect=false;
+        connectResult="FILE_WITH_LOGOUT";
+        //退出登录connect
+        user=null;
+        cleanSign();
+        isFinishConnect = true;
     }
 
     public void load() {
@@ -136,6 +148,7 @@ public class LoginService extends Service {
                     connectResult="FAIL_WITH_UNKNOW_WRONG";
                     break;
             }
+            user=null;
             cleanSign();
         }
 

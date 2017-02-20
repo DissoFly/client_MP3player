@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mp3player.MD5;
-import com.example.mp3player.MainActivity;
 import com.example.mp3player.R;
 import com.example.mp3player.entity.AutoLoginSign;
 import com.example.mp3player.service.HttpService;
@@ -121,8 +120,6 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                                     save(loginSign);
                                     Toast.makeText(getApplication(),"欢迎，"+account,Toast.LENGTH_LONG).show();
                                     messenger.login();
-                                    Intent itnt=new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(itnt);
                                     finish();
                                     break;
                                 case "FAIL_WITH_NO_ACCOUNT":
