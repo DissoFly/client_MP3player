@@ -1,15 +1,22 @@
 package com.example.mp3player.main.page;
 
 import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.mp3player.R;
 import com.example.mp3player.service.HttpService;
+import com.example.mp3player.service.MusicPlayerService;
 
 import java.io.IOException;
 
@@ -23,9 +30,11 @@ import okhttp3.Response;
  * Created by DissoCapB on 2017/1/16.
  */
 
-public class FriendsFragment extends Fragment {
+public class FriendsFragment extends Fragment implements View.OnClickListener{
     View view;
     TextView textView;
+    Button button;
+    Button button2;
 
     @Nullable
     @Override
@@ -33,7 +42,29 @@ public class FriendsFragment extends Fragment {
         if (view==null)
             view=inflater.inflate(R.layout.fragment_main_page_friends,null);
         textView=(TextView)view.findViewById(R.id.textView);
+        button=(Button)view.findViewById(R.id.btn_test);
+        button2=(Button)view.findViewById(R.id.btn_test2);
+        initData();
+        getActivity().bindService(new Intent(getActivity(),MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
         return view;
+    }
+
+    private void initData() {
+        button.setOnClickListener(this);
+        button2.setOnClickListener(this);
+    }
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_test:
+                messenger.testConnect();
+                break;
+            case R.id.btn_test2:
+                messenger.testConnect2();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -74,4 +105,22 @@ public class FriendsFragment extends Fragment {
             }
         });
     }
+
+    MusicPlayerService messenger;
+    boolean bound;
+    private ServiceConnection connection = new ServiceConnection() {				//判断有没有绑定Service
+
+        public void onServiceDisconnected(ComponentName name) {
+            messenger=null;
+            bound = false;
+        }
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //绑定后可调用MusicPlayerService的方法来达到控制
+            messenger=((MusicPlayerService.ServiceBinder) service).getService();
+            bound=true;
+        }
+    };
+
+
 }

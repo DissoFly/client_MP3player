@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
 
@@ -18,11 +19,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by DissoCapB on 2017/1/19.
@@ -285,4 +293,82 @@ public class MusicPlayerService extends Service {
     }
 
     /////////////////////////////////正在播放音乐列表路径储存↑///////////////////////////////////////
+    public void loads(){
+        OkHttpClient client = HttpService.getClient();
+        Request request = new Request.Builder()
+                .url(HttpService.serverAddress +"upload/1.mp3")
+                .method("GET", null)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onResponse(Call arg0, Response response) throws IOException {
+                InputStream is = null;
+                byte[] buf = new byte[2048];
+                int len = 0;
+                FileOutputStream fos = null;
+                try
+                {
+                    is = response.body().byteStream();
+                    System.out.println("-----------1");
+                    File file = new File(Environment.getExternalStorageDirectory() + "/MP3player/music", "1.mp3");
+                    System.out.println("-----------2");
+                    fos = new FileOutputStream(file);
+                    while ((len = is.read(buf)) != -1)
+                    {
+                        fos.write(buf, 0, len);
+                    }
+                    fos.flush();
+
+                    //如果下载文件成功，第一个参数为文件的绝对路径
+                    System.out.println("-----------success download");
+                } catch (IOException e)
+                {
+                    System.out.println("-----------fail download"+e);
+                } finally
+                {
+                    try
+                    {
+                        if (is != null) is.close();
+                    } catch (IOException e)
+                    {
+                    }
+                    try
+                    {
+                        if (fos != null) fos.close();
+                    } catch (IOException e)
+                    {
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call arg0, IOException arg1) {
+
+            }
+        });
+    }
+
+    public void testConnect(){
+        try {
+            loads();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void testConnect2(){
+        try {
+            player.reset();
+            System.out.println(audioList.get(listPosition));
+            System.out.println(Environment.getExternalStorageDirectory() + "/MP3player/music"+ "/1.mp3");
+            File file=new File(Environment.getExternalStorageDirectory() + "/MP3player/music"+ "/1.mp3");
+//            File file=new File(audioList.get(listPosition));
+            player.setDataSource(file.getAbsolutePath());
+            player.prepare();
+            player.start();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }
