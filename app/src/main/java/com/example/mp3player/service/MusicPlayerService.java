@@ -350,6 +350,7 @@ public class MusicPlayerService extends Service {
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onResponse(Call arg0, Response response) throws IOException {
+                    Boolean isSuccess=false;
                     InputStream is = null;
                     byte[] buf = new byte[2048];
                     int len = 0;
@@ -365,11 +366,7 @@ public class MusicPlayerService extends Service {
                         fos.flush();
                         //如果下载文件成功，第一个参数为文件的绝对路径
                         System.out.println("-----------success download"+split);
-                        if(split<splitSong.getQuantity())
-                            testConnect3(songId,split+1);
-                        else
-                            merge(songId,splitSong.getQuantity());
-
+                        isSuccess=true;
                     } catch (IOException e) {
                         System.out.println("-----------fail download" + e);
                     } finally {
@@ -385,6 +382,11 @@ public class MusicPlayerService extends Service {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        if (isSuccess)
+                            if (split < splitSong.getQuantity())
+                                testConnect3(songId, split + 1);
+                            else
+                                merge(songId, splitSong.getQuantity());
                     }
                 }
                 @Override
