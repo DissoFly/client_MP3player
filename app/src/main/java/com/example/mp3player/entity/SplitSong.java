@@ -10,6 +10,24 @@ public class SplitSong extends DateRecord implements Serializable {
     int splitId;
     int songId;
     int quantity;
+    long allLength;
+    int timeLength;
+
+    public int getTimeLength() {
+        return timeLength;
+    }
+
+    public void setTimeLength(int timeLength) {
+        this.timeLength = timeLength;
+    }
+
+    public long getAllLength() {
+        return allLength;
+    }
+
+    public void setAllLength(long allLength) {
+        this.allLength = allLength;
+    }
 
     public int getSplitId() {
         return splitId;

@@ -50,7 +50,7 @@ public class MusicPlayerService extends Service {
     private final IBinder binder=new ServiceBinder();
 
     boolean isOnlicePlay=false;
-
+    int i=0;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -65,7 +65,17 @@ public class MusicPlayerService extends Service {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 player.seekTo(0);
-                next();
+
+                player.reset();
+                try {
+                    File file=new File(Environment.getExternalStorageDirectory() + "/MP3player/music/" + 1, 1 + "-" + i++ + ".mp3");
+                    player.setDataSource(file.getAbsolutePath());
+                    player.prepare();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                play();
+                //next();
             }
         });
 
@@ -215,8 +225,11 @@ public class MusicPlayerService extends Service {
     }
 
     public void play() {
-        if (listPosition >= 0)
+//        if (listPosition >= 0)
+//            player.start();
+        if(isOnlicePlay==true){
             player.start();
+        }
     }
 
     public void pause() {
@@ -304,6 +317,7 @@ public class MusicPlayerService extends Service {
 
     SplitSong splitSong;
     public void testConnect(){
+        isOnlicePlay=true;
         OkHttpClient client = HttpService.getClient();
         Request request = new Request.Builder()
                 .url(HttpService.serverAddress + "api/online_play/1")
@@ -316,6 +330,16 @@ public class MusicPlayerService extends Service {
                 if (data.endsWith("}")) {
                     System.out.println("----------online_play success:" + data);
                     splitSong= new Gson().fromJson(data,SplitSong.class);
+                    player.reset();
+                    try {
+                        File file=new File(Environment.getExternalStorageDirectory() + "/MP3player/music/" + 1, 1 + "-" + i++ + ".mp3");
+                        player.setDataSource(file.getAbsolutePath());
+                        player.prepare();
+                        play();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                 } else {
                     System.out.println("----------online_play fail:" + data);
                 }
@@ -336,7 +360,7 @@ public class MusicPlayerService extends Service {
         } else {
             System.out.println("//目录存在");
         }
-        testConnect3(1, 0);
+        testConnect3(1, -2);
     }
 
 
@@ -358,7 +382,18 @@ public class MusicPlayerService extends Service {
                     try
                     {
                         is = response.body().byteStream();
-                        File file = new File(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId, songId + "-" + split + ".mp3");
+                        File file;
+                        switch (split){
+                            case -1:
+                                file = new File(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId, songId +".mp3ID3V1");
+                                break;
+                            case -2:
+                                file = new File(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId, songId +".mp3ID3V2");
+                                break;
+                            default:
+                                file = new File(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId, songId + "-" + split + ".mp3");
+                                break;
+                        }
                         fos = new FileOutputStream(file);
                         while ((len = is.read(buf)) != -1) {
                             fos.write(buf, 0, len);
@@ -383,7 +418,7 @@ public class MusicPlayerService extends Service {
                             e.printStackTrace();
                         }
                         if (isSuccess)
-                            if (split < splitSong.getQuantity())
+                            if (split +1< splitSong.getQuantity())
                                 testConnect3(songId, split + 1);
                             else
                                 merge(songId, splitSong.getQuantity());
@@ -403,9 +438,11 @@ public class MusicPlayerService extends Service {
     public void merge(int songId,int quantity){
         List<String> srcPaths=new ArrayList<String>();
         System.out.println("----------- merge quantity"+quantity);
+        srcPaths.add(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId+"/"+ songId +".mp3ID3V2");
         for (int i=0;i<quantity;i++){
             srcPaths.add(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId+"/"+ songId + "-" + i + ".mp3");
         }
+        srcPaths.add(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId+"/"+ songId +".mp3ID3V1");
         //合并后的文件名
         String name = "1.mp3";
         //String destName = name.substring(0, name.lastIndexOf("-"));
