@@ -13,6 +13,7 @@ import com.example.mp3player.main.LeftDrawerHeadMessageFragment;
 import com.example.mp3player.main.page.FindMusicFragment;
 import com.example.mp3player.main.page.FriendsFragment;
 import com.example.mp3player.main.page.MineFragment;
+import com.example.mp3player.main.page.mine.download.DownloadFragment;
 import com.example.mp3player.main.page.mine.localMusic.LocalMusicFragment;
 
 import static com.example.mp3player.R.id.btn_main_header_drawer;
@@ -23,6 +24,9 @@ import static com.example.mp3player.R.id.btn_main_header_search;
 import static com.example.mp3player.R.id.drawer_main;
 import static com.example.mp3player.R.id.main_content_inside;
 import static com.example.mp3player.R.id.main_header;
+import static com.example.mp3player.main.OpenFragmentCount.OPEN_DOWNLOAD_FRAGMENT;
+import static com.example.mp3player.main.OpenFragmentCount.OPEN_FOOTER_PLAYING_LIST_FRAGMENT;
+import static com.example.mp3player.main.OpenFragmentCount.OPEN_LOCAL_MUSIC_FRAGMENT;
 
 /**
  * Created by DissoCapB on 2017/1/16.
@@ -31,9 +35,6 @@ import static com.example.mp3player.R.id.main_header;
 public class MainActivity extends Activity implements View.OnClickListener {
 
     int openFragInMain = 0;
-    final int OPEN_LOCAL_MUSIC_FRAGMENT = 11;
-    final int OPEN_FOOTER_PLAYING_LIST_FRAGMENT = 12;
-
     LeftDrawerHeadMessageFragment leftDrawerHeadMessageFragment=new LeftDrawerHeadMessageFragment();
     FooterPlayingListFragment footerPlayingListFragment = new FooterPlayingListFragment();
     FooterPlayerFragment footerPlayerFragment = new FooterPlayerFragment();
@@ -43,6 +44,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     FriendsFragment friendsFragment = new FriendsFragment();
     //inPage
     LocalMusicFragment localMusicFragment = new LocalMusicFragment();
+    DownloadFragment downloadFragment = new DownloadFragment();
+
 
     DrawerLayout drawable;
     LinearLayout drawableLayout;
@@ -116,6 +119,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case OPEN_FOOTER_PLAYING_LIST_FRAGMENT:
                 getFragmentManager().beginTransaction()
                         .replace(R.id.main_outside, footerPlayingListFragment).addToBackStack(null).commit();
+                break;
+            case OPEN_DOWNLOAD_FRAGMENT:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.main_content_outside,downloadFragment ).addToBackStack(null).commit();
                 break;
 
 

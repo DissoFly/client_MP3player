@@ -20,7 +20,7 @@ import com.example.mp3player.service.MusicPlayerService;
 
 import java.util.List;
 
-
+import static com.example.mp3player.main.OpenFragmentCount.OPEN_FOOTER_PLAYING_LIST_FRAGMENT;
 
 
 /**
@@ -32,7 +32,6 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
     MusicPlayerService messenger;
     boolean bound;
     int openFragInMain = 0;
-    final int OPEN_FOOTER_PLAYING_LIST_FRAGMENT = 12;
     int REFLASH_TIME=100;
 
     private List<String> audioList = null;

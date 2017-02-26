@@ -81,10 +81,13 @@
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:background="#363636"/>
+
         <FrameLayout
             android:id="@+id/main_outside"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"/>
 
 
     </RelativeLayout>

@@ -30,4 +30,6 @@ dependencies {
     compile 'junit:junit:4.12'
     compile files('libs/gson-2.7.jar')
     compile files('libs/okhttp-3.6.0.jar')
+    compile files('libs/ormlite-android-4.48.jar')
+    compile files('libs/ormlite-core-4.48.jar')
 }

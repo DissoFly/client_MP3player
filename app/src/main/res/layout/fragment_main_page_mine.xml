@@ -4,16 +4,10 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <ListView
+        android:id="@+id/page_mine_list"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="this is mine"
-        />
 
-    <Button
-        android:id="@+id/btn_local_music"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Local Music"/>
+        />
 </LinearLayout>
