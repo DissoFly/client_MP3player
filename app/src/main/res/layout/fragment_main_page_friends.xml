@@ -18,9 +18,21 @@
         android:id="@+id/btn_test"
         android:layout_weight="1"/>
     <Button
+        android:text="在线播放测试1.1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_test3"
+        android:layout_weight="1"/>
+    <Button
         android:text="在线播放测试2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_test2"
+        android:layout_weight="1"/>
+    <Button
+        android:text="在线播放测试4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_test4"
         android:layout_weight="1"/>
 </LinearLayout>

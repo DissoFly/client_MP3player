@@ -178,7 +178,17 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
                 playingCurrentPosition.setText("00:00");
                 playingDuration.setText("00:00");
             }else {
-                play();
+                if(messenger.isPlaying())
+                    play();
+                if(!rotateAnimation.isPaused()){
+                    if(!messenger.isPlaying()){
+                        rotateAnimation.pause();
+                    }
+                }else{
+                    if(messenger.isPlaying()){
+                        rotateAnimation.resume();
+                    }
+                }
             }
 
             handler.postDelayed(runnable, REFLASH_TIME);
@@ -192,21 +202,14 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
         playingCurrentPosition.setText(showTime(current));
         playingDuration.setText(showTime(max));
         musicBar.setMax(max);
+        musicBar.setSecondaryProgress(messenger.getBufferingProgress()*max/100);
         if(!isMusicBarTouch)
             musicBar.setProgress(current);
         if(oneReloadPosition!=listPosition){
             songPictureFragment.setImg(messenger.getImg());
             oneReloadPosition=listPosition;
         }
-        if(!rotateAnimation.isPaused()){
-            if(!messenger.isPlaying()){
-                rotateAnimation.pause();
-            }
-        }else{
-            if(messenger.isPlaying()){
-                rotateAnimation.resume();
-            }
-        }
+
     }
 
     public String showTime(int time){

@@ -19,6 +19,8 @@ import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.MusicPlayerService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -35,6 +37,8 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
     TextView textView;
     Button button;
     Button button2;
+    Button button3;
+    Button button4;
 
     @Nullable
     @Override
@@ -44,6 +48,8 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
         textView=(TextView)view.findViewById(R.id.textView);
         button=(Button)view.findViewById(R.id.btn_test);
         button2=(Button)view.findViewById(R.id.btn_test2);
+        button3=(Button)view.findViewById(R.id.btn_test3);
+        button4=(Button)view.findViewById(R.id.btn_test4);
         initData();
         getActivity().bindService(new Intent(getActivity(),MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
         return view;
@@ -52,7 +58,11 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
     private void initData() {
         button.setOnClickListener(this);
         button2.setOnClickListener(this);
+        button3.setOnClickListener(this);
+        button4.setOnClickListener(this);
     }
+
+    private List<String> audioList = null;
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -61,6 +71,22 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.btn_test2:
                 messenger.testConnect2();
+                break;
+            case R.id.btn_test3:
+                messenger.testConnect3();
+                break;
+            case R.id.btn_test4:
+                //messenger.testConnect4();
+                audioList=new ArrayList<>();
+                audioList.add(HttpService.serverAddress + "api/online_song/1");
+                audioList.add(HttpService.serverAddress + "api/online_song/2");
+                audioList.add(HttpService.serverAddress + "api/online_song/3");
+                audioList.add(HttpService.serverAddress + "api/online_song/4");
+                audioList.add(HttpService.serverAddress + "api/online_song/5");
+                audioList.add(HttpService.serverAddress + "api/online_song/6");
+                audioList.add(HttpService.serverAddress + "api/online_song/7");
+                audioList.add(HttpService.serverAddress + "api/online_song/8");
+                messenger.setNewMusic(0,audioList);
                 break;
             default:
                 break;
