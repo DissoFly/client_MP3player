@@ -28,6 +28,27 @@
             android:textColor="#fff"
             android:textSize="25dp"/>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/test1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="测试开始下载"/>
+        <Button
+            android:id="@+id/test2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="测试暂停下载"/>
+        <Button
+            android:id="@+id/test3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="测试继续下载"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

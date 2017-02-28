@@ -1,5 +1,6 @@
 package com.example.mp3player;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -7,12 +8,13 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 
+import com.example.mp3player.service.DataService;
 import com.example.mp3player.service.LoginService;
 import com.example.mp3player.service.MusicPlayerService;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 
-public class BootActivity extends AppCompatActivity {
+public class BootActivity extends Activity {
 
 
 
@@ -60,6 +62,7 @@ public class BootActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         System.out.println("------------LoginService and MusicPlayerService--------------------");
+        DataService dataService= OpenHelperManager.getHelper(BootActivity.this,DataService.class);
         startService(new Intent(this, MusicPlayerService.class));
         startService(new Intent(this, LoginService.class));
     }
