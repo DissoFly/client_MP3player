@@ -1,4 +1,4 @@
-package com.example.mp3player.main;
+package com.example.mp3player.windows.main;
 
 /**
  * Created by DissoCapB on 2017/2/26.

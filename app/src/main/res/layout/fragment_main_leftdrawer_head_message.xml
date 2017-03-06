@@ -10,7 +10,7 @@
         android:layout_centerInParent="true"
         android:orientation="vertical">
 
-        <com.example.mp3player.inputcells.AvatarView
+        <com.example.mp3player.windows.inputcells.AvatarView
             android:id="@+id/head_avatar"
             android:layout_width="100dp"
             android:layout_height="100dp"

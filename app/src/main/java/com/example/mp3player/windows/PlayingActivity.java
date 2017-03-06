@@ -1,4 +1,4 @@
-package com.example.mp3player;
+package com.example.mp3player.windows;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -17,7 +17,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.mp3player.inputcells.SongPictureFragment;
+import com.example.mp3player.R;
+import com.example.mp3player.windows.inputcells.SongPictureFragment;
 import com.example.mp3player.service.MusicPlayerService;
 
 import java.util.List;

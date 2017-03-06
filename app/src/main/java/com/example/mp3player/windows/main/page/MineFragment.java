@@ -1,4 +1,4 @@
-package com.example.mp3player.main.page;
+package com.example.mp3player.windows.main.page;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -17,8 +17,8 @@ import com.example.mp3player.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.mp3player.main.OpenFragmentCount.OPEN_DOWNLOAD_FRAGMENT;
-import static com.example.mp3player.main.OpenFragmentCount.OPEN_LOCAL_MUSIC_FRAGMENT;
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DOWNLOAD_FRAGMENT;
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_LOCAL_MUSIC_FRAGMENT;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.example.mp3player;
+package com.example.mp3player.windows;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 
+import com.example.mp3player.R;
 import com.example.mp3player.service.DataService;
 import com.example.mp3player.service.LoginService;
 import com.example.mp3player.service.MusicPlayerService;

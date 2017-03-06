@@ -1,4 +1,4 @@
-package com.example.mp3player.main;
+package com.example.mp3player.windows.main;
 
 import android.app.Fragment;
 import android.content.ComponentName;
@@ -14,13 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.mp3player.PlayingActivity;
+import com.example.mp3player.windows.PlayingActivity;
 import com.example.mp3player.R;
 import com.example.mp3player.service.MusicPlayerService;
 
 import java.util.List;
 
-import static com.example.mp3player.main.OpenFragmentCount.OPEN_FOOTER_PLAYING_LIST_FRAGMENT;
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_FOOTER_PLAYING_LIST_FRAGMENT;
 
 
 /**

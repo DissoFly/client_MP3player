@@ -1,4 +1,4 @@
-package com.example.mp3player.inputcells;
+package com.example.mp3player.windows.inputcells;
 
 import android.content.Context;
 import android.graphics.Bitmap;

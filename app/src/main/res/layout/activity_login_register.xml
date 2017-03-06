@@ -94,7 +94,7 @@
         android:id="@+id/register_avatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        class="com.example.mp3player.inputcells.PictureInputCellFragment"
+        class="com.example.mp3player.windows.inputcells.PictureInputCellFragment"
         tools:layout="@layout/fragment_inputcell_avatar" />
 
     <Button

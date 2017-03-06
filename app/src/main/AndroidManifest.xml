@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".BootActivity">
+        <activity android:name=".windows.BootActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -23,13 +23,13 @@
 
                  <!--android:process=":remote"-->
 
-        <activity android:name="com.example.mp3player.login.LoginActivity"/>
-        <activity android:name="com.example.mp3player.login.ForgetPasswordActivity"/>
-        <activity android:name="com.example.mp3player.login.MyDataActivity"/>
-        <activity android:name="com.example.mp3player.login.RegisterActivity"/>
-        <activity android:name="com.example.mp3player.MainActivity"/>
-        <activity android:name=".main.page.mine.localMusic.FindMusicInLocalActivity"/>
-        <activity android:name=".PlayingActivity"/>
+        <activity android:name=".windows.login.LoginActivity"/>
+        <activity android:name=".windows.login.ForgetPasswordActivity"/>
+        <activity android:name=".windows.login.MyDataActivity"/>
+        <activity android:name=".windows.login.RegisterActivity"/>
+        <activity android:name="com.example.mp3player.windows.MainActivity"/>
+        <activity android:name=".windows.main.page.mine.localMusic.FindMusicInLocalActivity"/>
+        <activity android:name=".windows.PlayingActivity"/>
     </application>
 
 </manifest>

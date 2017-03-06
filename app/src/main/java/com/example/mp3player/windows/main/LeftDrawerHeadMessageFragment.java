@@ -1,4 +1,4 @@
-package com.example.mp3player.main;
+package com.example.mp3player.windows.main;
 
 import android.app.Fragment;
 import android.content.ComponentName;
@@ -16,9 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mp3player.R;
-import com.example.mp3player.inputcells.AvatarView;
-import com.example.mp3player.login.LoginActivity;
-import com.example.mp3player.login.MyDataActivity;
+import com.example.mp3player.windows.inputcells.AvatarView;
+import com.example.mp3player.windows.login.LoginActivity;
+import com.example.mp3player.windows.login.MyDataActivity;
 import com.example.mp3player.service.LoginService;
 
 /**

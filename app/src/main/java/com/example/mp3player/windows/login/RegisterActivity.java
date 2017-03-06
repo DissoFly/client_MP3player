@@ -1,4 +1,4 @@
-package com.example.mp3player.login;
+package com.example.mp3player.windows.login;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.example.mp3player.MD5;
 import com.example.mp3player.R;
-import com.example.mp3player.inputcells.PictureInputCellFragment;
+import com.example.mp3player.windows.inputcells.PictureInputCellFragment;
 import com.example.mp3player.service.HttpService;
 
 import java.io.IOException;
