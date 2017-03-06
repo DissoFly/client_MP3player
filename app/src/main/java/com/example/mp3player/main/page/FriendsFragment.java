@@ -67,13 +67,13 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_test:
-                messenger.testConnect();
+                //messenger.testConnect();
                 break;
             case R.id.btn_test2:
-                messenger.testConnect2();
+                //messenger.testConnect2();
                 break;
             case R.id.btn_test3:
-                messenger.testConnect3();
+                //messenger.testConnect3();
                 break;
             case R.id.btn_test4:
                 //messenger.testConnect4();

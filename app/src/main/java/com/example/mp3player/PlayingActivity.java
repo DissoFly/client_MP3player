@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -44,6 +45,10 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
     boolean isMusicBarTouch=false;
     int oneReloadPosition=-1;
     SongPictureFragment songPictureFragment=new SongPictureFragment();
+
+    ImageView btnPlayChanges;
+    ImageView btnPlayBack;
+    ImageView btnPlayNext;
 
 
 

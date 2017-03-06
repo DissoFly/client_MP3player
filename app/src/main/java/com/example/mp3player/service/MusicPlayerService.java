@@ -9,36 +9,19 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
 
-import com.example.mp3player.entity.SplitSong;
-import com.google.gson.Gson;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by DissoCapB on 2017/1/19.
@@ -358,218 +341,12 @@ public class MusicPlayerService extends Service {
 
     /////////////////////////////////正在播放音乐列表路径储存↑///////////////////////////////////////
 
-    SplitSong splitSong;
-
-    public void testConnect() {
-        OkHttpClient client = HttpService.getClient();
-        Request request = new Request.Builder()
-                .url(HttpService.serverAddress + "api/online_play/1")
-                .method("GET", null)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onResponse(Call arg0, Response response) throws IOException {
-                final String data = response.body().string();
-                if (data.endsWith("}")) {
-                    System.out.println("----------online_play success:" + data);
-                    splitSong = new Gson().fromJson(data, SplitSong.class);
-                    player.reset();
-                    player2.reset();
-                    try {
-
-                        //                        File file=new File(Environment.getExternalStorageDirectory() + "/MP3player/music/" + 1, 1 + "-" + 0 + ".mp3");
-                        //                        player.setDataSource(file.getAbsolutePath());
-                        //                        File file2=new File(Environment.getExternalStorageDirectory() + "/MP3player/music/" + 1, 1 + "-" + 1 + ".mp3");
-                        //                        player2.setDataSource(file2.getAbsolutePath());
-                        //
-                        //                        player.prepareAsync();
-                        //                        player2.prepareAsync();
-                        //
-                        //                        soundPool.load(Environment.getExternalStorageDirectory() + "/MP3player/music/" + 1+"/"+1 + "-" + 0 + ".mp3",1);
-                        //                        soundPool.load(Environment.getExternalStorageDirectory() + "/MP3player/music/" + 1+"/"+1 + "-" + 1 + ".mp3",2);
-                        System.out.println("--------------------------1");
-                        //player.setNextMediaPlayer(player2);
-                        System.out.println("--------------------------2");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } else {
-                    System.out.println("----------online_play fail:" + data);
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call arg0, IOException arg1) {
-                System.out.println("----------online_play fail:" + arg1.toString());
-            }
-        });
-    }
-
-    public void testConnect3() {
-        Handler handler = new Handler();
-        //play();
-        soundPool.play(1, 0.2f, 0.2f, 0, 0, 1.0f);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //player2.start();
-                soundPool.play(2, 0.2f, 0.2f, 0, 0, 1.0f);
-            }
-        }, 3000);
-        play();
-    }
-
-    public void testConnect2() {
-        //        int songId=1;
-        //        File file = new File(Environment.getExternalStorageDirectory() + "/MP3player/music/"+songId);
-        //        if (!file.exists() && !file.isDirectory()) {
-        //            System.out.println("//不存在");
-        //            file.mkdir();
-        //        } else {
-        //            System.out.println("//目录存在");
-        //        }
-        //        testConnect3(1, -2);bufferingProgress
-        System.out.println(this.getApplicationContext().getCacheDir());
-        System.out.println(bufferingProgress);
-    }
-
-    public void testConnect3(final int songId, final int split) {
-        try {
-            OkHttpClient client = HttpService.getClient();
-            Request request = new Request.Builder()
-                    .url(HttpService.serverAddress + "api/online_play/" + songId + "/" + split)
-                    .method("GET", null)
-                    .build();
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onResponse(Call arg0, Response response) throws IOException {
-                    Boolean isSuccess = false;
-                    InputStream is = null;
-                    byte[] buf = new byte[2048];
-                    int len = 0;
-                    FileOutputStream fos = null;
-                    try {
-                        is = response.body().byteStream();
-                        File file;
-                        switch (split) {
-                            case -1:
-                                file = new File(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId, songId + ".mp3ID3V1");
-                                break;
-                            case -2:
-                                file = new File(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId, songId + ".mp3ID3V2");
-                                break;
-                            default:
-                                file = new File(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId, songId + "-" + split + ".mp3");
-                                break;
-                        }
-                        fos = new FileOutputStream(file);
-                        while ((len = is.read(buf)) != -1) {
-                            fos.write(buf, 0, len);
-                        }
-                        fos.flush();
-                        //如果下载文件成功，第一个参数为文件的绝对路径
-                        System.out.println("-----------success download" + split);
-                        isSuccess = true;
-                    } catch (IOException e) {
-                        System.out.println("-----------fail download" + e);
-                    } finally {
-                        try {
-                            if (is != null)
-                                is.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            if (fos != null)
-                                fos.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        if (isSuccess)
-                            if (split + 1 < splitSong.getQuantity())
-                                testConnect3(songId, split + 1);
-                            else
-                                merge(songId, splitSong.getQuantity());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call arg0, IOException arg1) {
-                    System.out.println("----------online_play fail:" + arg1.toString());
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void merge(int songId, int quantity) {
-        List<String> srcPaths = new ArrayList<String>();
-        System.out.println("----------- merge quantity" + quantity);
-        srcPaths.add(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId + "/" + songId + ".mp3ID3V2");
-        for (int i = 0; i < quantity; i++) {
-            srcPaths.add(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId + "/" + songId + "-" + i + ".mp3");
-        }
-        srcPaths.add(Environment.getExternalStorageDirectory() + "/MP3player/music/" + songId + "/" + songId + ".mp3ID3V1");
-        //合并后的文件名
-        String name = "1.mp3";
-        //String destName = name.substring(0, name.lastIndexOf("-"));
-        //destPath = destPath+destName;//合并后的文件路径
-
-        File destFile = new File(Environment.getExternalStorageDirectory() + "/MP3player/music", name);//合并后的文件
-        OutputStream out = null;
-        BufferedOutputStream bos = null;
-        try {
-            out = new FileOutputStream(destFile);
-            bos = new BufferedOutputStream(out);
-            int i = 0;
-            for (String src : srcPaths) {
-                System.out.println("-----------success merge" + i);
-                i++;
-                File srcFile = new File(src);
-                InputStream in = new FileInputStream(srcFile);
-                BufferedInputStream bis = new BufferedInputStream(in);
-                byte[] bytes = new byte[1024 * 128];
-                int len = -1;
-                while ((len = bis.read(bytes)) != -1) {
-                    bos.write(bytes, 0, len);
-                }
-                bis.close();
-                in.close();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            //关闭流
-            try {
-                if (bos != null)
-                    bos.close();
-                if (out != null)
-                    out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    public void testConnect4() {
-
-        try {
-            player.reset();
-            player.setDataSource(HttpService.serverAddress + "api/test4");
-            player.prepareAsync();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public void testConnect3(){
 
     }
+
+
+
 
 
 }

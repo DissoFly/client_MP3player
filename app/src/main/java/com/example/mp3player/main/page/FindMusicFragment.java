@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mp3player.R;
 import com.example.mp3player.entity.Downloading;
@@ -61,17 +62,18 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener{
                 downloading.setBreakPoints(12);
                 downloading.setLocalPath("/123/");
                 downloading.setMusicId(1);
-                try {
-                    downloadingDao.create(downloading);
-                    Log.d("success","success");
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    Log.d(this.toString(),"fail");
-                }
+//                try {
+//                    downloadingDao.create(downloading);
+//                    Log.d("success","success");
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                    Log.d(this.toString(),"fail");
+//                }
+                Toast.makeText(getActivity(),"禁止添加",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.test2:
                 try {
-                    downloadingDao.deleteById(1);
+                    downloadingDao.deleteById(7);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
