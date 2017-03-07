@@ -9,6 +9,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.mp3player.R;
+import com.example.mp3player.entity.PlayingItem;
+import com.example.mp3player.id3v2.MusicInfo;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,7 +30,7 @@ import java.util.List;
  */
 
 public class FindMusicInLocalActivity extends Activity {
-    private List<String> audioList = null; //本地音频列表
+    private List<PlayingItem> audioList = null; //本地音频列表
     private boolean isSearch=false;
     String fileUpdate = null;
     TextView textResult;
@@ -63,7 +67,7 @@ public class FindMusicInLocalActivity extends Activity {
     public class LooperThread extends Thread {
         @Override
         public void run() {
-            audioList = new ArrayList<String>();
+            audioList = new ArrayList<>();
             isSearch=true;      //更新数据ui放getFiles()内会显示错乱
             getFiles(Environment.getExternalStorageDirectory() + "/");
             save();
@@ -89,7 +93,38 @@ public class FindMusicInLocalActivity extends Activity {
                     getFiles(f.getAbsolutePath()); //递归调用
                 } else {
                     if (isAudioFile(f.getPath())) { // 如果是音频文件
-                        audioList.add(f.getPath()); // 将文件的路径添加到list集合中
+                        PlayingItem playingItem=new PlayingItem();
+                        MusicInfo musicInfo=new MusicInfo();
+                        musicInfo.setPath(f.getPath());
+                        int j=-1;
+                        try{
+                            j=musicInfo.parseMusic();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        if (j==0){
+                            String songName=musicInfo.getTitle();
+                            if (songName!=null)
+                                if (!songName.equals("")) {
+                                    System.out.println(songName);
+                                    String string = new String(songName.getBytes(), "UTF-8");
+                                    System.out.println(string);
+                                    playingItem.setSongName(string);
+                                }else{
+                                    String s1[] =f.getPath().split("/");
+                                    playingItem.setSongName(s1[s1.length-1]);
+                                }
+
+                            else{
+                                String s1[] =f.getPath().split("/");
+                                playingItem.setSongName(s1[s1.length-1]);
+                            }
+                            playingItem.setArtist(musicInfo.getPerformer());
+                            playingItem.setAlbum(musicInfo.getAlbum());
+                        }
+                        playingItem.setOnline(false);
+                        playingItem.setFilePath(f.getPath());
+                        audioList.add(playingItem); // 将文件的路径添加到list集合中
                         //                        取路径最后的名称
                         //                        String s1[] =f.getPath().split("/");
                         //                        musicList.add(s1[s1.length-1]);
@@ -130,11 +165,7 @@ public class FindMusicInLocalActivity extends Activity {
         try{
             out=openFileOutput("localMusicData", Context.MODE_PRIVATE);
             writer=new BufferedWriter(new OutputStreamWriter(out));
-            for(int i=0;i<audioList.size();i++){
-
-                writer.write(audioList.get(i)+"###");
-                writer.newLine();
-            }
+            writer.write(new Gson().toJson(audioList));
         }catch(IOException e){
             e.printStackTrace();
         }finally{
@@ -152,16 +183,15 @@ public class FindMusicInLocalActivity extends Activity {
         FileInputStream in =null;
         BufferedReader reader=null;
         StringBuilder content=new StringBuilder();
-        audioList = new ArrayList<String>();
+        audioList = new ArrayList<>();
         try{
             in=openFileInput("localMusicData");
             reader=new BufferedReader(new InputStreamReader(in));
             String line="";
             while((line=reader.readLine())!=null)
                 content.append(line);
-            String s1[] =content.toString().split("###");
-            for(int c=0;c<s1.length;c++)
-                audioList.add(s1[c]);
+            audioList = new Gson().fromJson(content.toString(), new TypeToken<List<PlayingItem>>() {
+            }.getType());
 
         }catch(IOException e){
             e.printStackTrace();

@@ -17,7 +17,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.mp3player.R;
+import com.example.mp3player.entity.PlayingItem;
 import com.example.mp3player.service.MusicPlayerService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -37,7 +40,7 @@ import static com.example.mp3player.R.id.layout_local_music;
 public class LocalMusicFragment extends Fragment implements View.OnClickListener {
     View view;
     ListView listView;
-    private List<String> audioList = null; //本地音频列表
+    private List<PlayingItem> audioList = null; //本地音频列表
     MusicPlayerService messenger;
     boolean bound;
 
@@ -103,8 +106,8 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
             }
 
             TextView musicName=(TextView)view.findViewById(R.id.text_local_music_name);
-            String s1[] =audioList.get(i).split("/");
-            musicName.setText(s1[s1.length-1]);
+//            String s1[] =audioList.get(i).split("/");
+            musicName.setText(audioList.get(i).getSongName());
             return view;
         }
     };
@@ -146,16 +149,15 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
         FileInputStream in =null;
         BufferedReader reader=null;
         StringBuilder content=new StringBuilder();
-        audioList = new ArrayList<String>();
+        audioList = new ArrayList<>();
         try{
             in=getActivity().openFileInput("localMusicData");
             reader=new BufferedReader(new InputStreamReader(in));
             String line="";
             while((line=reader.readLine())!=null)
                 content.append(line);
-            String s1[] =content.toString().split("###");
-            for(int c=0;c<s1.length;c++)
-                audioList.add(s1[c]);
+            audioList = new Gson().fromJson(content.toString(), new TypeToken<List<PlayingItem>>() {
+            }.getType());
 
         }catch(IOException e){
             e.printStackTrace();

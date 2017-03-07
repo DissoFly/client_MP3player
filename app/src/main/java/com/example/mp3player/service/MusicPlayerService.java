@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.provider.MediaStore;
+
+import com.example.mp3player.entity.PlayingItem;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,9 +32,7 @@ import java.util.Random;
 
 public class MusicPlayerService extends Service {
     MediaPlayer player = new MediaPlayer();
-    MediaPlayer player2 = new MediaPlayer();
-    SoundPool soundPool = new SoundPool(2, 1, 1);
-    private List<String> audioList = null;
+    private List<PlayingItem> audioList = null;
     private int listPosition = -1;
     private final IBinder binder = new ServiceBinder();
 
@@ -47,7 +48,7 @@ public class MusicPlayerService extends Service {
             listPosition = new Random().nextInt(audioList.size());
             for (int i = 0; i < audioList.size(); i++) {
                 try {
-                    player.setDataSource(audioList.get(listPosition));
+                    player.setDataSource(audioList.get(listPosition).getFilePath());
                     break;
                 } catch (IOException e) {
                     System.out.println("装载失败" + listPosition);
@@ -111,7 +112,7 @@ public class MusicPlayerService extends Service {
 
 
     //设置新列表
-    public void setNewMusic(int position, List<String> list) {
+    public void setNewMusic(int position, List<PlayingItem> list) {
         listPosition = position;
         audioList = list;
         save();
@@ -127,8 +128,17 @@ public class MusicPlayerService extends Service {
     public List<String> getAudioList() {
         List<String> list = new ArrayList<String>();
         for (int i = 0; i < audioList.size(); i++) {
-            String s1[] = audioList.get(i).split("/");
-            list.add(s1[s1.length - 1]);
+            //            if (audioList.get(i).getSongName() == "" || audioList.get(i).getSongName() == null) {
+            //                if (audioList.get(i).isOnline())
+            //                    list.add("未知网络音乐歌名");
+            //                else {
+            //                    String s1[] = audioList.get(i).getFilePath().split("/");
+            //                    list.add(s1[s1.length - 1]);
+            //                }
+            //            } else {
+            list.add(audioList.get(i).getSongName());
+            //            }
+
         }
         return list;
     }
@@ -216,7 +226,7 @@ public class MusicPlayerService extends Service {
             isPrepared = false;
             player.reset();
             //File file=new File(audioList.get(listPosition));
-            player.setDataSource(audioList.get(listPosition));
+            player.setDataSource(audioList.get(listPosition).getFilePath());
             player.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
@@ -299,11 +309,10 @@ public class MusicPlayerService extends Service {
         try {
             out = openFileOutput("playingMusicData", Context.MODE_PRIVATE);
             writer = new BufferedWriter(new OutputStreamWriter(out));
-            for (int i = 0; i < audioList.size(); i++) {
-
-                writer.write(audioList.get(i) + "###");
-                writer.newLine();
-            }
+            //for (int i = 0; i < audioList.size(); i++) {
+            writer.write(new Gson().toJson(audioList));
+            // writer.newLine();
+            //}
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -322,17 +331,18 @@ public class MusicPlayerService extends Service {
         FileInputStream in = null;
         BufferedReader reader = null;
         StringBuilder content = new StringBuilder();
-        audioList = new ArrayList<String>();
+        audioList = new ArrayList<>();
         try {
             in = openFileInput("playingMusicData");
             reader = new BufferedReader(new InputStreamReader(in));
             String line = "";
             while ((line = reader.readLine()) != null)
                 content.append(line);
-            String s1[] = content.toString().split("###");
-            for (int c = 0; c < s1.length; c++) {
-                audioList.add(s1[c]);
-            }
+            //String s1[] = content.toString().split("###");
+            // for (int c = 0; c < s1.length; c++) {
+            audioList = new Gson().fromJson(content.toString(), new TypeToken<List<PlayingItem>>() {
+            }.getType());
+            // }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -340,13 +350,6 @@ public class MusicPlayerService extends Service {
     }
 
     /////////////////////////////////正在播放音乐列表路径储存↑///////////////////////////////////////
-
-    public void testConnect3(){
-
-    }
-
-
-
 
 
 }

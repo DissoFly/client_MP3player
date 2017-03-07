@@ -19,7 +19,6 @@ import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.MusicPlayerService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -77,16 +76,16 @@ public class FriendsFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.btn_test4:
                 //messenger.testConnect4();
-                audioList=new ArrayList<>();
-                audioList.add(HttpService.serverAddress + "api/online_song/1");
-                audioList.add(HttpService.serverAddress + "api/online_song/2");
-                audioList.add(HttpService.serverAddress + "api/online_song/3");
-                audioList.add(HttpService.serverAddress + "api/online_song/4");
-                audioList.add(HttpService.serverAddress + "api/online_song/5");
-                audioList.add(HttpService.serverAddress + "api/online_song/6");
-                audioList.add(HttpService.serverAddress + "api/online_song/7");
-                audioList.add(HttpService.serverAddress + "api/online_song/8");
-                messenger.setNewMusic(0,audioList);
+//                audioList=new ArrayList<>();
+//                audioList.add(HttpService.serverAddress + "api/online_song/1");
+//                audioList.add(HttpService.serverAddress + "api/online_song/2");
+//                audioList.add(HttpService.serverAddress + "api/online_song/3");
+//                audioList.add(HttpService.serverAddress + "api/online_song/4");
+//                audioList.add(HttpService.serverAddress + "api/online_song/5");
+//                audioList.add(HttpService.serverAddress + "api/online_song/6");
+//                audioList.add(HttpService.serverAddress + "api/online_song/7");
+//                audioList.add(HttpService.serverAddress + "api/online_song/8");
+//                messenger.setNewMusic(0,audioList);
                 break;
             default:
                 break;
