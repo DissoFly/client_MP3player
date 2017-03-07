@@ -90,14 +90,7 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener{
                 }
                 textView.setText(s);
 
-//                try {
-//                    List<Downloading>downloadings= downloadingDao.queryBuilder().
-//                            where().
-//                            eq("id", 1).query();
-//                    textView.setText(new Gson().toJson(downloadings.get(0)));
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
+
 
                 break;
             case R.id.test4:

@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import com.example.mp3player.R;
 import com.example.mp3player.windows.main.FooterPlayerFragment;
 import com.example.mp3player.windows.main.LeftDrawerHeadMessageFragment;
+import com.example.mp3player.windows.main.SearchFragment;
 import com.example.mp3player.windows.main.page.FindMusicFragment;
 import com.example.mp3player.windows.main.page.FriendsFragment;
 import com.example.mp3player.windows.main.page.MineFragment;
@@ -24,6 +25,7 @@ import static com.example.mp3player.R.id.btn_main_header_mine;
 import static com.example.mp3player.R.id.btn_main_header_search;
 import static com.example.mp3player.R.id.drawer_main;
 import static com.example.mp3player.R.id.main_content_inside;
+import static com.example.mp3player.R.id.main_content_outside;
 import static com.example.mp3player.R.id.main_header;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DOWNLOAD_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_FOOTER_PLAYING_LIST_FRAGMENT;
@@ -47,6 +49,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     LocalMusicFragment localMusicFragment = new LocalMusicFragment();
     DownloadFragment downloadFragment = new DownloadFragment();
 
+    SearchFragment searchFragment=new SearchFragment();
 
     DrawerLayout drawable;
     LinearLayout drawableLayout;
@@ -115,7 +118,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         switch (openFragInMain) {
             case OPEN_LOCAL_MUSIC_FRAGMENT:
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.main_content_outside, localMusicFragment).addToBackStack(null).commit();
+                        .replace(main_content_outside, localMusicFragment).addToBackStack(null).commit();
                 break;
             case OPEN_FOOTER_PLAYING_LIST_FRAGMENT:
                 getFragmentManager().beginTransaction()
@@ -123,7 +126,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case OPEN_DOWNLOAD_FRAGMENT:
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.main_content_outside,downloadFragment ).addToBackStack(null).commit();
+                        .replace(main_content_outside,downloadFragment ).addToBackStack(null).commit();
                 break;
 
 
@@ -166,7 +169,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         .replace(main_content_inside, friendsFragment).commit();
                 break;
             case btn_main_header_search:
-
+                getFragmentManager().beginTransaction()
+                        .replace(main_content_outside,searchFragment ).addToBackStack(null).commit();
 
                 break;
             default:
