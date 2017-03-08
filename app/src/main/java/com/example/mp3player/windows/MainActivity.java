@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import com.example.mp3player.R;
 import com.example.mp3player.windows.main.FooterPlayerFragment;
 import com.example.mp3player.windows.main.LeftDrawerHeadMessageFragment;
+import com.example.mp3player.windows.main.MusicItemSettingFragment;
 import com.example.mp3player.windows.main.SearchFragment;
 import com.example.mp3player.windows.main.page.FindMusicFragment;
 import com.example.mp3player.windows.main.page.FriendsFragment;
@@ -27,9 +28,11 @@ import static com.example.mp3player.R.id.drawer_main;
 import static com.example.mp3player.R.id.main_content_inside;
 import static com.example.mp3player.R.id.main_content_outside;
 import static com.example.mp3player.R.id.main_header;
+import static com.example.mp3player.R.id.main_outside;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DOWNLOAD_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_FOOTER_PLAYING_LIST_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_LOCAL_MUSIC_FRAGMENT;
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_MUSIC_ITEM_SETTING_FRAGMENT;
 
 /**
  * Created by DissoCapB on 2017/1/16.
@@ -41,6 +44,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     LeftDrawerHeadMessageFragment leftDrawerHeadMessageFragment=new LeftDrawerHeadMessageFragment();
     FooterPlayingListFragment footerPlayingListFragment = new FooterPlayingListFragment();
     FooterPlayerFragment footerPlayerFragment = new FooterPlayerFragment();
+    MusicItemSettingFragment musicItemSettingFragment=new MusicItemSettingFragment();
     //page
     FindMusicFragment findMusicFragment = new FindMusicFragment();
     MineFragment mineFragment = new MineFragment();
@@ -92,6 +96,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         });
 
+        localMusicFragment.setOnBtnMusicItemSettingClickedListener(new LocalMusicFragment.OnBtnMusicItemSettingClickedListener() {
+            @Override
+            public void OnMusicItemSettingClicked() {
+                openFragInMain = localMusicFragment.getOpenFragmentInMain();
+                musicItemSettingFragment.setSettingItem(localMusicFragment.getSelectMusic());
+                openNewFragInMain();
+            }
+        });
+
         drawable.setDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -127,6 +140,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case OPEN_DOWNLOAD_FRAGMENT:
                 getFragmentManager().beginTransaction()
                         .replace(main_content_outside,downloadFragment ).addToBackStack(null).commit();
+                break;
+            case OPEN_MUSIC_ITEM_SETTING_FRAGMENT:
+
+                getFragmentManager().beginTransaction()
+                        .replace(main_outside, musicItemSettingFragment).addToBackStack(null).commit();
                 break;
 
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/fragment_music_item_setting"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#50000000"
+              >
+
+    <LinearLayout
+        android:id="@+id/linearLayout_music_item_setting"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:orientation="vertical"
+        android:background="#fff"
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="setting"
+            />
+
+        <TextView
+            android:id="@+id/text_setting_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="setting"
+            />
+
+        <ListView
+            android:id="@+id/list_music_item_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+
+</RelativeLayout>

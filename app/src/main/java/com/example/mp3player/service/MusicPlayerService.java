@@ -120,6 +120,20 @@ public class MusicPlayerService extends Service {
 
     }
 
+    public void setOneAndPlay(PlayingItem playingItem){
+        setOneMusic(playingItem);
+        listPosition = audioList.size()-1;
+        start();
+    }
+
+    public void setOneMusic(PlayingItem playingItem){
+        if(audioList==null){
+            audioList=new ArrayList<>();
+        }
+        audioList.add(playingItem);
+        save();
+    }
+
     public boolean isPlaying() {
         return player.isPlaying();
     }

@@ -11,9 +11,10 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.mp3player.R;
@@ -32,6 +33,7 @@ import java.util.List;
 import static com.example.mp3player.R.id.btn_local_music_back;
 import static com.example.mp3player.R.id.btn_local_music_find_music;
 import static com.example.mp3player.R.id.layout_local_music;
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_MUSIC_ITEM_SETTING_FRAGMENT;
 
 /**
  * Created by DissoCapB on 2017/1/17.
@@ -43,7 +45,8 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
     private List<PlayingItem> audioList = null; //本地音频列表
     MusicPlayerService messenger;
     boolean bound;
-
+    int openFragInMain = 0;
+    int settingSelect;
 
     @Nullable
     @Override
@@ -54,14 +57,14 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
             getActivity().bindService(new Intent(getActivity(),MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
             initData();
             listView.setAdapter(listAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    onItemClicked(position);
-
-                }
-            });
+//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    onItemClicked(position);
+//
+//                }
+//            });
         }
 
         return view;
@@ -96,7 +99,7 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
         }
 
         @Override
-        public View getView(int i, View convertView, ViewGroup viewGroup) {
+        public View getView(final int i, View convertView, ViewGroup viewGroup) {
             View view=null;
             if (convertView==null){
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
@@ -104,6 +107,24 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
             }else{
                 view=convertView;
             }
+            ImageView imageView=(ImageView)view.findViewById(R.id.btn_local_music_setting);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //setting
+                    settingSelect=i;
+                    openFragInMain = OPEN_MUSIC_ITEM_SETTING_FRAGMENT;
+                    OnBtnMusicItemSettingClickedListener.OnMusicItemSettingClicked();
+
+                }
+            });
+            RelativeLayout item=(RelativeLayout)view.findViewById(R.id.local_music_item);
+            item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClicked(i);
+                }
+            });
 
             TextView musicName=(TextView)view.findViewById(R.id.text_local_music_name);
 //            String s1[] =audioList.get(i).split("/");
@@ -164,5 +185,21 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
         }
     }
 
+    public  PlayingItem getSelectMusic(){
+        return audioList.get(settingSelect);
+    }
+    public int getOpenFragmentInMain() {
+        return openFragInMain;
+    }
+
+    public static interface OnBtnMusicItemSettingClickedListener {
+        void OnMusicItemSettingClicked();
+    }
+
+    LocalMusicFragment.OnBtnMusicItemSettingClickedListener OnBtnMusicItemSettingClickedListener;
+
+    public void setOnBtnMusicItemSettingClickedListener(LocalMusicFragment.OnBtnMusicItemSettingClickedListener onBtnMusicItemSettingClickedListener) {
+        this.OnBtnMusicItemSettingClickedListener = onBtnMusicItemSettingClickedListener;
+    }
 
 }

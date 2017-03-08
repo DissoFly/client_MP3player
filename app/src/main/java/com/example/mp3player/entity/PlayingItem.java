@@ -7,10 +7,19 @@ package com.example.mp3player.entity;
 public class PlayingItem {
     private int id;
     private boolean isOnline;
+    private boolean isDownload;
     private String songName;
     private String artist;
     private String album;
     private String filePath;
+
+    public boolean isDownload() {
+        return isDownload;
+    }
+
+    public void setDownload(boolean download) {
+        isDownload = download;
+    }
 
     public int getId() {
         return id;

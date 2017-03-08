@@ -107,8 +107,7 @@ public class FooterPlayingListFragment extends Fragment implements View.OnClickL
             }
 
             TextView musicName=(TextView)view.findViewById(R.id.text_local_music_name);
-            String s1[] =audioList.get(i).split("/");
-            musicName.setText(s1[s1.length-1]);
+            musicName.setText(audioList.get(i));
             return view;
         }
     };

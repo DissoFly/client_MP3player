@@ -1,7 +1,12 @@
 package com.example.mp3player.windows.main;
 
 import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mp3player.R;
+import com.example.mp3player.entity.PlayingItem;
 import com.example.mp3player.entity.PublicSong;
 import com.example.mp3player.service.HttpService;
+import com.example.mp3player.service.MusicPlayerService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -67,7 +74,13 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                PlayingItem playingItem=new PlayingItem();
+                playingItem.setSongName(searchSongs.get(i).getSongName());
+                playingItem.setArtist(searchSongs.get(i).getArtist());
+                playingItem.setAlbum(searchSongs.get(i).getAlbum());
+                playingItem.setFilePath(HttpService.serverAddress+"api/online_song/"+searchSongs.get(i).getSongID());
+                playingItem.setOnline(true);
+                messenger.setOneAndPlay(playingItem);
             }
         });
         listView.setAdapter(listAdapter);
@@ -133,6 +146,12 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         }
     };
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().bindService(new Intent(getActivity(),MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
+    }
+
     private void initData() {
         view.findViewById(R.id.fragment_main_search).setOnClickListener(this);
         view.findViewById(R.id.btn_search_back).setOnClickListener(this);
@@ -169,6 +188,20 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 
         }
     }
+    MusicPlayerService messenger;
+    boolean bound;
+    private ServiceConnection connection = new ServiceConnection() {
+
+        public void onServiceDisconnected(ComponentName name) {
+            messenger=null;
+            bound = false;
+        }
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            messenger=((MusicPlayerService.ServiceBinder) service).getService();
+            bound=true;
+        }
+    };
 
     void searchConnect(String searchType, String searchText) {
         RequestBody formBody = new FormBody.Builder()
