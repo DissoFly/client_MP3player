@@ -1,16 +1,26 @@
 package com.example.mp3player.entity;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 /**
  * Created by DissoCapB on 2017/3/7.
  */
-
+@DatabaseTable
 public class PlayingItem {
+    @DatabaseField(generatedId = true)
     private int id;
+    @DatabaseField(canBeNull = false)
     private boolean isOnline;
+    @DatabaseField(canBeNull = false)
     private boolean isDownload;
+    @DatabaseField(canBeNull = false)
     private String songName;
+    @DatabaseField
     private String artist;
+    @DatabaseField
     private String album;
+    @DatabaseField(canBeNull = false)
     private String filePath;
 
     public boolean isDownload() {

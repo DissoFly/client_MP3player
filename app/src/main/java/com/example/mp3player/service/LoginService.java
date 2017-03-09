@@ -34,9 +34,9 @@ public class LoginService extends Service {
 
     Boolean isFinishConnect=false;
     boolean isGetFinishConnect=false;
-    String connectResult;
+    String connectResult="";
     AutoLoginSign readSign = null;
-    User user=null;;
+    User user=null;
     private final IBinder binder = new ServicesBinder();
 
     //
