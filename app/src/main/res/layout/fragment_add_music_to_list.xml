@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/fragment_add_music_to_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#50000000">
+
+    <LinearLayout
+        android:id="@+id/linearLayout_add_music_to_list"
+        android:layout_width="200dp"
+        android:layout_height="300dp"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:background="#fff">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="收藏到歌单"
+            android:layout_gravity="center"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#eee"></FrameLayout>
+        <ListView
+            android:id="@+id/list_add_to_music_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></ListView>
+    </LinearLayout>
+
+</RelativeLayout>

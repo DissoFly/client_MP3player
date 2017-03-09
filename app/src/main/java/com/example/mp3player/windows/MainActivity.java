@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.mp3player.R;
+import com.example.mp3player.windows.main.AddMusicToListFragment;
 import com.example.mp3player.windows.main.FooterPlayerFragment;
 import com.example.mp3player.windows.main.LeftDrawerHeadMessageFragment;
 import com.example.mp3player.windows.main.MusicItemSettingFragment;
@@ -29,6 +30,7 @@ import static com.example.mp3player.R.id.main_content_inside;
 import static com.example.mp3player.R.id.main_content_outside;
 import static com.example.mp3player.R.id.main_header;
 import static com.example.mp3player.R.id.main_outside;
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_ADD_MUSIC_TO_LIST_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DOWNLOAD_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_FOOTER_PLAYING_LIST_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_LOCAL_MUSIC_FRAGMENT;
@@ -41,19 +43,24 @@ import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_MUSIC_IT
 public class MainActivity extends Activity implements View.OnClickListener {
 
     int openFragInMain = 0;
-    LeftDrawerHeadMessageFragment leftDrawerHeadMessageFragment=new LeftDrawerHeadMessageFragment();
+    //left_drawer_head_message
+    LeftDrawerHeadMessageFragment leftDrawerHeadMessageFragment = new LeftDrawerHeadMessageFragment();
+    //main_outside
     FooterPlayingListFragment footerPlayingListFragment = new FooterPlayingListFragment();
+    MusicItemSettingFragment musicItemSettingFragment = new MusicItemSettingFragment();
+    AddMusicToListFragment addMusicToListFragment = new AddMusicToListFragment();
+    //main_footer
     FooterPlayerFragment footerPlayerFragment = new FooterPlayerFragment();
-    MusicItemSettingFragment musicItemSettingFragment=new MusicItemSettingFragment();
-    //page
+
+    //main_content_inside
     FindMusicFragment findMusicFragment = new FindMusicFragment();
     MineFragment mineFragment = new MineFragment();
     FriendsFragment friendsFragment = new FriendsFragment();
-    //inPage
+    //main_content_outside
     LocalMusicFragment localMusicFragment = new LocalMusicFragment();
     DownloadFragment downloadFragment = new DownloadFragment();
+    SearchFragment searchFragment = new SearchFragment();
 
-    SearchFragment searchFragment=new SearchFragment();
 
     DrawerLayout drawable;
     LinearLayout drawableLayout;
@@ -74,7 +81,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_footer, footerPlayerFragment).commit();
         getFragmentManager().beginTransaction()
-                .replace(R.id.left_drawer_head_message,leftDrawerHeadMessageFragment).commit();
+                .replace(R.id.left_drawer_head_message, leftDrawerHeadMessageFragment).commit();
 
         drawable.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         initData();
@@ -101,6 +108,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public void OnMusicItemSettingClicked() {
                 openFragInMain = localMusicFragment.getOpenFragmentInMain();
                 musicItemSettingFragment.setSettingItem(localMusicFragment.getSelectMusic());
+                openNewFragInMain();
+            }
+        });
+        musicItemSettingFragment.setOnMusicItemSettingListener(new MusicItemSettingFragment.OnMusicItemSettingListener() {
+            @Override
+            public void OnMusicItemSetting() {
+                openFragInMain = musicItemSettingFragment.getOpenFragmentInMain();
+                addMusicToListFragment.setSettingItem(musicItemSettingFragment.getSelectMusic());
                 openNewFragInMain();
             }
         });
@@ -139,12 +154,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case OPEN_DOWNLOAD_FRAGMENT:
                 getFragmentManager().beginTransaction()
-                        .replace(main_content_outside,downloadFragment ).addToBackStack(null).commit();
+                        .replace(main_content_outside, downloadFragment).addToBackStack(null).commit();
                 break;
             case OPEN_MUSIC_ITEM_SETTING_FRAGMENT:
-
                 getFragmentManager().beginTransaction()
                         .replace(main_outside, musicItemSettingFragment).addToBackStack(null).commit();
+                break;
+            case OPEN_ADD_MUSIC_TO_LIST_FRAGMENT:
+                getFragmentManager().beginTransaction()
+                        .replace(main_outside, addMusicToListFragment).addToBackStack(null).commit();
                 break;
 
 
@@ -188,7 +206,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case btn_main_header_search:
                 getFragmentManager().beginTransaction()
-                        .replace(main_content_outside,searchFragment ).addToBackStack(null).commit();
+                        .replace(main_content_outside, searchFragment).addToBackStack(null).commit();
 
                 break;
             default:

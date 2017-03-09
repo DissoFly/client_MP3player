@@ -1,25 +1,16 @@
 package com.example.mp3player.entity;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by DissoCapB on 2017/3/8.
  */
-@DatabaseTable
 public class MineMusicList extends DateRecord{
-    @DatabaseField(generatedId = true)
     int id;
-    @DatabaseField(canBeNull = false)
     String listName;
-    @DatabaseField
     String srcPath;
-    @DatabaseField
     List<PlayingItem> musicList;
-    @DatabaseField(canBeNull = false)
     int userId;
 
     public int getUserId() {
