@@ -41,7 +41,6 @@ public class FooterPlayingListFragment extends Fragment implements View.OnClickL
             getActivity().bindService(new Intent(getActivity(),MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
             listView=(ListView)view.findViewById(R.id.footer_playing_list);
             initData();
-            listView.setAdapter(listAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
@@ -53,6 +52,14 @@ public class FooterPlayingListFragment extends Fragment implements View.OnClickL
         }
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().bindService(new Intent(getActivity(),MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
+
+    }
+
     void onItemClicked(int position) {
         messenger.start(position);
         getActivity().onBackPressed();
@@ -66,9 +73,12 @@ public class FooterPlayingListFragment extends Fragment implements View.OnClickL
 
         public void onServiceConnected(ComponentName name, IBinder service) {
             messenger=((MusicPlayerService.ServiceBinder) service).getService();
+            bound=true;
             audioList=messenger.getAudioList();
             setTipsWithNoMusic();
-            bound=true;
+            listView.removeAllViewsInLayout();
+            listAdapter.notifyDataSetInvalidated();
+            listView.setAdapter(listAdapter);
         }
     };
 

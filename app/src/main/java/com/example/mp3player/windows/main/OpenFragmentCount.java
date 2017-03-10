@@ -11,4 +11,5 @@ public class OpenFragmentCount {
     final public static int OPEN_DOWNLOAD_FRAGMENT = 13;
     final public static int OPEN_MUSIC_ITEM_SETTING_FRAGMENT=14;
     final public static int OPEN_ADD_MUSIC_TO_LIST_FRAGMENT=15;
+    final public static int OPEN_MUSIC_LIST_FRAGMENT=16;
 }

@@ -39,6 +39,7 @@ import java.util.List;
 
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DOWNLOAD_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_LOCAL_MUSIC_FRAGMENT;
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_MUSIC_LIST_FRAGMENT;
 
 
 /**
@@ -55,6 +56,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     List<Integer> listItemNumber = new ArrayList<>();
     List<Integer> listItemSrc = new ArrayList<>();
     List<MineMusicList> mineMusicLists = new ArrayList<>();
+    int settingSelect=-1;
 
     @Nullable
     @Override
@@ -64,15 +66,10 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             view = inflater.inflate(R.layout.fragment_main_page_mine, null);
             localListView = (ListView) view.findViewById(R.id.page_mine_local_list);
             musicListView = (ListView) view.findViewById(R.id.page_mine_music_list);
-            //            try {
-            //                mineMusicLists=downMineMusicListDao.queryForAll();
-            //            } catch (SQLException e) {
-            //                e.printStackTrace();
-            //            }
+
             initData();
             setListItem();
 
-            //            musicListView.setAdapter(musicListAdapter);
 
             localListView.setAdapter(localListAdapter);
 
@@ -83,6 +80,15 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     OnBtnLocalMusicClickedListener.OnBtnLocalMusicClicked();
                 }
             });
+            musicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    openFragInMain = OPEN_MUSIC_LIST_FRAGMENT;
+                    settingSelect=i;
+                    OnBtnLocalMusicClickedListener.OnBtnLocalMusicClicked();
+                }
+            });
+
         }
         return view;
     }
@@ -97,6 +103,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
 
     }
+
 
     private void setListItem() {
         listItemName = new ArrayList<>();
@@ -285,6 +292,10 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+
+    public MineMusicList getMineMusicList(){
+        return mineMusicLists.get(settingSelect);
+    }
 
     public int getOpenFragmentInMain() {
         return openFragInMain;
