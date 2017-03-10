@@ -164,7 +164,12 @@ public class MusicPlayerService extends Service {
         }
         return list;
     }
-
+    public boolean isOnlinePlay(){
+        if (audioList.get(listPosition).isOnline()&&!audioList.get(listPosition).isDownload())
+            return true;
+        else
+            return false;
+    }
     //返回正在播放音乐所在列表位置
     public int getPlayingListPosition() {
         return listPosition;

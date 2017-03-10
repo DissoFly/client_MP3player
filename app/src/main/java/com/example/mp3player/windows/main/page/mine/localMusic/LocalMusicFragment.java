@@ -148,6 +148,9 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
 
         super.onResume();
         load();
+        listView.removeAllViewsInLayout();
+        listAdapter.notifyDataSetInvalidated();
+        listView.setAdapter(listAdapter);
     }
 
     @Override

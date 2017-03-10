@@ -18,8 +18,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.mp3player.R;
-import com.example.mp3player.windows.inputcells.SongPictureFragment;
 import com.example.mp3player.service.MusicPlayerService;
+import com.example.mp3player.windows.inputcells.SongPictureFragment;
 
 import java.util.List;
 
@@ -52,7 +52,6 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
     ImageView btnPlayNext;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,23 +63,6 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
         musicBar=(SeekBar)findViewById(R.id.play_music_bar) ;
         songImg=(FrameLayout)findViewById(R.id.frag_song_img) ;
         animation();
-//        rotateAnimation.setAnimationListener(new Animation.AnimationListener() {
-//            @Override
-//            public void onAnimationStart(Animation animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//                rotateAnimation.start();
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animation animation) {
-//
-//            }
-//        });
-
         getFragmentManager().beginTransaction()
                 .replace(R.id.frag_song_img, songPictureFragment).commit();
 
@@ -137,7 +119,8 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
                 messenger.next();
                 break;
             case R.id.btn_play_list:
-
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.layout_out, new FooterPlayingListFragment()).addToBackStack(null).commit();
                 break;
             default:
                 break;
@@ -208,7 +191,10 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
         playingCurrentPosition.setText(showTime(current));
         playingDuration.setText(showTime(max));
         musicBar.setMax(max);
-        musicBar.setSecondaryProgress(messenger.getBufferingProgress()*max/100);
+        if (messenger.isOnlinePlay())
+            musicBar.setSecondaryProgress(messenger.getBufferingProgress()*max/100);
+        else
+            musicBar.setSecondaryProgress(max);
         if(!isMusicBarTouch)
             musicBar.setProgress(current);
         if(oneReloadPosition!=listPosition){

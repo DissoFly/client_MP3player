@@ -48,7 +48,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     //left_drawer_head_message
     LeftDrawerHeadMessageFragment leftDrawerHeadMessageFragment = new LeftDrawerHeadMessageFragment();
     //main_outside
-    FooterPlayingListFragment footerPlayingListFragment = new FooterPlayingListFragment();
+   //FooterPlayingListFragment footerPlayingListFragment = new FooterPlayingListFragment();
     MusicItemSettingFragment musicItemSettingFragment = new MusicItemSettingFragment();
     AddMusicToListFragment addMusicToListFragment = new AddMusicToListFragment();
     //main_footer

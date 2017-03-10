@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.mp3player.R;
@@ -35,19 +36,22 @@ public class FindMusicInLocalActivity extends Activity {
     String fileUpdate = null;
     TextView textResult;
     private Handler handler=null;
+    Button search;
+    LooperThread thread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page_mine_find_music_in_local);
         textResult = (TextView) findViewById(R.id.text_find_music_result);
+        search=(Button)findViewById(R.id.btn_find_music_search) ;
+        load();
 
-
-        findViewById(R.id.btn_find_music_search).setOnClickListener(new View.OnClickListener() {
+        search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 handler=new Handler();
-                LooperThread thread = new LooperThread();
+                thread = new LooperThread();
                 thread.start();
 
             }
@@ -58,20 +62,24 @@ public class FindMusicInLocalActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        load();
         textResult.setText("共" + audioList.size() + "首");
-
+        if(thread.isAlive()){
+            search.setVisibility(View.GONE);
+        }
     }
 
     ////////////////////////////////////搜索本地文件↓////////////////////////////////////
     public class LooperThread extends Thread {
         @Override
         public void run() {
+            search.setVisibility(View.GONE);
             audioList = new ArrayList<>();
             isSearch=true;      //更新数据ui放getFiles()内会显示错乱
             getFiles(Environment.getExternalStorageDirectory() + "/");
             save();
             isSearch=false;
+            handler.post(runnableUi);
+            search.setVisibility(View.VISIBLE);
         }
     }
 
@@ -106,10 +114,7 @@ public class FindMusicInLocalActivity extends Activity {
                             String songName=musicInfo.getTitle();
                             if (songName!=null)
                                 if (!songName.equals("")) {
-                                    System.out.println(songName);
-                                    String string = new String(songName.getBytes(), "UTF-8");
-                                    System.out.println(string);
-                                    playingItem.setSongName(string);
+                                    playingItem.setSongName(songName);
                                 }else{
                                     String s1[] =f.getPath().split("/");
                                     playingItem.setSongName(s1[s1.length-1]);
@@ -136,6 +141,7 @@ public class FindMusicInLocalActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
     }
 

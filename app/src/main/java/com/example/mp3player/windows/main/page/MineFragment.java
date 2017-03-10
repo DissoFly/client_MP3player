@@ -83,6 +83,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             musicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    onResume();
                     openFragInMain = OPEN_MUSIC_LIST_FRAGMENT;
                     settingSelect=i;
                     OnBtnLocalMusicClickedListener.OnBtnLocalMusicClicked();
