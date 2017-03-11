@@ -19,12 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_ADD_MUSIC_TO_LIST_FRAGMENT;
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DELECT_FRAGMENT;
 
 /**
  * Created by DissoCapB on 2017/3/8.
  */
 
-public class MusicItemSettingFragment extends Fragment implements View.OnClickListener{
+public class MusicItemSettingFragment extends Fragment implements View.OnClickListener {
     View view;
     PlayingItem settingItem;
     TextView name;
@@ -32,37 +33,50 @@ public class MusicItemSettingFragment extends Fragment implements View.OnClickLi
     List<String> listItemName = new ArrayList<>();
     List<Integer> listItemNumber = new ArrayList<>();
     List<Integer> listItemSrc = new ArrayList<>();
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (view==null){
+        if (view == null) {
             view = inflater.inflate(R.layout.fragment_music_item_setting, null);
         }
-        listView=(ListView)view.findViewById(R.id.list_music_item_setting);
-        name=(TextView)view.findViewById(R.id.text_setting_name);
+        listView = (ListView) view.findViewById(R.id.list_music_item_setting);
+        name = (TextView) view.findViewById(R.id.text_setting_name);
         initData();
         setListItem();
 
 
-
         return view;
     }
-    void listItemClick(int i){
-        switch (i){
+
+    void listItemClick(int i) {
+        switch (i) {
             case 0:
-                openFragInMain=OPEN_ADD_MUSIC_TO_LIST_FRAGMENT;
+                //收藏到歌单
+                openFragInMain = OPEN_ADD_MUSIC_TO_LIST_FRAGMENT;
                 getActivity().onBackPressed();
                 OnMusicItemSettingListener.OnMusicItemSetting();
+                break;
+            case 1:
+                //删除
+                openFragInMain = OPEN_DELECT_FRAGMENT;
+                getActivity().onBackPressed();
+                OnMusicItemSettingListener.OnMusicItemSetting();
+
+
                 break;
 
 
         }
     }
+
     private void setListItem() {
         listItemName = new ArrayList<>();
         listItemNumber = new ArrayList<>();
         listItemSrc = new ArrayList<>();
         setOneListItem("收藏到歌单", OPEN_ADD_MUSIC_TO_LIST_FRAGMENT, R.mipmap.ic_launcher);
+        setOneListItem("删除", OPEN_DELECT_FRAGMENT, R.mipmap.ic_launcher);
         setOneListItem("下载（没做）", 0, R.mipmap.ic_launcher);
 
         listView.setAdapter(localListAdapter);
@@ -73,6 +87,7 @@ public class MusicItemSettingFragment extends Fragment implements View.OnClickLi
             }
         });
     }
+
     private void setOneListItem(String listName, int itemNumber, int itemSrc) {
         listItemName.add(listName);
         listItemNumber.add(itemNumber);
@@ -116,13 +131,13 @@ public class MusicItemSettingFragment extends Fragment implements View.OnClickLi
     @Override
     public void onResume() {
         super.onResume();
-        if(settingItem!=null){
+        if (settingItem != null) {
             name.setText(settingItem.getSongName());
         }
     }
 
-    public void setSettingItem( PlayingItem settingItem){
-        this.settingItem=settingItem;
+    public void setSettingItem(PlayingItem settingItem) {
+        this.settingItem = settingItem;
     }
 
     private void initData() {
@@ -140,10 +155,13 @@ public class MusicItemSettingFragment extends Fragment implements View.OnClickLi
 
         }
     }
+
     int openFragInMain = 0;
-    public  PlayingItem getSelectMusic(){
+
+    public PlayingItem getSelectMusic() {
         return settingItem;
     }
+
     public int getOpenFragmentInMain() {
         return openFragInMain;
     }
@@ -157,4 +175,6 @@ public class MusicItemSettingFragment extends Fragment implements View.OnClickLi
     public void setOnMusicItemSettingListener(OnMusicItemSettingListener onMusicItemSettingListener) {
         this.OnMusicItemSettingListener = onMusicItemSettingListener;
     }
+
+
 }

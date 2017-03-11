@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import com.example.mp3player.R;
 import com.example.mp3player.windows.main.AddMusicToListFragment;
+import com.example.mp3player.windows.main.DelectFragment;
 import com.example.mp3player.windows.main.FooterPlayerFragment;
 import com.example.mp3player.windows.main.LeftDrawerHeadMessageFragment;
 import com.example.mp3player.windows.main.MusicItemSettingFragment;
@@ -32,6 +33,7 @@ import static com.example.mp3player.R.id.main_content_outside;
 import static com.example.mp3player.R.id.main_header;
 import static com.example.mp3player.R.id.main_outside;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_ADD_MUSIC_TO_LIST_FRAGMENT;
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DELECT_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DOWNLOAD_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_FOOTER_PLAYING_LIST_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_LOCAL_MUSIC_FRAGMENT;
@@ -51,6 +53,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
    //FooterPlayingListFragment footerPlayingListFragment = new FooterPlayingListFragment();
     MusicItemSettingFragment musicItemSettingFragment = new MusicItemSettingFragment();
     AddMusicToListFragment addMusicToListFragment = new AddMusicToListFragment();
+    DelectFragment delectFragment=new DelectFragment();
     //main_footer
     FooterPlayerFragment footerPlayerFragment = new FooterPlayerFragment();
 
@@ -121,7 +124,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             public void OnMusicItemSetting() {
                 openFragInMain = musicItemSettingFragment.getOpenFragmentInMain();
-                addMusicToListFragment.setSettingItem(musicItemSettingFragment.getSelectMusic());
+                switch (openFragInMain){
+                    case OPEN_ADD_MUSIC_TO_LIST_FRAGMENT:
+                        addMusicToListFragment.setSettingItem(musicItemSettingFragment.getSelectMusic());
+                        break;
+                    case OPEN_DELECT_FRAGMENT:
+                        delectFragment.setSettingItem(musicItemSettingFragment.getSelectMusic());
+                        break;
+                }
                 openNewFragInMain();
             }
         });
@@ -169,6 +179,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case OPEN_ADD_MUSIC_TO_LIST_FRAGMENT:
                 getFragmentManager().beginTransaction()
                         .replace(main_outside, addMusicToListFragment).addToBackStack(null).commit();
+                break;
+            case OPEN_DELECT_FRAGMENT:
+                getFragmentManager().beginTransaction()
+                        .replace(main_outside, delectFragment).addToBackStack(null).commit();
                 break;
             case OPEN_MUSIC_LIST_FRAGMENT:
                 getFragmentManager().beginTransaction()

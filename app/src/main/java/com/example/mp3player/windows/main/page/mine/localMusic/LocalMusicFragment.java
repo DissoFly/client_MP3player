@@ -57,14 +57,6 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
             getActivity().bindService(new Intent(getActivity(),MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
             initData();
             listView.setAdapter(listAdapter);
-//            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    onItemClicked(position);
-//
-//                }
-//            });
         }
 
         return view;
