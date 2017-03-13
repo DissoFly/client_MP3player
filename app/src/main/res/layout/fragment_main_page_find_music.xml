@@ -4,31 +4,27 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="this is find music"/>
+        <Button
+            android:id="@+id/btn_find_music_news"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="资讯"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/test1"
-        android:text="增"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/test2"
-        android:text="删"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/test3"
-        android:text="查"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/test4"
-        android:text="改"/>
+        <Button
+            android:id="@+id/btn_find_music_lists"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="推荐清单"/>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/find_music_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
 </LinearLayout>

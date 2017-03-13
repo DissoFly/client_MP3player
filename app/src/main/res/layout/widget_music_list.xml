@@ -2,22 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="music list"/>
-
-    <TextView
-        android:id="@+id/music_list_name"
+    <LinearLayout
+        android:id="@+id/layout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="list name "/>
-    <TextView
-        android:id="@+id/music_list_size"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.example.mp3player.windows.inputcells.ImgView
+            android:id="@+id/img_view1"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/text_list_name1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:text="text_list_name"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="list size"/>
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.example.mp3player.windows.inputcells.ImgView
+            android:id="@+id/img_view2"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/text_list_name2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="text_list_name"/>
+    </LinearLayout>
+
 </LinearLayout>

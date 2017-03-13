@@ -141,7 +141,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             View view = null;
             if (view == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-                view = inflater.inflate(R.layout.widget_music_list, null);
+                view = inflater.inflate(R.layout.widget_mine_music_list, null);
             } else {
                 view = convertView;
             }

@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Shader.TileMode;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.example.mp3player.R;
@@ -109,7 +108,6 @@ public class AvatarView extends View{
             public void onFailure(Call arg0, IOException arg1) {
                 mainThreadHandler.post(new Runnable() {
                     public void run() {
-                        Log.d("paint123", "5555");
                         setBitmap(null);
                     }
                 });

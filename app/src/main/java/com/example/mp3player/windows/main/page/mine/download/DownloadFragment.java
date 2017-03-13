@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mp3player.R;
+import com.example.mp3player.download.ProgressDownloader;
+import com.example.mp3player.download.ProgressResponseBody;
 import com.example.mp3player.entity.DownloadMusic;
 import com.example.mp3player.entity.Downloading;
 import com.example.mp3player.service.DataService;
