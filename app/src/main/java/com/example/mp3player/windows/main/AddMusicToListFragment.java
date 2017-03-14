@@ -51,9 +51,21 @@ public class AddMusicToListFragment extends Fragment implements View.OnClickList
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                mineMusicLists.get(i).getMusicList().add(settingItem);
-                save();
-                Toast.makeText(getActivity(),"添加成功",Toast.LENGTH_SHORT).show();
+                boolean isExist=false;
+                for(PlayingItem playingItem:mineMusicLists.get(i).getMusicList()){
+                    if (playingItem.getFilePath().equals(settingItem.getFilePath())){
+                        isExist=true;
+                        break;
+                    }
+
+                }
+                if(!isExist) {
+                    mineMusicLists.get(i).getMusicList().add(settingItem);
+                    save();
+                    Toast.makeText(getActivity(), "添加成功", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getActivity(), "已存在", Toast.LENGTH_SHORT).show();
+                }
                 getActivity().onBackPressed();
             }
         });
