@@ -97,7 +97,19 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public void OnBtnLocalMusicClicked() {
                 openFragInMain = mineFragment.getOpenFragmentInMain();
                 if (openFragInMain==OPEN_MUSIC_LIST_FRAGMENT){
+                    musicListFragment=new MusicListFragment();
                     musicListFragment.setMineMusicList(mineFragment.getMineMusicList());
+                }
+                openNewFragInMain();
+            }
+        });
+        findMusicFragment.setOnFindMusicFragmentClickedListener(new FindMusicFragment.OnFindMusicFragmentClickedListener() {
+            @Override
+            public void OnFindMusicFragmentClicked() {
+                openFragInMain = findMusicFragment.getOpenFragmentInMain();
+                if (openFragInMain==OPEN_MUSIC_LIST_FRAGMENT){
+                    musicListFragment=new MusicListFragment();
+                    musicListFragment.setMusicList(findMusicFragment.getMusicList());
                 }
                 openNewFragInMain();
             }
@@ -135,6 +147,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 openNewFragInMain();
             }
         });
+
 
         drawable.setDrawerListener(new DrawerLayout.DrawerListener() {
             @Override

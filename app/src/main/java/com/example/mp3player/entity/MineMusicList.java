@@ -10,8 +10,17 @@ public class MineMusicList extends DateRecord{
     int id;
     String listName;
     String srcPath;
+    String listAbout;
     List<PlayingItem> musicList;
     int userId;
+
+    public String getListAbout() {
+        return listAbout;
+    }
+
+    public void setListAbout(String listAbout) {
+        this.listAbout = listAbout;
+    }
 
     public int getUserId() {
         return userId;

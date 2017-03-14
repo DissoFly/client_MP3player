@@ -26,6 +26,8 @@ import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_MUSIC_LIST_FRAGMENT;
+
 
 /**
  * Created by DissoCapB on 2017/1/16.
@@ -35,7 +37,8 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
     final static int NEWS_LIST = 11;
     final static int MUSIC_LIST = 12;
     int listChoose = 0;
-
+    int settingSelect=-1;
+    int openFragInMain = 0;
     List<MusicList> musicLists = new ArrayList<>();
     ListView listView;
     View view;
@@ -86,7 +89,7 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
         }
 
         @Override
-        public View getView(int i, View convertView, ViewGroup viewGroup) {
+        public View getView(final int i, View convertView, ViewGroup viewGroup) {
             View view;
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
@@ -100,12 +103,28 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
                 layout1.setVisibility(View.VISIBLE);
                 imgView1.loadById(musicLists.get(i * 2 ).getSrcPath());
                 name1.setText(musicLists.get(i * 2 ).getListName());
+                layout1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openFragInMain = OPEN_MUSIC_LIST_FRAGMENT;
+                        settingSelect=(i * 2);
+                        OnFindMusicFragmentClickedListener.OnFindMusicFragmentClicked();
+                    }
+                });
                 if (musicLists.size() >= (i + 1) * 2) {
                     layout2.setVisibility(View.VISIBLE);
                     imgView2.loadById(musicLists.get(i * 2 +1).getSrcPath());
                     name2.setText(musicLists.get(i * 2 +1).getListName());
+                    layout2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openFragInMain = OPEN_MUSIC_LIST_FRAGMENT;
+                            settingSelect=(i * 2 +1);
+                            OnFindMusicFragmentClickedListener.OnFindMusicFragmentClicked();
+                        }
+                    });
                 } else {
-                    layout2.setVisibility(View.GONE);
+                    layout2.setVisibility(View.INVISIBLE);
                 }
             } else {
                 view = convertView;
@@ -131,7 +150,7 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
             case NEWS_LIST:
                 return 0;
             case MUSIC_LIST:
-                return musicLists.size() == 0 ? 0 :( musicLists.size() / 2 );
+                return musicLists.size() == 0 ? 0 :( (musicLists.size()+1) / 2 );
             default:
                 return 0;
         }
@@ -175,4 +194,24 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
     }
 
 
+
+
+    public MusicList getMusicList(){
+        return musicLists.get(settingSelect);
+    }
+
+    public int getOpenFragmentInMain() {
+        return openFragInMain;
+    }
+
+
+    public static interface OnFindMusicFragmentClickedListener {
+        void OnFindMusicFragmentClicked();
+    }
+
+    FindMusicFragment.OnFindMusicFragmentClickedListener OnFindMusicFragmentClickedListener;
+
+    public void setOnFindMusicFragmentClickedListener(OnFindMusicFragmentClickedListener onFindMusicFragmentClickedListener) {
+        this.OnFindMusicFragmentClickedListener = onFindMusicFragmentClickedListener;
+    }
 }

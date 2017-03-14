@@ -61,6 +61,15 @@
             android:layout_margin="20dp"
             android:text="music_list_create_time"
             android:textColor="#fff"/>
+
+        <TextView
+            android:text="music_list_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/img_music_list"
+            android:layout_alignStart="@+id/music_list_create_time"
+            android:textColor="#fff"
+            android:id="@+id/music_list_about"/>
     </RelativeLayout>
     <ListView
         android:id="@+id/music_playing_item_list"

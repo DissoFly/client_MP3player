@@ -6,14 +6,14 @@
 
     <LinearLayout
         android:id="@+id/layout1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <com.example.mp3player.windows.inputcells.ImgView
             android:id="@+id/img_view1"
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_gravity="center_horizontal"/>
 
@@ -28,14 +28,14 @@
 
     <LinearLayout
         android:id="@+id/layout2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <com.example.mp3player.windows.inputcells.ImgView
             android:id="@+id/img_view2"
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_gravity="center_horizontal"/>
 
