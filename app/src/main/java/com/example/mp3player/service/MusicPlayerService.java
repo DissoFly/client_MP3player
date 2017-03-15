@@ -131,8 +131,15 @@ public class MusicPlayerService extends Service {
         if (audioList == null) {
             audioList = new ArrayList<>();
         }
+
         for (PlayingItem playingItem1 : audioList) {
             if (playingItem.getFilePath().equals(playingItem1.getFilePath())) {
+                break;
+            }
+            System.out.println(playingItem.getOnlineSongId()+"++"+playingItem1.getOnlineSongId());
+            if (playingItem.getOnlineSongId()==playingItem1.getOnlineSongId()&&playingItem.getOnlineSongId()>0) {
+                audioList.get(i).setDownload(true);
+                audioList.get(i).setFilePath(playingItem.getFilePath());
                 break;
             }
             i++;
@@ -147,22 +154,8 @@ public class MusicPlayerService extends Service {
     }
 
     //返回列表
-    public List<String> getAudioList() {
-        List<String> list = new ArrayList<String>();
-        for (int i = 0; i < audioList.size(); i++) {
-            //            if (audioList.get(i).getSongName() == "" || audioList.get(i).getSongName() == null) {
-            //                if (audioList.get(i).isOnline())
-            //                    list.add("未知网络音乐歌名");
-            //                else {
-            //                    String s1[] = audioList.get(i).getFilePath().split("/");
-            //                    list.add(s1[s1.length - 1]);
-            //                }
-            //            } else {
-            list.add(audioList.get(i).getSongName());
-            //            }
-
-        }
-        return list;
+    public List<PlayingItem> getAudioList() {
+        return audioList;
     }
     public boolean isOnlinePlay(){
         if (audioList.get(listPosition).isOnline()&&!audioList.get(listPosition).isDownload())

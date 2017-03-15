@@ -60,25 +60,27 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             DataService dataService = DataService.getInstance(DownloadService.this);
             downloadingDao = dataService.getDownloadingDao();
             downloadingList = downloadingDao.queryForAll();
-            downloadMusicDao=dataService.getDownloadMusicDao();
+            downloadMusicDao = dataService.getDownloadMusicDao();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return binder;
     }
+
     public class ServicesBinder extends Binder {
         public DownloadService getService() {
             return DownloadService.this;
         }
     }
 
-    public boolean isDownloading(){
+    public boolean isDownloading() {
         return isDownloading;
     }
-public  List<Downloading> getDownloadingList(){
-    return downloadingList;
-}
+
+    public List<Downloading> getDownloadingList() {
+        return downloadingList;
+    }
 
     public void continueOrPause(int MusicId) {
         if (isDownloading) {
@@ -104,14 +106,14 @@ public  List<Downloading> getDownloadingList(){
             contentLength = dl.getContentLength();
             isDownloading = true;
             downloadingMusicId = musicId;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void downloadMusic(int musicId,String musicName) {
+    public void downloadMusic(int musicId, String musicName) {
         String path = Environment.getExternalStorageDirectory() + "/MP3player/music/" + musicName + ".mp3";
-        if (isDownloading){
+        if (isDownloading) {
             pauseDownload();
         }
         try {
@@ -120,13 +122,13 @@ public  List<Downloading> getDownloadingList(){
                     where().
                     eq("musicId", musicId).query();
             if (dls.size() != 0) {
-                Toast.makeText(this,"存在下载",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "存在下载", Toast.LENGTH_SHORT).show();
                 return;
             }
             //验证已完成下载
             File file = new File(path);
             if (file.exists()) {
-                Toast.makeText(this,"存在完成下载",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "存在完成下载", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -136,7 +138,7 @@ public  List<Downloading> getDownloadingList(){
             downloading.setBreakPoints(0);
             downloading.setContentLength(0);
             downloading.setTotalBytes(0);
-            downloadingDao.createOrUpdate(downloading);
+            downloadingDao.create(downloading);
             downloadingList = downloadingDao.queryForAll();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -149,8 +151,6 @@ public  List<Downloading> getDownloadingList(){
         isDownloading = true;
         downloadingMusicId = musicId;
     }
-
-
 
 
     public void pauseDownload() {
@@ -173,6 +173,7 @@ public  List<Downloading> getDownloadingList(){
         //downloadingMusicId=0;
         contentLength = 0;
     }
+
     @Override
     public void update(long totalBytes, boolean done) {
         // 注意加上断点的长度
@@ -186,8 +187,8 @@ public  List<Downloading> getDownloadingList(){
                         where().
                         eq("musicId", downloadingMusicId).query().get(0);
                 downloadingDao.delete(dl);
-                downloadingList=downloadingDao.queryForAll();
-                musicListConnect(dl.getMusicId(),dl.getLocalPath());
+                downloadingList = downloadingDao.queryForAll();
+                musicListConnect(dl.getMusicId(), dl.getLocalPath());
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -210,6 +211,7 @@ public  List<Downloading> getDownloadingList(){
             }
         }
     }
+
     void musicListConnect(final int songId, final String path) {
         Request request = HttpService.requestBuilderWithPath("song_message/" + songId).get().build();
         HttpService.getClient().newCall(request).enqueue(new Callback() {
@@ -222,7 +224,7 @@ public  List<Downloading> getDownloadingList(){
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     final PublicSong data = new Gson().fromJson(response.body().string(), PublicSong.class);
-                    DownloadMusic downloadMusic=new DownloadMusic();
+                    DownloadMusic downloadMusic = new DownloadMusic();
                     downloadMusic.setSongName(data.getSongName());
                     downloadMusic.setArtist(data.getArtist());
                     downloadMusic.setAlbum(data.getAlbum());
@@ -256,30 +258,30 @@ public  List<Downloading> getDownloadingList(){
     }
 
 
-    private List<PlayingItem> load(){
-        FileInputStream in =null;
-        BufferedReader reader=null;
-        StringBuilder content=new StringBuilder();
+    private List<PlayingItem> load() {
+        FileInputStream in = null;
+        BufferedReader reader = null;
+        StringBuilder content = new StringBuilder();
         List<PlayingItem> audioList = new ArrayList<>();
-        try{
-            in=openFileInput("localMusicData");
-            reader=new BufferedReader(new InputStreamReader(in));
-            String line="";
-            while((line=reader.readLine())!=null)
+        try {
+            in = openFileInput("localMusicData");
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line = "";
+            while ((line = reader.readLine()) != null)
                 content.append(line);
             audioList = new Gson().fromJson(content.toString(), new TypeToken<List<PlayingItem>>() {
             }.getType());
 
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return audioList;
     }
 
-    public void saveLocal(DownloadMusic downloadMusic){
+    public void saveLocal(DownloadMusic downloadMusic) {
 
         List<PlayingItem> audioList = load();
-        PlayingItem playingItem=new PlayingItem();
+        PlayingItem playingItem = new PlayingItem();
 
         playingItem.setSongName(downloadMusic.getSongName());
         playingItem.setArtist(downloadMusic.getArtist());
@@ -288,23 +290,23 @@ public  List<Downloading> getDownloadingList(){
         playingItem.setDownload(true);
         playingItem.setFilePath(downloadMusic.getLocalPath());
         playingItem.setOnlineSongId(downloadMusic.getMusicId());
-        audioList.add(0,playingItem);
+        audioList.add(0, playingItem);
 
 
-        FileOutputStream out=null;
-        BufferedWriter writer=null;
-        try{
-            out=openFileOutput("localMusicData", Context.MODE_PRIVATE);
-            writer=new BufferedWriter(new OutputStreamWriter(out));
+        FileOutputStream out = null;
+        BufferedWriter writer = null;
+        try {
+            out = openFileOutput("localMusicData", Context.MODE_PRIVATE);
+            writer = new BufferedWriter(new OutputStreamWriter(out));
             writer.write(new Gson().toJson(audioList));
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
-        }finally{
-            try{
-                if(writer!=null){
+        } finally {
+            try {
+                if (writer != null) {
                     writer.close();
                 }
-            }catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

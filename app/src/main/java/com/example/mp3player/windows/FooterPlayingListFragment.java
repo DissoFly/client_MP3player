@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.mp3player.R;
+import com.example.mp3player.entity.PlayingItem;
 import com.example.mp3player.service.MusicPlayerService;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class FooterPlayingListFragment extends Fragment implements View.OnClickL
     ListView listView;
     MusicPlayerService messenger;
     boolean bound;
-    private List<String> audioList = null;
+    private List<PlayingItem> audioList = null;
 
     @Nullable
     @Override
@@ -117,7 +118,7 @@ public class FooterPlayingListFragment extends Fragment implements View.OnClickL
             }
 
             TextView musicName=(TextView)view.findViewById(R.id.text_local_music_name);
-            musicName.setText(audioList.get(i));
+            musicName.setText(audioList.get(i).getSongName());
             return view;
         }
     };

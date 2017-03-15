@@ -80,6 +80,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                 playingItem.setAlbum(searchSongs.get(i).getAlbum());
                 playingItem.setFilePath(HttpService.serverAddress+"api/online_song/"+searchSongs.get(i).getSongID());
                 playingItem.setOnline(true);
+                playingItem.setOnlineSongId(searchSongs.get(i).getSongID());
                 messenger.setOneAndPlay(playingItem);
             }
         });

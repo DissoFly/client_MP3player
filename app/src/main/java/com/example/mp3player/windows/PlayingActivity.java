@@ -12,12 +12,15 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.mp3player.R;
+import com.example.mp3player.entity.PlayingItem;
+import com.example.mp3player.service.DownloadService;
 import com.example.mp3player.service.MusicPlayerService;
 import com.example.mp3player.windows.inputcells.SongPictureFragment;
 
@@ -28,13 +31,13 @@ import java.util.List;
  * Created by DissoCapB on 2017/1/21.
  */
 
-public class PlayingActivity extends Activity implements View.OnClickListener{
+public class PlayingActivity extends Activity implements View.OnClickListener {
     MusicPlayerService messenger;
     boolean bound;
-    private List<String> audioList = null;
-    private int listPosition=-1;
+    private List<PlayingItem> audioList = null;
+    private int listPosition = -1;
 
-    int REFLASH_TIME=50;
+    int REFLASH_TIME = 50;
 
     TextView playingName;
     TextView playingCurrentPosition;
@@ -43,9 +46,12 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
     FrameLayout songImg;
     ObjectAnimator rotateAnimation;
     private float currentValue = 0f;
-    boolean isMusicBarTouch=false;
-    int oneReloadPosition=-1;
-    SongPictureFragment songPictureFragment=new SongPictureFragment();
+    boolean isMusicBarTouch = false;
+    int oneReloadPosition = -1;
+    SongPictureFragment songPictureFragment = new SongPictureFragment();
+
+    TextView localOrOnline;
+    Button btnDownload;
 
     ImageView btnPlayChanges;
     ImageView btnPlayBack;
@@ -57,11 +63,13 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing);
 
-        playingName=(TextView)findViewById(R.id.text_play_name);
-        playingCurrentPosition=(TextView)findViewById(R.id.text_playing_time);
-        playingDuration=(TextView)findViewById(R.id.text_max_time);
-        musicBar=(SeekBar)findViewById(R.id.play_music_bar) ;
-        songImg=(FrameLayout)findViewById(R.id.frag_song_img) ;
+        playingName = (TextView) findViewById(R.id.text_play_name);
+        playingCurrentPosition = (TextView) findViewById(R.id.text_playing_time);
+        playingDuration = (TextView) findViewById(R.id.text_max_time);
+        musicBar = (SeekBar) findViewById(R.id.play_music_bar);
+        songImg = (FrameLayout) findViewById(R.id.frag_song_img);
+        localOrOnline = (TextView) findViewById(R.id.text_playing_local_or_online);
+        btnDownload = (Button) findViewById(R.id.btn_playing_download);
         animation();
         getFragmentManager().beginTransaction()
                 .replace(R.id.frag_song_img, songPictureFragment).commit();
@@ -76,19 +84,18 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                isMusicBarTouch=true;
+                isMusicBarTouch = true;
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                isMusicBarTouch=false;
-                if(listPosition>=0){
+                isMusicBarTouch = false;
+                if (listPosition >= 0) {
                     messenger.seekTo(seekBar.getProgress());
                 }
             }
         });
     }
-
 
 
     private void initData() {
@@ -98,6 +105,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
         findViewById(R.id.btn_play_changes).setOnClickListener(this);
         findViewById(R.id.btn_play_next).setOnClickListener(this);
         findViewById(R.id.btn_play_list).setOnClickListener(this);
+        findViewById(R.id.btn_playing_download).setOnClickListener(this);
     }
 
     @Override
@@ -122,17 +130,20 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
                 getFragmentManager().beginTransaction()
                         .replace(R.id.layout_out, new FooterPlayingListFragment()).addToBackStack(null).commit();
                 break;
+            case R.id.btn_playing_download:
+                messengerDownload.downloadMusic(audioList.get(listPosition).getOnlineSongId(),audioList.get(listPosition).getSongName());
+                break;
             default:
                 break;
         }
     }
 
 
-
     @Override
     protected void onStart() {
         super.onStart();
-        bindService(new Intent(this,MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(this, MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(this, DownloadService.class), connectionDownload, Context.BIND_AUTO_CREATE);
 
     }
 
@@ -141,40 +152,44 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
         super.onResume();
     }
 
-    private ServiceConnection connection = new ServiceConnection() {
 
-        public void onServiceDisconnected(ComponentName name) {
-            messenger=null;
-            bound = false;
-        }
-
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            messenger=((MusicPlayerService.ServiceBinder) service).getService();
-            handler.postDelayed(runnable, REFLASH_TIME);
-            bound=true;
-        }
-    };
-
-    Handler handler =new Handler();
-    Runnable runnable =new Runnable() {
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            audioList=messenger.getAudioList();
-            listPosition=messenger.getPlayingListPosition();
+            audioList = messenger.getAudioList();
+            listPosition = messenger.getPlayingListPosition();
 
-            if (listPosition==-1) {
+            if (listPosition == -1) {
                 playingName.setText("音乐，让生活更美好");
                 playingCurrentPosition.setText("00:00");
                 playingDuration.setText("00:00");
-            }else {
-                if(messenger.isPlaying())
+                localOrOnline.setText("无");
+                btnDownload.setEnabled(false);
+                btnDownload.setText("无下载");
+            } else {
+                playingName.setText(audioList.get(listPosition).getSongName());
+                if (!audioList.get(listPosition).isOnline()) {
+                    localOrOnline.setText("本地音乐");
+                    btnDownload.setEnabled(false);
+                    btnDownload.setText("本地");
+                }else if (audioList.get(listPosition).isOnline()&&audioList.get(listPosition).isDownload()) {
+                    localOrOnline.setText("网络下载");
+                    btnDownload.setEnabled(false);
+                    btnDownload.setText("已下载");
+                }else {
+                    localOrOnline.setText("网络在线");
+                    btnDownload.setEnabled(true);
+                    btnDownload.setText("下载");
+                }
+                if (messenger.isPlaying())
                     play();
-                if(!rotateAnimation.isPaused()){
-                    if(!messenger.isPlaying()){
+                if (!rotateAnimation.isPaused()) {
+                    if (!messenger.isPlaying()) {
                         rotateAnimation.pause();
                     }
-                }else{
-                    if(messenger.isPlaying()){
+                } else {
+                    if (messenger.isPlaying()) {
                         rotateAnimation.resume();
                     }
                 }
@@ -184,35 +199,34 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
         }
     };
 
-    private void play(){
-        int max=messenger.getDuration();
-        int current=messenger.getCurrentPosition();
-        playingName.setText(audioList.get(listPosition));
+    private void play() {
+        int max = messenger.getDuration();
+        int current = messenger.getCurrentPosition();
         playingCurrentPosition.setText(showTime(current));
         playingDuration.setText(showTime(max));
         musicBar.setMax(max);
         if (messenger.isOnlinePlay())
-            musicBar.setSecondaryProgress(messenger.getBufferingProgress()*max/100);
+            musicBar.setSecondaryProgress(messenger.getBufferingProgress() * max / 100);
         else
             musicBar.setSecondaryProgress(max);
-        if(!isMusicBarTouch)
+        if (!isMusicBarTouch)
             musicBar.setProgress(current);
-        if(oneReloadPosition!=listPosition){
+        if (oneReloadPosition != listPosition) {
             songPictureFragment.setImg(messenger.getImg());
-            oneReloadPosition=listPosition;
+            oneReloadPosition = listPosition;
         }
 
     }
 
-    public String showTime(int time){
-        time/=1000;
-        int minute=time/60;
-        int second=time%60;
+    public String showTime(int time) {
+        time /= 1000;
+        int minute = time / 60;
+        int second = time % 60;
         return String.format("%02d:%02d", minute, second);
     }
 
-    public void animation(){
-        rotateAnimation = ObjectAnimator.ofFloat(songImg, "rotation", currentValue-360, currentValue);
+    public void animation() {
+        rotateAnimation = ObjectAnimator.ofFloat(songImg, "rotation", currentValue - 360, currentValue);
         rotateAnimation.setDuration(30000);
         rotateAnimation.setInterpolator(new LinearInterpolator());
         rotateAnimation.setRepeatCount(-1);
@@ -227,8 +241,34 @@ public class PlayingActivity extends Activity implements View.OnClickListener{
         });
     }
 
+    DownloadService messengerDownload;
+    boolean boundDownload;
+    private ServiceConnection connectionDownload = new ServiceConnection() {
 
+        public void onServiceDisconnected(ComponentName name) {
 
+            messengerDownload = null;
+            boundDownload = false;
+        }
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            messengerDownload = ((DownloadService.ServicesBinder) service).getService();
+            boundDownload = true;
+        }
+    };
+    private ServiceConnection connection = new ServiceConnection() {
+
+        public void onServiceDisconnected(ComponentName name) {
+            messenger = null;
+            bound = false;
+        }
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            messenger = ((MusicPlayerService.ServiceBinder) service).getService();
+            handler.postDelayed(runnable, REFLASH_TIME);
+            bound = true;
+        }
+    };
 
 }
 

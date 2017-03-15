@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.mp3player.entity.PlayingItem;
 import com.example.mp3player.windows.PlayingActivity;
 import com.example.mp3player.R;
 import com.example.mp3player.service.MusicPlayerService;
@@ -34,7 +35,7 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
     int openFragInMain = 0;
     int REFLASH_TIME=100;
 
-    private List<String> audioList = null;
+    private List<PlayingItem> audioList = null;
     private int listPosition=-1;
 
     TextView musicName;
@@ -125,7 +126,7 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
             if (listPosition==-1)
                 musicName.setText("音乐，让生活更美好");
             else
-                musicName.setText(audioList.get(listPosition));
+                musicName.setText(audioList.get(listPosition).getSongName());
 
             handler.postDelayed(runnable, REFLASH_TIME);
         }

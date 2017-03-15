@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -38,6 +39,21 @@
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:background="#eee">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/text_playing_local_or_online"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="text_playing_local_or_online"/>
+            <Button
+                android:id="@+id/btn_playing_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="download"/>
+        </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
