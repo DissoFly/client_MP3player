@@ -61,12 +61,6 @@
             android:text="单曲"
             android:layout_weight="1"/>
         <Button
-            android:id="@+id/btn_download_list_mv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="mv"
-            android:layout_weight="1"/>
-        <Button
             android:id="@+id/btn_download_list_downloading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

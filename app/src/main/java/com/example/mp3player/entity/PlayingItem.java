@@ -22,6 +22,16 @@ public class PlayingItem {
     private String album;
     @DatabaseField(canBeNull = false)
     private String filePath;
+    @DatabaseField(canBeNull = false)
+    private int OnlineSongId;
+
+    public int getOnlineSongId() {
+        return OnlineSongId;
+    }
+
+    public void setOnlineSongId(int onlineSongId) {
+        OnlineSongId = onlineSongId;
+    }
 
     public boolean isDownload() {
         return isDownload;

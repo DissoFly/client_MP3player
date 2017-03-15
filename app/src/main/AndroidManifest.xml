@@ -20,6 +20,7 @@
         </activity>
         <service android:name=".service.LoginService"/>
         <service android:name=".service.MusicPlayerService"/>
+        <service android:name=".service.DownloadService"/>
 
                  <!--android:process=":remote"-->
 

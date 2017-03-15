@@ -3,13 +3,13 @@ package com.example.mp3player.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Handler;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.example.mp3player.entity.Downloading;
 import com.example.mp3player.download.ProgressDownloader;
 import com.example.mp3player.download.ProgressResponseBody;
+import com.example.mp3player.entity.Downloading;
 import com.j256.ormlite.dao.Dao;
 
 import java.io.File;
@@ -21,18 +21,27 @@ import java.util.List;
  */
 
 public class DownloadService extends Service implements ProgressResponseBody.ProgressListener {
+
     boolean isDownloading = false;
     private ProgressDownloader downloader;
     private long breakPoints;
     private long totalBytes;
     private long contentLength;
     Dao<Downloading, Integer> downloadingDao;
+    List<Downloading> downloadingList;
     int downloadingMusicId = 0;
     private final IBinder binder = new ServicesBinder();
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        try {
+            DataService dataService = DataService.getInstance(DownloadService.this);
+            downloadingDao = dataService.getDownloadingDao();
+            downloadingList = downloadingDao.queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return binder;
     }
     public class ServicesBinder extends Binder {
@@ -40,28 +49,15 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             return DownloadService.this;
         }
     }
-    @Override
-    public void onPreExecute(long contentLength) {
-        if (this.contentLength == 0L) {
-            this.contentLength = contentLength;
 
-
-            try {
-                Downloading dl = downloadingDao.queryBuilder().
-                        where().
-                        eq("musicId", downloadingMusicId).query().get(0);
-                dl.setContentLength(contentLength);
-                downloadingDao.update(dl);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            //downloadingDao.create(downloading);
-
-            System.out.println("onPreExecute:" + contentLength + "," + (int) (contentLength / 1024));
-            // progressBar.setMax((int) (contentLength / 1024));
-        }
+    public boolean isDownloading(){
+        return isDownloading;
     }
-    private void continueOrPause(int MusicId) {
+public  List<Downloading> getDownloadingList(){
+    return downloadingList;
+}
+
+    public void continueOrPause(int MusicId) {
         if (isDownloading) {
             pauseDownload();
             if (downloadingMusicId != MusicId) {
@@ -73,12 +69,12 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
         //reflash();
     }
 
-    private void continueDowunload(int musicId) {
+    public void continueDowunload(int musicId) {
         try {
+
             Downloading dl = downloadingDao.queryBuilder().
                     where().
                     eq("musicId", musicId).query().get(0);
-
             downloader = new ProgressDownloader(HttpService.serverAddress + "api/online_song/" + musicId, new File(dl.getLocalPath()), this);
             downloader.download(dl.getBreakPoints());
             breakPoints = dl.getBreakPoints();
@@ -86,12 +82,49 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             isDownloading = true;
             downloadingMusicId = musicId;
             //reflash();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void pauseDownload() {
+    public void downloadMusic(int musicId) {
+        String path = Environment.getExternalStorageDirectory() + "/MP3player/music/" + musicId + ".mp3";
+        if (isDownloading){
+            pauseDownload();
+        }
+        try {
+            //差验证已完成下载
+            List<Downloading> dls = downloadingDao.queryBuilder().
+                    where().
+                    eq("musicId", musicId).query();
+            if (dls.size() != 0) {
+                System.out.println("存在下载");
+                return;
+            }
+            Downloading downloading = new Downloading();
+            downloading.setLocalPath(path);
+            downloading.setMusicId(musicId);
+            downloading.setBreakPoints(0);
+            downloading.setContentLength(0);
+            downloading.setTotalBytes(0);
+            downloadingDao.createOrUpdate(downloading);
+            downloadingList = downloadingDao.queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        breakPoints = 0L;
+        downloader = new ProgressDownloader(HttpService.serverAddress + "api/online_song/" + musicId, new File(path), DownloadService.this);
+        downloader.download(0L);
+        contentLength = 0;
+        isDownloading = true;
+        downloadingMusicId = musicId;
+    }
+
+
+
+
+    public void pauseDownload() {
         downloader.pause();
 
        // Toast.makeText(getActivity(), "下载暂停", Toast.LENGTH_SHORT).show();
@@ -104,6 +137,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             if (dl.size() == 0)
                 return;
             dl.get(0).setBreakPoints(breakPoints);
+            dl.get(0).setTotalBytes(totalBytes);
             downloadingDao.update(dl.get(0));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -125,7 +159,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
                         where().
                         eq("musicId", downloadingMusicId).query().get(0);
                 downloadingDao.delete(dl);
-                handlerReflash.post(runnableReflash);
+                downloadingList=downloadingDao.queryForAll();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -133,33 +167,37 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             isDownloading = false;
             downloadingMusicId = 0;
         }
-    }
-    Handler handlerReflash=new Handler();
-    Runnable runnableReflash=new Runnable() {
-        @Override
-        public void run() {
-            //reflash();
-        }
-    };
-    List<Downloading> downloadingList;
-    Handler handler = new Handler();
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            if (isDownloading) {
-                System.out.println("update:" + totalBytes + "," + (int) (totalBytes) / 1024);
-                int i = 0;
-                for (Downloading dl : downloadingList) {
-                    if (dl.getMusicId() == downloadingMusicId) {
-                        downloadingList.get(i).setBreakPoints(totalBytes);
-                        downloadingList.get(i).setContentLength(contentLength);
-                        break;
-                    }
-                    i++;
+        if (isDownloading) {
+            //System.out.println("update:" + totalBytes + "," + (int) (totalBytes) / 1024);
+            int i = 0;
+            for (Downloading dl : downloadingList) {
+                if (dl.getMusicId() == downloadingMusicId) {
+                    downloadingList.get(i).setBreakPoints(totalBytes);
+                    downloadingList.get(i).setContentLength(contentLength);
+                    downloadingList.get(i).setTotalBytes(this.totalBytes);
+                    break;
                 }
+                i++;
             }
-
-            handler.postDelayed(runnable, 500);
         }
-    };
+    }
+
+
+
+    @Override
+    public void onPreExecute(long contentLength) {
+        if (this.contentLength == 0L) {
+            this.contentLength = contentLength;
+            try {
+                Downloading dl = downloadingDao.queryBuilder().
+                        where().
+                        eq("musicId", downloadingMusicId).query().get(0);
+                dl.setContentLength(contentLength);
+                downloadingDao.update(dl);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            System.out.println("onPreExecute:" + contentLength + "," + (int) (contentLength / 1024));
+        }
+    }
 }
