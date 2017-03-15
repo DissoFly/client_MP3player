@@ -23,10 +23,13 @@ import android.widget.TextView;
 import com.example.mp3player.R;
 import com.example.mp3player.entity.DownloadMusic;
 import com.example.mp3player.entity.Downloading;
+import com.example.mp3player.entity.PlayingItem;
+import com.example.mp3player.service.DataService;
 import com.example.mp3player.service.DownloadService;
-import com.google.gson.Gson;
+import com.example.mp3player.service.MusicPlayerService;
 import com.j256.ormlite.dao.Dao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -39,12 +42,12 @@ public class DownloadFragment extends Fragment implements View.OnClickListener {
     Button setDownloadList;
     ListView listView;
     final int SELECT_MUSIC_LIST = 0;
-    final int SELECT_MV_LIST = 1;
     final int SELECT_DOWNLOADING_LIST = 2;
-    List<DownloadMusic> musicList;
+    List<DownloadMusic> downloadMusicList;
     List<Downloading> downloadingList;
     Dao<DownloadMusic, Integer> downloadMusicDao;
-    Dao<Downloading, Integer> downloadingDao;
+
+
 
     int select = 0;
 
@@ -53,20 +56,13 @@ public class DownloadFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view == null) {
             getActivity().bindService(new Intent(getActivity(), DownloadService.class), connection, Context.BIND_AUTO_CREATE);
+            getActivity().bindService(new Intent(getActivity(),MusicPlayerService.class), connectionPlaying, Context.BIND_AUTO_CREATE);
             select = SELECT_MUSIC_LIST;
             view = inflater.inflate(R.layout.fragment_main_page_mine_download, null);
             setMusicList = (Button) view.findViewById(R.id.btn_download_list_music);
             setDownloadList = (Button) view.findViewById(R.id.btn_download_list_downloading);
             listView = (ListView) view.findViewById(R.id.download_list);
             initData();
-            listView.setAdapter(listAdapter);
-
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    messenger.continueOrPause(downloadingList.get(i).getMusicId());
-                }
-            });
         }
         return view;
     }
@@ -76,10 +72,18 @@ public class DownloadFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         getActivity().bindService(new Intent(getActivity(), DownloadService.class), connection, Context.BIND_AUTO_CREATE);
+        DataService dataService = DataService.getInstance(getActivity());
+        try {
+            downloadMusicDao=dataService.getDownloadMusicDao();
+            setSelect(SELECT_MUSIC_LIST);
+            reflash1();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    BaseAdapter listAdapter = new BaseAdapter() {
+    BaseAdapter listAdapter2 = new BaseAdapter() {
         @Override
         public int getCount() {
             return downloadingList == null ? 0 : downloadingList.size();
@@ -111,6 +115,40 @@ public class DownloadFragment extends Fragment implements View.OnClickListener {
         }
     };
 
+    BaseAdapter listAdapter1 = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            return downloadMusicList == null ? 0 : downloadMusicList.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return downloadMusicList == null ? null : downloadMusicList.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View convertView, ViewGroup viewGroup) {
+            View view;
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+                view = inflater.inflate(R.layout.widget_downloading_list_item, null);
+                TextView textView = (TextView) view.findViewById(R.id.list_text);
+                DownloadMusic dMusic = downloadMusicList.get(i);
+                textView.setText("歌曲编号：" + dMusic.getMusicId() + ",歌曲名：" + dMusic.getSongName() + ",歌手：" + dMusic.getArtist());
+            } else {
+                view = convertView;
+            }
+            return view;
+        }
+    };
+
+
+
     private void initData() {
         view.findViewById(R.id.fragment_main_page_mine_download).setOnClickListener(this);
         view.findViewById(R.id.btn_download_back).setOnClickListener(this);
@@ -131,6 +169,9 @@ public class DownloadFragment extends Fragment implements View.OnClickListener {
             case R.id.btn_download_list_music:
                 setSelect(SELECT_MUSIC_LIST);
                 break;
+            case R.id.btn_download_list_downloading:
+                setSelect(SELECT_DOWNLOADING_LIST);
+                break;
             case R.id.test1:
                 new AlertDialog.Builder(getActivity())
                         .setTitle("请输入")
@@ -138,13 +179,13 @@ public class DownloadFragment extends Fragment implements View.OnClickListener {
                         .setPositiveButton("1", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                messenger.downloadMusic(1);
+                                messenger.downloadMusic(1,"aaaaa");
                             }
                         })
                         .setNegativeButton("2", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                messenger.downloadMusic(2);
+                                messenger.downloadMusic(2,"bbbbbbb");
                             }
                         })
                         .show();
@@ -153,19 +194,36 @@ public class DownloadFragment extends Fragment implements View.OnClickListener {
                 messenger.pauseDownload();
                 break;
             case R.id.test3:
-                for (Downloading dl : downloadingList)
-                    System.out.println(new Gson().toJson(dl));
+                try {
+                    downloadMusicList=downloadMusicDao.queryForAll();
+                    for(DownloadMusic downloadMusic:downloadMusicList){
+                        downloadMusicDao.deleteById(downloadMusic.getId());
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
                 break;
             default:
                 break;
         }
     }
+    private void reflash1() {
+        try {
+            downloadMusicList=downloadMusicDao.queryForAll();
+            listView.removeAllViewsInLayout();
+            listAdapter1.notifyDataSetInvalidated();
+            listView.setAdapter(listAdapter1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-    private void reflash() {
+    private void reflash2() {
         downloadingList = messenger.getDownloadingList();
         listView.removeAllViewsInLayout();
-        listAdapter.notifyDataSetInvalidated();
-        listView.setAdapter(listAdapter);
+        listAdapter2.notifyDataSetInvalidated();
+        listView.setAdapter(listAdapter2);
     }
 
 
@@ -173,23 +231,48 @@ public class DownloadFragment extends Fragment implements View.OnClickListener {
         this.select = select;
         switch (select) {
             case SELECT_MUSIC_LIST:
+                reflash1();
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        PlayingItem playingItem=new PlayingItem();
+                        playingItem.setSongName(downloadMusicList.get(i).getSongName());
+                        playingItem.setArtist(downloadMusicList.get(i).getArtist());
+                        playingItem.setAlbum(downloadMusicList.get(i).getAlbum());
+                        playingItem.setOnline(true);
+                        playingItem.setDownload(true);
+                        playingItem.setFilePath(downloadMusicList.get(i).getLocalPath());
+                        playingItem.setOnlineSongId(downloadMusicList.get(i).getMusicId());
+                        messengerPlaying.setOneAndPlay(playingItem);
+                    }
+                });
+
                 break;
             case SELECT_DOWNLOADING_LIST:
+                reflash2();
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        messenger.continueOrPause(downloadingList.get(i).getMusicId());
+                    }
+                });
+
                 break;
             default:
                 break;
         }
-        reflash();
+
     }
 
     Handler handler = new Handler();
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            downloadingList = messenger.getDownloadingList();
-            listView.removeAllViewsInLayout();
-            listAdapter.notifyDataSetInvalidated();
-            listView.setAdapter(listAdapter);
+            if(select==SELECT_MUSIC_LIST){
+                reflash1();
+            }else {
+                reflash2();
+            }
             handler.postDelayed(runnable, REFLASH_TIME);
         }
     };
@@ -208,8 +291,22 @@ public class DownloadFragment extends Fragment implements View.OnClickListener {
         public void onServiceConnected(ComponentName name, IBinder service) {
             messenger = ((DownloadService.ServicesBinder) service).getService();
             handler.postDelayed(runnable, REFLASH_TIME);
-            reflash();
             bound = true;
+        }
+    };
+
+    MusicPlayerService messengerPlaying;
+    boolean boundPlaying;
+    private ServiceConnection connectionPlaying = new ServiceConnection() {
+
+        public void onServiceDisconnected(ComponentName name) {
+            messengerPlaying=null;
+            boundPlaying = false;
+        }
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            messengerPlaying=((MusicPlayerService.ServiceBinder) service).getService();
+            boundPlaying=true;
         }
     };
 }

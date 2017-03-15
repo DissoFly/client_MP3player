@@ -1,20 +1,40 @@
 package com.example.mp3player.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.example.mp3player.download.ProgressDownloader;
 import com.example.mp3player.download.ProgressResponseBody;
+import com.example.mp3player.entity.DownloadMusic;
 import com.example.mp3player.entity.Downloading;
+import com.example.mp3player.entity.PlayingItem;
+import com.example.mp3player.entity.PublicSong;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.dao.Dao;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by DissoCapB on 2017/2/28.
@@ -28,6 +48,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
     private long totalBytes;
     private long contentLength;
     Dao<Downloading, Integer> downloadingDao;
+    Dao<DownloadMusic, Integer> downloadMusicDao;
     List<Downloading> downloadingList;
     int downloadingMusicId = 0;
     private final IBinder binder = new ServicesBinder();
@@ -39,6 +60,8 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             DataService dataService = DataService.getInstance(DownloadService.this);
             downloadingDao = dataService.getDownloadingDao();
             downloadingList = downloadingDao.queryForAll();
+            downloadMusicDao=dataService.getDownloadMusicDao();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,26 +104,32 @@ public  List<Downloading> getDownloadingList(){
             contentLength = dl.getContentLength();
             isDownloading = true;
             downloadingMusicId = musicId;
-            //reflash();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void downloadMusic(int musicId) {
-        String path = Environment.getExternalStorageDirectory() + "/MP3player/music/" + musicId + ".mp3";
+    public void downloadMusic(int musicId,String musicName) {
+        String path = Environment.getExternalStorageDirectory() + "/MP3player/music/" + musicName + ".mp3";
         if (isDownloading){
             pauseDownload();
         }
         try {
-            //差验证已完成下载
+            //验证正在下载
             List<Downloading> dls = downloadingDao.queryBuilder().
                     where().
                     eq("musicId", musicId).query();
             if (dls.size() != 0) {
-                System.out.println("存在下载");
+                Toast.makeText(this,"存在下载",Toast.LENGTH_SHORT).show();
                 return;
             }
+            //验证已完成下载
+            File file = new File(path);
+            if (file.exists()) {
+                Toast.makeText(this,"存在完成下载",Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             Downloading downloading = new Downloading();
             downloading.setLocalPath(path);
             downloading.setMusicId(musicId);
@@ -126,8 +155,6 @@ public  List<Downloading> getDownloadingList(){
 
     public void pauseDownload() {
         downloader.pause();
-
-       // Toast.makeText(getActivity(), "下载暂停", Toast.LENGTH_SHORT).show();
         // 存储此时的totalBytes，即断点位置。
         breakPoints = totalBytes;
         try {
@@ -160,6 +187,8 @@ public  List<Downloading> getDownloadingList(){
                         eq("musicId", downloadingMusicId).query().get(0);
                 downloadingDao.delete(dl);
                 downloadingList=downloadingDao.queryForAll();
+                musicListConnect(dl.getMusicId(),dl.getLocalPath());
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -181,7 +210,32 @@ public  List<Downloading> getDownloadingList(){
             }
         }
     }
+    void musicListConnect(final int songId, final String path) {
+        Request request = HttpService.requestBuilderWithPath("song_message/" + songId).get().build();
+        HttpService.getClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(final Call call, final IOException e) {
+                e.printStackTrace();
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    final PublicSong data = new Gson().fromJson(response.body().string(), PublicSong.class);
+                    DownloadMusic downloadMusic=new DownloadMusic();
+                    downloadMusic.setSongName(data.getSongName());
+                    downloadMusic.setArtist(data.getArtist());
+                    downloadMusic.setAlbum(data.getAlbum());
+                    downloadMusic.setLocalPath(path);
+                    downloadMusic.setMusicId(songId);
+                    downloadMusicDao.create(downloadMusic);
+                    saveLocal(downloadMusic);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
 
     @Override
@@ -200,4 +254,61 @@ public  List<Downloading> getDownloadingList(){
             System.out.println("onPreExecute:" + contentLength + "," + (int) (contentLength / 1024));
         }
     }
+
+
+    private List<PlayingItem> load(){
+        FileInputStream in =null;
+        BufferedReader reader=null;
+        StringBuilder content=new StringBuilder();
+        List<PlayingItem> audioList = new ArrayList<>();
+        try{
+            in=openFileInput("localMusicData");
+            reader=new BufferedReader(new InputStreamReader(in));
+            String line="";
+            while((line=reader.readLine())!=null)
+                content.append(line);
+            audioList = new Gson().fromJson(content.toString(), new TypeToken<List<PlayingItem>>() {
+            }.getType());
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return audioList;
+    }
+
+    public void saveLocal(DownloadMusic downloadMusic){
+
+        List<PlayingItem> audioList = load();
+        PlayingItem playingItem=new PlayingItem();
+
+        playingItem.setSongName(downloadMusic.getSongName());
+        playingItem.setArtist(downloadMusic.getArtist());
+        playingItem.setAlbum(downloadMusic.getAlbum());
+        playingItem.setOnline(true);
+        playingItem.setDownload(true);
+        playingItem.setFilePath(downloadMusic.getLocalPath());
+        playingItem.setOnlineSongId(downloadMusic.getMusicId());
+        audioList.add(0,playingItem);
+
+
+        FileOutputStream out=null;
+        BufferedWriter writer=null;
+        try{
+            out=openFileOutput("localMusicData", Context.MODE_PRIVATE);
+            writer=new BufferedWriter(new OutputStreamWriter(out));
+            writer.write(new Gson().toJson(audioList));
+        }catch(IOException e){
+            e.printStackTrace();
+        }finally{
+            try{
+                if(writer!=null){
+                    writer.close();
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }
