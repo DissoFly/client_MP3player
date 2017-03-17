@@ -52,6 +52,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
 
     TextView localOrOnline;
     Button btnDownload;
+    Button btnComment;
 
     ImageView btnPlayChanges;
     ImageView btnPlayBack;
@@ -70,6 +71,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
         songImg = (FrameLayout) findViewById(R.id.frag_song_img);
         localOrOnline = (TextView) findViewById(R.id.text_playing_local_or_online);
         btnDownload = (Button) findViewById(R.id.btn_playing_download);
+        btnComment = (Button) findViewById(R.id.btn_playing_comment);
         animation();
         getFragmentManager().beginTransaction()
                 .replace(R.id.frag_song_img, songPictureFragment).commit();
@@ -106,6 +108,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.btn_play_next).setOnClickListener(this);
         findViewById(R.id.btn_play_list).setOnClickListener(this);
         findViewById(R.id.btn_playing_download).setOnClickListener(this);
+        findViewById(R.id.btn_playing_comment).setOnClickListener(this);
     }
 
     @Override
@@ -125,6 +128,12 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.btn_play_next:
                 messenger.next();
+                break;
+            case R.id.btn_playing_comment:
+                CommentFragment commentFragment=new CommentFragment();
+                commentFragment.setSongId(audioList.get(listPosition).getOnlineSongId());
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.layout_out, commentFragment).addToBackStack(null).commit();
                 break;
             case R.id.btn_play_list:
                 getFragmentManager().beginTransaction()
@@ -172,14 +181,17 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                 if (!audioList.get(listPosition).isOnline()) {
                     localOrOnline.setText("本地音乐");
                     btnDownload.setEnabled(false);
+                    btnComment.setEnabled(false);
                     btnDownload.setText("本地");
                 }else if (audioList.get(listPosition).isOnline()&&audioList.get(listPosition).isDownload()) {
                     localOrOnline.setText("网络下载");
                     btnDownload.setEnabled(false);
+                    btnComment.setEnabled(true);
                     btnDownload.setText("已下载");
                 }else {
                     localOrOnline.setText("网络在线");
                     btnDownload.setEnabled(true);
+                    btnComment.setEnabled(true);
                     btnDownload.setText("下载");
                 }
                 if (messenger.isPlaying())
