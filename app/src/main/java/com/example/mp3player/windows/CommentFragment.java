@@ -14,14 +14,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mp3player.R;
 import com.example.mp3player.entity.Comment;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -35,7 +39,7 @@ import okhttp3.Response;
  * Created by DissoCapB on 2017/3/17.
  */
 
-public class CommentFragment extends Fragment implements View.OnClickListener{
+public class CommentFragment extends Fragment implements View.OnClickListener {
     View view;
     ListView listView;
     EditText editText;
@@ -49,7 +53,7 @@ public class CommentFragment extends Fragment implements View.OnClickListener{
             view = inflater.inflate(R.layout.fragment_comment, null);
         }
         listView = (ListView) view.findViewById(R.id.comment_list);
-        editText=(EditText)view.findViewById(R.id.edit_comment);
+        editText = (EditText) view.findViewById(R.id.edit_comment);
         initData();
         return view;
     }
@@ -58,7 +62,7 @@ public class CommentFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public int getCount() {
-            return comments==null?0:comments.size();
+            return comments == null ? 0 : comments.size();
         }
 
         @Override
@@ -73,23 +77,35 @@ public class CommentFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public View getView(int i, View convertView, ViewGroup viewGroup) {
-            View view=null;
-            if (convertView==null){
+            View view = null;
+            if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-               // view = inflater.inflate(R.layout.widget_local_music_list_item, null);
-            }else{
-                view=convertView;
+                 view = inflater.inflate(R.layout.widget_comment_item, null);
+                TextView floor=(TextView)view.findViewById(R.id.text_comment_floor);
+                TextView name=(TextView)view.findViewById(R.id.text_comment_username);
+                TextView comment=(TextView)view.findViewById(R.id.text_comment);
+                floor.setText(comments.get(i).getFloor()+"L");
+                name.setText(comments.get(i).getUserName());
+                comment.setText(comments.get(i).getText());
+            } else {
+                view = convertView;
             }
             return view;
         }
     };
+    void listViewReload(){
+        listView.removeAllViewsInLayout();
+        listAdapter.notifyDataSetInvalidated();
+        listView.setAdapter(listAdapter);
+        setTipsWithNoComment();
+    }
 
-    //    void setTipsWithNoMusic() {
-    //        if (audioList.size() > 0)
-    //            view.findViewById(R.id.text_footer_no_music).setVisibility(View.GONE);
-    //        else
-    //            view.findViewById(R.id.text_footer_no_music).setVisibility(View.VISIBLE);
-    //    }
+        void setTipsWithNoComment() {
+            if (comments.size() > 0)
+                view.findViewById(R.id.text_footer_no_comment).setVisibility(View.GONE);
+            else
+                view.findViewById(R.id.text_footer_no_comment).setVisibility(View.VISIBLE);
+        }
 
     public void setSongId(int songId) {
         this.songId = songId;
@@ -98,7 +114,8 @@ public class CommentFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().bindService(new Intent(getActivity(),LoginService.class), connection, Context.BIND_AUTO_CREATE);
+        getActivity().bindService(new Intent(getActivity(), LoginService.class), connection, Context.BIND_AUTO_CREATE);
+        commentGetConnent();
     }
 
     private void initData() {
@@ -121,28 +138,58 @@ public class CommentFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void commentSend(){
-        String text=editText.getText().toString();
-        if(text.equals("")){
-            Toast.makeText(getActivity(),"请输入内容",Toast.LENGTH_SHORT).show();
-        }else if(messenger.getUser()==null){
-            Toast.makeText(getActivity(),"请先登录",Toast.LENGTH_SHORT).show();
-        }else{
+    private void commentSend() {
+        String text = editText.getText().toString();
+        if (text.equals("")) {
+            Toast.makeText(getActivity(), "请输入内容", Toast.LENGTH_SHORT).show();
+        } else if (messenger.getUser() == null) {
+            Toast.makeText(getActivity(), "请先登录", Toast.LENGTH_SHORT).show();
+        } else {
             commentSendConnent(text);
         }
     }
 
+    void commentGetConnent() {
+        commentGetConnent(0);
+    }
+
+    void commentGetConnent(int page) {
+        Request request = HttpService.requestBuilderWithPath("comment/getBySongId/" + songId ).get().build();
+        HttpService.getClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(final Call call, final IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    final List<Comment> data = new Gson().fromJson(response.body().string(), new TypeToken<List<Comment>>() {
+                    }.getType());
+                    comments = data;
+                    if (comments == null)
+                        comments = new ArrayList<>();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listViewReload();
+                        }
+                    });
 
 
 
-
-
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     private void commentSendConnent(String text) {
         RequestBody formBody = new FormBody.Builder()
-                .add("songId", songId+"")
+                .add("songId", songId + "")
                 .add("text", text)
-                .add("userId", messenger.getUser().getUserId()+"")
+                .add("userId", messenger.getUser().getUserId() + "")
                 .build();
         Request request = HttpService.requestBuilderWithPath("comment/save").post(formBody).build();
         HttpService.getClient().newCall(request).enqueue(new Callback() {
@@ -152,7 +199,7 @@ public class CommentFragment extends Fragment implements View.OnClickListener{
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(),"发送失败",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "发送失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -160,24 +207,25 @@ public class CommentFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String data = response.body().string();
-                if(data.equals("SUCCESS_SAVE")){
+                if (data.equals("SUCCESS_SAVE")) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getActivity(),"评论成功",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "评论成功", Toast.LENGTH_SHORT).show();
+                            editText.setText("");
                         }
                     });
-                }else {
+                    commentGetConnent();
+                } else {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getActivity(),"评论失败",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "评论失败", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
             }
         });
-
     }
 
 

@@ -48,7 +48,7 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/text_footer_no_comment"
+            android:layout_alignParentTop="true"
             android:layout_above="@id/relativeLayout_footer_comment"
             />
     </RelativeLayout>

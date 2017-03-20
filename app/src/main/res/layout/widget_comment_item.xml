@@ -4,4 +4,21 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <TextView
+        android:text="text_comment_floor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_comment_floor"/>
+
+    <TextView
+        android:text="text_comment_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_comment_username"/>
+
+    <TextView
+        android:text="text_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_comment"/>
 </LinearLayout>
