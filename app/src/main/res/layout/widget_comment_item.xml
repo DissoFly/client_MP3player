@@ -1,24 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <TextView
-        android:text="text_comment_floor"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btn_comment_like"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/text_comment_floor"/>
+        android:layout_alignParentRight="true"
+        android:text="赞"/>
 
-    <TextView
-        android:text="text_comment_username"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/text_comment_username"/>
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@id/btn_comment_like"
+        android:orientation="vertical">
 
-    <TextView
-        android:text="text_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/text_comment"/>
-</LinearLayout>
+        <TextView
+            android:id="@+id/text_comment_floor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="text_comment_floor"/>
+
+        <TextView
+            android:id="@+id/text_comment_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="text_comment_username"/>
+
+        <TextView
+            android:id="@+id/text_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="text_comment"/>
+    </LinearLayout>
+</RelativeLayout>

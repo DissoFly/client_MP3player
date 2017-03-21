@@ -16,6 +16,15 @@ public class Comment extends DateRecord implements Serializable{
     private String userName;
     private String likeIds;
     private boolean isUnlook;
+    private boolean isUserLike;
+
+    public boolean isUserLike() {
+        return isUserLike;
+    }
+
+    public void setUserLike(boolean userLike) {
+        isUserLike = userLike;
+    }
 
     public boolean isUnlook() {
         return isUnlook;

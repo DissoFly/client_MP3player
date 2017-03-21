@@ -127,8 +127,8 @@ public class LoginService extends Service {
     public void getRequest(final String data) {
         if (data.endsWith("}")) {
             System.out.println("可以自動登陸");
-            connectResult="SUCCESS_IN_AUTOLOGIN";
             user=new Gson().fromJson(data,User.class);
+            connectResult="SUCCESS_IN_AUTOLOGIN";
         } else {
             switch (data) {
                 case "FAIL_WITH_NO_SIGN":

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -76,7 +77,7 @@ public class CommentFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        public View getView(int i, View convertView, ViewGroup viewGroup) {
+        public View getView(final int i, View convertView, ViewGroup viewGroup) {
             View view = null;
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
@@ -84,15 +85,32 @@ public class CommentFragment extends Fragment implements View.OnClickListener {
                 TextView floor=(TextView)view.findViewById(R.id.text_comment_floor);
                 TextView name=(TextView)view.findViewById(R.id.text_comment_username);
                 TextView comment=(TextView)view.findViewById(R.id.text_comment);
+                Button like=(Button)view.findViewById(R.id.btn_comment_like);
                 floor.setText(comments.get(i).getFloor()+"L");
                 name.setText(comments.get(i).getUserName());
                 comment.setText(comments.get(i).getText());
+                String s[]=comments.get(i).getLikeIds().split(";");
+                if (comments.get(i).isUserLike()){
+                    like.setText("已点赞("+(s.length-1)+")");
+                }else{
+                    like.setText("赞("+(s.length-1)+")");
+                }
+                like.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        likeConnect(comments.get(i).getCommentId());
+                    }
+                });
+
             } else {
                 view = convertView;
             }
             return view;
         }
     };
+
+
+
     void listViewReload(){
         listView.removeAllViewsInLayout();
         listAdapter.notifyDataSetInvalidated();
@@ -115,7 +133,7 @@ public class CommentFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         getActivity().bindService(new Intent(getActivity(), LoginService.class), connection, Context.BIND_AUTO_CREATE);
-        commentGetConnent();
+
     }
 
     private void initData() {
@@ -154,7 +172,14 @@ public class CommentFragment extends Fragment implements View.OnClickListener {
     }
 
     void commentGetConnent(int page) {
-        Request request = HttpService.requestBuilderWithPath("comment/getBySongId/" + songId ).get().build();
+        int userId=-1;
+        if (messenger.getUser() != null) {
+            userId=messenger.getUser().getUserId();
+        }
+        RequestBody formBody = new FormBody.Builder()
+                .add("userId", userId + "")
+                .build();
+        Request request = HttpService.requestBuilderWithPath("comment/getBySongId/" + songId ).post(formBody).build();
         HttpService.getClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {
@@ -175,16 +200,69 @@ public class CommentFragment extends Fragment implements View.OnClickListener {
                             listViewReload();
                         }
                     });
-
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
     }
+    void likeConnect(int commentId) {
+         if (messenger.getUser() == null) {
+             Toast.makeText(getActivity(), "请先登录", Toast.LENGTH_SHORT).show();
+             return ;
+         }
+        RequestBody formBody = new FormBody.Builder()
+                .add("commentId", commentId + "")
+                .add("userId", messenger.getUser().getUserId() + "")
+                .build();
+        Request request = HttpService.requestBuilderWithPath("like/setCommentLike").post(formBody).build();
+        HttpService.getClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), "发送失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String data = response.body().string();
+                switch (data){
+                    case "SUCCESS_ADD":
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(), "点赞成功", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        commentGetConnent();
+                        break;
+                    case "SUCCESS_DELECT":
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(), "取消点赞", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        commentGetConnent();
+                        break;
+                    default:
+                        System.out.println(data);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(), "点赞失败", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                }
+            }
+        });
+    }
     private void commentSendConnent(String text) {
         RequestBody formBody = new FormBody.Builder()
                 .add("songId", songId + "")
@@ -242,6 +320,7 @@ public class CommentFragment extends Fragment implements View.OnClickListener {
         public void onServiceConnected(ComponentName name, IBinder service) {
             messenger = ((LoginService.ServicesBinder) service).getService();
             bound = true;
+            commentGetConnent();
         }
     };
 }
