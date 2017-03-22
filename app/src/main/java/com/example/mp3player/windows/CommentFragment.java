@@ -46,7 +46,8 @@ public class CommentFragment extends Fragment implements View.OnClickListener {
     EditText editText;
     int songId;
     List<Comment> comments;
-
+    int openZoneId;
+    int REQUEST_TEXT=0;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,7 +82,16 @@ public class CommentFragment extends Fragment implements View.OnClickListener {
             View view = null;
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-                 view = inflater.inflate(R.layout.widget_comment_item, null);
+                view = inflater.inflate(R.layout.widget_comment_item, null);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openZoneId=comments.get(i).getUserId();
+                        Intent itnt=new Intent(getActivity(), ZoneActivity.class);
+                        itnt.putExtra("openZoneId",openZoneId);
+                        startActivityForResult(itnt, REQUEST_TEXT);
+                    }
+                });
                 TextView floor=(TextView)view.findViewById(R.id.text_comment_floor);
                 TextView name=(TextView)view.findViewById(R.id.text_comment_username);
                 TextView comment=(TextView)view.findViewById(R.id.text_comment);
@@ -323,4 +333,5 @@ public class CommentFragment extends Fragment implements View.OnClickListener {
             commentGetConnent();
         }
     };
+
 }
