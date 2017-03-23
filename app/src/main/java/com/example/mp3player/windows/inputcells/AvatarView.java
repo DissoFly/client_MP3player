@@ -12,7 +12,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.example.mp3player.R;
-import com.example.mp3player.entity.User;
 import com.example.mp3player.service.HttpService;
 
 import java.io.IOException;
@@ -27,7 +26,7 @@ import okhttp3.Response;
  * Created by DissoCapB on 2017/2/18.
  */
 
-public class AvatarView extends View{
+public class AvatarView extends View {
     public AvatarView(Context context) {
         super(context);
     }
@@ -45,17 +44,17 @@ public class AvatarView extends View{
     static float srcHeight;
     Handler mainThreadHandler = new Handler();
 
-    public void setBitmap(Bitmap bmp){					//确认头像内容
-        if(bmp==null) {
+    public void setBitmap(Bitmap bmp) {                    //确认头像内容
+        if (bmp == null) {
             paint = new Paint();
-            Bitmap bitmap= BitmapFactory.decodeResource(getResources(), R.mipmap.user_null);
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.user_null);
             paint.setShader(new BitmapShader(bitmap, TileMode.REPEAT, TileMode.REPEAT));
             srcWidth = bitmap.getWidth();
             srcHeight = bitmap.getHeight();
 
             paint.setAntiAlias(true);
 
-        }else{
+        } else {
             paint = new Paint();
             paint.setShader(new BitmapShader(bmp, TileMode.REPEAT, TileMode.REPEAT));
             paint.setAntiAlias(true);
@@ -65,29 +64,22 @@ public class AvatarView extends View{
         }
         invalidate();
     }
+
     //从service获取头像数据
-    public void load(User user){
-        load(HttpService.serverAddress + user.getAvatar());
+    public void loadNull() {
+        setBitmap(null);
     }
 
 
-    public void load(String url){
-        if (url==null){
-            setBitmap(null);
-            return;
-        }
+    public void load(int userId) {
         OkHttpClient client = HttpService.getClient();
 
-        Request request = new Request.Builder()
-                .url(url)
-                .method("GET", null)
-                .build();
-
+        Request request = HttpService.requestBuilderWithPath("avatar/" + userId).get().build();
         client.newCall(request).enqueue(new Callback() {
 
             @Override
             public void onResponse(Call arg0, Response arg1) throws IOException {
-                try{
+                try {
                     byte[] bytes = arg1.body().bytes();
                     final Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     mainThreadHandler.post(new Runnable() {
@@ -95,7 +87,7 @@ public class AvatarView extends View{
                             setBitmap(bmp);
                         }
                     });
-                }catch(Exception ex){
+                } catch (Exception ex) {
                     mainThreadHandler.post(new Runnable() {
                         public void run() {
                             setBitmap(null);
@@ -116,9 +108,9 @@ public class AvatarView extends View{
     }
 
     @Override
-    public void draw(Canvas canvas) {					//头像处理
+    public void draw(Canvas canvas) {                    //头像处理
         super.draw(canvas);
-        if(paint!=null){
+        if (paint != null) {
             canvas.save();
 
             float dstWidth = getWidth();
@@ -127,9 +119,9 @@ public class AvatarView extends View{
             float scaleX = srcWidth / dstWidth;
             float scaleY = srcHeight / dstHeight;
 
-            canvas.scale(Math.max(1/scaleX,1/scaleY), Math.max(1/scaleX,1/scaleY));
+            canvas.scale(Math.max(1 / scaleX, 1 / scaleY), Math.max(1 / scaleX, 1 / scaleY));
 
-            canvas.drawCircle(Math.min(srcWidth, srcHeight) /2, Math.min(srcWidth, srcHeight)/2, Math.min(srcWidth, srcHeight)/2, paint);
+            canvas.drawCircle(Math.min(srcWidth, srcHeight) / 2, Math.min(srcWidth, srcHeight) / 2, Math.min(srcWidth, srcHeight) / 2, paint);
 
             canvas.restore();
         }

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,8 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
     ListView listView;
     int friendId;
     List<FriendRead> friendReads;
+    Button btnAddFriend;
+    String addFriendMessage="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,8 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
         name = (TextView)findViewById(R.id.text_zone_username);
         title = (TextView)findViewById(R.id.text_zone_title);
         listView = (ListView)findViewById(R.id.list_zone);
+        btnAddFriend= (Button)findViewById(R.id.btn_zone_add_friend);
+        btnAddFriend.setVisibility(View.GONE);
         initData();
         Bundle extras = getIntent().getExtras();
         friendId=extras.getInt("openZoneId");
@@ -88,14 +93,11 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
         }
     };
 
-    public void setFriendId(int friendId) {
-        this.friendId = friendId;
-    }
-
 
     private void initData() {
         findViewById(R.id.fragment_zone).setOnClickListener(this);
         findViewById(R.id.btn_zone_back).setOnClickListener(this);
+        findViewById(R.id.btn_zone_add_friend).setOnClickListener(this);
     }
 
 
@@ -104,6 +106,24 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
         switch (view.getId()) {
             case R.id.btn_zone_back:
                 ZoneActivity.this.onBackPressed();
+                break;
+            case R.id.btn_zone_add_friend:
+                switch (addFriendMessage){
+                    case "FALSE_ISADD":
+                        addFriend(friendId);
+                        break;
+                    case "TRUE_ISADD":
+                        addFriend(friendId);
+                        break;
+                    case "IN_BLACKLIST":
+                        Toast.makeText(ZoneActivity.this, "请在设置中管理黑名单", Toast.LENGTH_SHORT).show();
+                        break;
+                    case "PLEASE_LOGIN":
+                        Toast.makeText(ZoneActivity.this, "请登录", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
                 break;
             default:
                 break;
@@ -160,6 +180,121 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
         });
     }
 
+    private void getIsFriend(int friendId) {
+        int userId = -1;
+        if (messenger.getUser() != null) {
+            userId = messenger.getUser().getUserId();
+        }
+        final RequestBody formBody = new FormBody.Builder()
+                .add("userId", userId + "")
+                .add("friendId", friendId + "")
+                .build();
+        Request request = HttpService.requestBuilderWithPath("friend/isAdd/").post(formBody).build();
+        HttpService.getClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(final Call call, final IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String data = response.body().string();
+                addFriendMessage=data;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        switch (data){
+                            case "FALSE_ISADD":
+                                btnAddFriend.setVisibility(View.VISIBLE);
+                                btnAddFriend.setText("关注");
+                                break;
+                            case "TRUE_ISADD":
+                                btnAddFriend.setVisibility(View.VISIBLE);
+                                btnAddFriend.setText("已关注");
+                                break;
+                            case "IN_BLACKLIST":
+                                btnAddFriend.setVisibility(View.VISIBLE);
+                                btnAddFriend.setText("黑名单");
+                                break;
+                            case "WRONG":
+                                btnAddFriend.setVisibility(View.GONE);
+                                Toast.makeText(ZoneActivity.this, "数据错误", Toast.LENGTH_SHORT).show();
+                                break;
+                            case "PLEASE_LOGIN":
+                                btnAddFriend.setVisibility(View.VISIBLE);
+                                btnAddFriend.setText("请登录");
+                                break;
+                            default:
+                                btnAddFriend.setVisibility(View.GONE);
+                                Toast.makeText(ZoneActivity.this, "连接错误", Toast.LENGTH_SHORT).show();
+                                System.out.println(data);
+                                break;
+
+                        }
+                    }
+                });
+
+            }
+        });
+
+    }
+
+
+    private void addFriend(final int friendId) {
+        int userId = -1;
+        if (messenger.getUser() != null) {
+            userId = messenger.getUser().getUserId();
+        }
+        final RequestBody formBody = new FormBody.Builder()
+                .add("userId", userId + "")
+                .add("friendId", friendId + "")
+                .build();
+        Request request = HttpService.requestBuilderWithPath("friend/addFriend").post(formBody).build();
+        HttpService.getClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(final Call call, final IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String data = response.body().string();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        switch (data){
+                            case "SUCCESS_ADD":
+                                Toast.makeText(ZoneActivity.this, "关注成功", Toast.LENGTH_SHORT).show();
+                                getIsFriend(friendId);
+                                break;
+                            case "SUCCESS_DELECT":
+                                Toast.makeText(ZoneActivity.this, "已取消关注", Toast.LENGTH_SHORT).show();
+                                getIsFriend(friendId);
+                                break;
+                            case "IN_BLACKLIST":
+                                Toast.makeText(ZoneActivity.this, "请在设置中管理黑名单", Toast.LENGTH_SHORT).show();
+                                getIsFriend(friendId);
+                                break;
+                            case "WRONG":
+                                Toast.makeText(ZoneActivity.this, "数据错误", Toast.LENGTH_SHORT).show();
+                                break;
+                            case "PLEASE_LOGIN":
+                                Toast.makeText(ZoneActivity.this, "请登录", Toast.LENGTH_SHORT).show();
+                                break;
+                            default:
+                                Toast.makeText(ZoneActivity.this, "连接错误", Toast.LENGTH_SHORT).show();
+                                System.out.println(data);
+                                break;
+
+                        }
+                    }
+                });
+
+            }
+        });
+
+    }
+
     LoginService messenger;
     boolean bound;
 
@@ -174,6 +309,9 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
             messenger = ((LoginService.ServicesBinder) service).getService();
             bound = true;
             getFriendZone(friendId);
+            getIsFriend(friendId);
         }
     };
+
+
 }

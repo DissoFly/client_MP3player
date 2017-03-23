@@ -30,11 +30,23 @@
             android:textSize="25dp"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/text_zone_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="text_zone_username"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/text_zone_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="text_zone_username"/>
+        <Button
+            android:id="@+id/btn_zone_add_friend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="btn_zone_add_friend"/>
+    </LinearLayout>
+
+
 
     <ListView
         android:id="@+id/list_zone"

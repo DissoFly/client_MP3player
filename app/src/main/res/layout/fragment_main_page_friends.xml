@@ -2,37 +2,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/fragment_main_page_mine_friends">
 
-    <TextView
-        android:text="this is friends"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:layout_weight="1"/>
+        android:orientation="horizontal">
+        <Button
+            android:text="动态"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_friend_news_list"/>
+        <Button
+            android:text="私信"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_friend_inbox_list"/>
+        <Button
+            android:text="关注"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_friend_add_list"/>
+        <Button
+            android:text="粉丝"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_friend_be_add_list"/>
 
-    <Button
-        android:text="在线播放测试"
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list_friend"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_test"
-        android:layout_weight="1"/>
-    <Button
-        android:text="在线播放测试1.1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_test3"
-        android:layout_weight="1"/>
-    <Button
-        android:text="在线播放测试2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_test2"
-        android:layout_weight="1"/>
-    <Button
-        android:text="在线播放测试4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_test4"
-        android:layout_weight="1"/>
+        android:layout_height="wrap_content"></ListView>
+
 </LinearLayout>

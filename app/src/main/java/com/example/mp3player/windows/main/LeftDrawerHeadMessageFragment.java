@@ -102,12 +102,12 @@ public class LeftDrawerHeadMessageFragment extends Fragment implements View.OnCl
                 if (!isChanges) {
                     if (messenger.getConnectResult().equals("SUCCESS_IN_AUTOLOGIN")) {
                         headAccount.setText("你好，" + messenger.getUser().getAccount());
-                        headAvatar.load(messenger.getUser());
+                        headAvatar.load(messenger.getUser().getUserId());
                         statue=CONNECT_SUCCESS;
                     } else {
                         headAccount.setText(messenger.getConnectResult());
                         statue=CONNECT_FAIL;
-                        headAvatar.load((String) null);
+                        headAvatar.loadNull();
                     }
                     isChanges=true;
                 }
