@@ -210,6 +210,7 @@ public class MusicListFragment extends Fragment implements View.OnClickListener 
                     playingItems = new ArrayList<>();
                     for (PublicSong publicSong : data) {
                         PlayingItem playingItem = new PlayingItem();
+                        playingItem.setOnlineSongId(publicSong.getSongID());
                         playingItem.setSongName(publicSong.getSongName());
                         playingItem.setArtist(publicSong.getArtist());
                         playingItem.setAlbum(publicSong.getAlbum());

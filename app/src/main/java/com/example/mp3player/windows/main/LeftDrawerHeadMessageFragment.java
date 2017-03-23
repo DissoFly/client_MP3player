@@ -16,10 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mp3player.R;
+import com.example.mp3player.service.LoginService;
 import com.example.mp3player.windows.inputcells.AvatarView;
 import com.example.mp3player.windows.login.LoginActivity;
 import com.example.mp3player.windows.login.MyDataActivity;
-import com.example.mp3player.service.LoginService;
 
 /**
  * Created by DissoCapB on 2017/2/18.
@@ -40,13 +40,18 @@ public class LeftDrawerHeadMessageFragment extends Fragment implements View.OnCl
         if(view==null){
             statue=CONNECTING;
             view = inflater.inflate(R.layout.fragment_main_leftdrawer_head_message, null);
-            getActivity().bindService(new Intent(getActivity(),LoginService.class), connection, Context.BIND_AUTO_CREATE);
             headAccount=(TextView)view.findViewById(R.id.text_head_account);
             headAvatar=(AvatarView)view.findViewById(R.id.head_avatar);
             headAccount.setText("正在登录");
             initData();
         }
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().bindService(new Intent(getActivity(),LoginService.class), connection, Context.BIND_AUTO_CREATE);
     }
 
     private void initData() {
