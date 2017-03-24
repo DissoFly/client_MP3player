@@ -44,6 +44,7 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
     int friendId;
     List<FriendRead> friendReads;
     Button btnAddFriend;
+    Button btnInbox;
     String addFriendMessage="";
 
     @Override
@@ -54,6 +55,7 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
         title = (TextView)findViewById(R.id.text_zone_title);
         listView = (ListView)findViewById(R.id.list_zone);
         btnAddFriend= (Button)findViewById(R.id.btn_zone_add_friend);
+        btnInbox=(Button)findViewById(R.id.btn_zone_inbox);
         btnAddFriend.setVisibility(View.GONE);
         initData();
         Bundle extras = getIntent().getExtras();
@@ -98,6 +100,7 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
         findViewById(R.id.fragment_zone).setOnClickListener(this);
         findViewById(R.id.btn_zone_back).setOnClickListener(this);
         findViewById(R.id.btn_zone_add_friend).setOnClickListener(this);
+        findViewById(R.id.btn_zone_inbox).setOnClickListener(this);
     }
 
 
@@ -123,6 +126,17 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
                         break;
                     default:
                         break;
+                }
+                break;
+            case R.id.btn_zone_inbox:
+                if (messenger.getUser() != null) {
+                    int userId = messenger.getUser().getUserId();
+                    Intent itnt=new Intent(this, InboxActivity.class);
+                    itnt.putExtra("userId",userId);
+                    itnt.putExtra("friendId",friendId);
+                    startActivityForResult(itnt, 0);
+                }else{
+                    Toast.makeText(this,"请登录",Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:

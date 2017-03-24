@@ -32,6 +32,7 @@
         <activity android:name=".windows.main.page.mine.localMusic.FindMusicInLocalActivity"/>
         <activity android:name=".windows.PlayingActivity"/>
         <activity android:name=".windows.ZoneActivity"/>
+        <activity android:name=".windows.InboxActivity"/>
     </application>
 
 </manifest>

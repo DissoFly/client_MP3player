@@ -263,9 +263,9 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
     void reload(){
         switch (choose){
             case NEWS_CHOOSE:
-//                listView.removeAllViewsInLayout();
-//                addListAdapter.notifyDataSetInvalidated();
-//                listView.setAdapter(addListAdapter);
+                listView.removeAllViewsInLayout();
+                newsListAdapter.notifyDataSetInvalidated();
+                listView.setAdapter(newsListAdapter);
                 break;
             case INBOX_CHOOSE:
 //                listView.removeAllViewsInLayout();
