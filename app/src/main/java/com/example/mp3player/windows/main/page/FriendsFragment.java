@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,10 @@ import android.widget.Toast;
 import com.example.mp3player.R;
 import com.example.mp3player.entity.Friend;
 import com.example.mp3player.entity.FriendRead;
+import com.example.mp3player.entity.InboxList;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
+import com.example.mp3player.windows.InboxActivity;
 import com.example.mp3player.windows.ZoneActivity;
 import com.example.mp3player.windows.inputcells.AvatarView;
 import com.google.gson.Gson;
@@ -51,6 +54,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
     List<Friend> friends;
     List<FriendRead> friendReads;
+    List<InboxList> inboxLists;
 
     final String NEWS_CHOOSE="news";
     final String INBOX_CHOOSE="inbox";
@@ -91,6 +95,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                 newsConnect();
                 break;
             case R.id.btn_friend_inbox_list:
+                inboxListConnect();
                 choose=INBOX_CHOOSE;
                 break;
             case R.id.btn_friend_add_list:
@@ -174,6 +179,67 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             });
             name.setText(friends.get(i).getFriendName());
 
+            return view;
+        }
+    };
+
+
+    BaseAdapter inboxListAdapter = new BaseAdapter() {
+
+        @Override
+        public int getCount() {
+            return inboxLists == null ? 0 : inboxLists.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return inboxLists.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(final int i, View convertView, ViewGroup viewGroup) {
+            View view = null;
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+                view = inflater.inflate(R.layout.widget_inboxlist_item, null);
+                final InboxList inboxList = inboxLists.get(i);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (messenger.getUser() != null) {
+                            int userId = messenger.getUser().getUserId();
+                            Intent itnt=new Intent(getActivity(), InboxActivity.class);
+                            itnt.putExtra("userId",userId);
+                            itnt.putExtra("friendId",inboxList.getFriendId());
+                            startActivityForResult(itnt, 0);
+                        }else{
+                            Toast.makeText(getActivity(),"请登录",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                TextView name = (TextView) view.findViewById(R.id.inboxlist_name);
+                TextView time = (TextView) view.findViewById(R.id.inboxlist_last_time);
+                TextView text = (TextView) view.findViewById(R.id.inboxlist_last_text);
+                AvatarView avatar = (AvatarView) view.findViewById(R.id.avatar);
+                name.setText(inboxList.getFriendName());
+                avatar.load(inboxList.getFriendId());
+
+                String t = DateFormat.format("yyyy年MM月dd日   hh:mm:ss", inboxList.getCreateDate())
+                        .toString();
+                time.setText(t);
+                String s="";
+                if (inboxList.getUnReadNumber()>0){
+                    s="(未读"+inboxList.getUnReadNumber()+"条) ";
+                }
+                text.setText(s+inboxList.getText());
+            } else {
+                view = convertView;
+            }
             return view;
         }
     };
@@ -268,9 +334,9 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                 listView.setAdapter(newsListAdapter);
                 break;
             case INBOX_CHOOSE:
-//                listView.removeAllViewsInLayout();
-//                addListAdapter.notifyDataSetInvalidated();
-//                listView.setAdapter(addListAdapter);
+                listView.removeAllViewsInLayout();
+                inboxListAdapter.notifyDataSetInvalidated();
+                listView.setAdapter(inboxListAdapter);
                 break;
             case ADD_CHOOSE:
                 listView.removeAllViewsInLayout();
@@ -285,6 +351,51 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
         }
 
+    }
+
+    void inboxListConnect() {
+        int userId = -1;
+        if (messenger.getUser() != null) {
+            userId = messenger.getUser().getUserId();
+        } else {
+            Toast.makeText(getActivity(), "请先登录", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        RequestBody formBody = new FormBody.Builder()
+                .add("userId", userId + "")
+                .build();
+        Request request = HttpService.requestBuilderWithPath("inbox/getInboxList").post(formBody).build();
+        HttpService.getClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(final Call call, final IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String data = response.body().string();
+                System.out.println(data);
+                try {
+                    inboxLists = new Gson().fromJson(data, new TypeToken<List<InboxList>>() {
+                    }.getType());
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            reload();
+                        }
+                    });
+                } catch (final Exception e) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            e.printStackTrace();
+                            Toast.makeText(getActivity(), "连接出错", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+            }
+        });
     }
 
 

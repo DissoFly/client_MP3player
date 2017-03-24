@@ -11,7 +11,7 @@ public class InboxList extends DateRecord implements Serializable {
     private String text;
     private int userId;
     private int friendId;
-    private int friendName;
+    private String friendName;
     private int unReadNumber;
 
     public int getInboxListId() {
@@ -46,11 +46,11 @@ public class InboxList extends DateRecord implements Serializable {
         this.friendId = friendId;
     }
 
-    public int getFriendName() {
+    public String getFriendName() {
         return friendName;
     }
 
-    public void setFriendName(int friendName) {
+    public void setFriendName(String friendName) {
         this.friendName = friendName;
     }
 
