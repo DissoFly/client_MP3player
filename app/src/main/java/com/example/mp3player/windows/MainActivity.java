@@ -81,13 +81,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         drawableLayout = (LinearLayout) findViewById(R.id.left_drawer);
 
 
-        getFragmentManager().beginTransaction()
-                .replace(main_content_inside, findMusicFragment).commit();
+
         //需要解决一开始点击findmusic会崩问题
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_footer, footerPlayerFragment).commit();
         getFragmentManager().beginTransaction()
                 .replace(R.id.left_drawer_head_message, leftDrawerHeadMessageFragment).commit();
+        getFragmentManager().beginTransaction()
+                .replace(main_content_inside, findMusicFragment).commit();
 
         drawable.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         initData();

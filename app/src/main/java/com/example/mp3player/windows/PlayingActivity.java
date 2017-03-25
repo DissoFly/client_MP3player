@@ -133,6 +133,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                 finish();
                 break;
             case R.id.btn_play_cycle:
+                messenger.nextType();
                 break;
             case R.id.btn_play_back:
                 messenger.back();

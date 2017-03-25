@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
 import com.example.mp3player.entity.PlayingItem;
 import com.google.gson.Gson;
@@ -26,11 +27,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.example.mp3player.service.MusicType.LIST_CYCLE;
+import static com.example.mp3player.service.MusicType.ONE_CYCLE;
+import static com.example.mp3player.service.MusicType.RANDOM_CYCLE;
+
 /**
  * Created by DissoCapB on 2017/1/19.
  */
 
 public class MusicPlayerService extends Service {
+
+    int type = LIST_CYCLE;
     MediaPlayer player = new MediaPlayer();
     private List<PlayingItem> audioList = null;
     private int listPosition = -1;
@@ -45,7 +52,8 @@ public class MusicPlayerService extends Service {
         System.out.println("------------MusicPlayerService Building--------------------");
         load();
         if (audioList.size() > 0) {
-            listPosition = new Random().nextInt(audioList.size());
+            if (listPosition < 0)
+                listPosition = new Random().nextInt(audioList.size());
             for (int i = 0; i < audioList.size(); i++) {
                 try {
                     player.setDataSource(audioList.get(listPosition).getFilePath());
@@ -75,7 +83,19 @@ public class MusicPlayerService extends Service {
         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                next();
+                switch (type) {
+                    case LIST_CYCLE:
+                        listPosition =
+                                listPosition >= audioList.size() - 1 ?
+                                        0 : listPosition + 1;
+                        break;
+                    case ONE_CYCLE:
+                        break;
+                    case RANDOM_CYCLE:
+                        listPosition = new Random().nextInt(audioList.size());
+                        break;
+                }
+                initMediaPlayerAndPlay();
             }
         });
         //监听事件，网络流媒体的缓冲监听
@@ -89,7 +109,19 @@ public class MusicPlayerService extends Service {
         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-
+                switch (type) {
+                    case LIST_CYCLE:
+                        listPosition =
+                                listPosition >= audioList.size() - 1 ?
+                                        0 : listPosition + 1;
+                        break;
+                    case ONE_CYCLE:
+                        break;
+                    case RANDOM_CYCLE:
+                        listPosition = new Random().nextInt(audioList.size());
+                        break;
+                }
+                initMediaPlayerAndPlay();
             }
         });
 
@@ -121,13 +153,13 @@ public class MusicPlayerService extends Service {
     }
 
     public void setOneAndPlay(PlayingItem playingItem) {
-        listPosition =setOneMusic(playingItem);
+        listPosition = setOneMusic(playingItem);
         save();
         start();
     }
 
     public int setOneMusic(PlayingItem playingItem) {
-        int i=0;
+        int i = 0;
         if (audioList == null) {
             audioList = new ArrayList<>();
         }
@@ -136,15 +168,15 @@ public class MusicPlayerService extends Service {
             if (playingItem.getFilePath().equals(playingItem1.getFilePath())) {
                 break;
             }
-            System.out.println(playingItem.getOnlineSongId()+"++"+playingItem1.getOnlineSongId());
-            if (playingItem.getOnlineSongId()==playingItem1.getOnlineSongId()&&playingItem.getOnlineSongId()>0) {
+            System.out.println(playingItem.getOnlineSongId() + "++" + playingItem1.getOnlineSongId());
+            if (playingItem.getOnlineSongId() == playingItem1.getOnlineSongId() && playingItem.getOnlineSongId() > 0) {
                 audioList.get(i).setDownload(true);
                 audioList.get(i).setFilePath(playingItem.getFilePath());
                 break;
             }
             i++;
         }
-        if (audioList.size()<=i)
+        if (audioList.size() <= i)
             audioList.add(playingItem);
         return i;
     }
@@ -157,12 +189,19 @@ public class MusicPlayerService extends Service {
     public List<PlayingItem> getAudioList() {
         return audioList;
     }
-    public boolean isOnlinePlay(){
-        if (audioList.get(listPosition).isOnline()&&!audioList.get(listPosition).isDownload())
+
+    public boolean isOnlinePlay() {
+        if (audioList.get(listPosition).isOnline() && !audioList.get(listPosition).isDownload())
             return true;
         else
             return false;
     }
+    //返回播放模式
+
+    public int getType() {
+        return type;
+    }
+
     //返回正在播放音乐所在列表位置
     public int getPlayingListPosition() {
         return listPosition;
@@ -298,11 +337,41 @@ public class MusicPlayerService extends Service {
 
     public void next() {
         if (listPosition >= 0) {
-            listPosition =
-                    listPosition >= audioList.size() - 1 ?
-                            0 : listPosition + 1;
+            switch (type) {
+                case LIST_CYCLE:
+                    listPosition =
+                            listPosition >= audioList.size() - 1 ?
+                                    0 : listPosition + 1;
+                    break;
+                case ONE_CYCLE:
+                    listPosition =
+                            listPosition >= audioList.size() - 1 ?
+                                    0 : listPosition + 1;
+                    break;
+                case RANDOM_CYCLE:
+                    listPosition = new Random().nextInt(audioList.size());
+                    break;
+            }
             initMediaPlayerAndPlay();
         }
+    }
+
+    public int nextType() {
+        switch (type) {
+            case LIST_CYCLE:
+                type = RANDOM_CYCLE;
+                Toast.makeText(this,"随机播放",Toast.LENGTH_SHORT).show();
+                break;
+            case ONE_CYCLE:
+                type = LIST_CYCLE;
+                Toast.makeText(this,"列表循环",Toast.LENGTH_SHORT).show();
+                break;
+            case RANDOM_CYCLE:
+                type = ONE_CYCLE;
+                Toast.makeText(this,"单曲循环",Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return type;
     }
 
     public void back() {
@@ -344,6 +413,25 @@ public class MusicPlayerService extends Service {
                 e.printStackTrace();
             }
         }
+
+        try {
+            out = openFileOutput("playingMusicState", Context.MODE_PRIVATE);
+            writer = new BufferedWriter(new OutputStreamWriter(out));
+            //for (int i = 0; i < audioList.size(); i++) {
+            writer.write(LIST_CYCLE + ";" + listPosition);
+            // writer.newLine();
+            //}
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void load() {
@@ -362,6 +450,29 @@ public class MusicPlayerService extends Service {
             // for (int c = 0; c < s1.length; c++) {
             audioList = new Gson().fromJson(content.toString(), new TypeToken<List<PlayingItem>>() {
             }.getType());
+            // }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        content = new StringBuilder();
+        audioList = new ArrayList<>();
+        try {
+            in = openFileInput("playingMusicState");
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line = "";
+            while ((line = reader.readLine()) != null)
+                content.append(line);
+            //String s1[] = content.toString().split("###");
+            // for (int c = 0; c < s1.length; c++) {
+            String s[] = content.toString().split(";");
+            try {
+                type = Integer.parseInt(s[0]);
+                listPosition = Integer.parseInt(s[1]);
+            } catch (NumberFormatException e) {
+                type = LIST_CYCLE;
+                listPosition = -1;
+            }
             // }
 
         } catch (IOException e) {
