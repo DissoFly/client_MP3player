@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <com.example.mp3player.windows.inputcells.ImgView
+        android:id="@+id/img_news"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/text_news_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="text_news_title"
+        android:lines="1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="2dp"
+        android:textSize="18dp"
+        android:textColor="#333"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginTop="3dp"
+        android:background="#eee"/>
+
+</LinearLayout>

@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.mp3player.R;
+import com.example.mp3player.entity.Information;
 import com.example.mp3player.entity.MusicList;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.windows.inputcells.ImgView;
@@ -27,6 +28,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_MUSIC_LIST_FRAGMENT;
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_NEWS_FRAGMENT;
 
 
 /**
@@ -37,18 +39,19 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
     final static int NEWS_LIST = 11;
     final static int MUSIC_LIST = 12;
     int listChoose = 0;
-    int settingSelect=-1;
+    int settingSelect = -1;
+    int newsIdSelect = -1;
     int openFragInMain = 0;
     List<MusicList> musicLists = new ArrayList<>();
     ListView listView;
     View view;
+    List<Information> informations = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view == null)
             view = inflater.inflate(R.layout.fragment_main_page_find_music, null);
         listView = (ListView) view.findViewById(R.id.find_music_list);
-        listView.setAdapter(listAdapter);
         initData();
         return view;
     }
@@ -72,10 +75,51 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    BaseAdapter listAdapter = new BaseAdapter() {
+    BaseAdapter newsListAdapter = new BaseAdapter() {
         @Override
         public int getCount() {
-            return getListCount();
+            return informations.size() == 0 ? 0 : informations.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(final int i, View convertView, ViewGroup viewGroup) {
+            View view;
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+                view = inflater.inflate(R.layout.widget_news_item, null);
+            } else {
+                view = convertView;
+            }
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    openFragInMain = OPEN_NEWS_FRAGMENT;
+                    newsIdSelect = informations.get(i).getInformationId();
+                    OnFindMusicFragmentClickedListener.OnFindMusicFragmentClicked();
+                }
+            });
+            ImgView imgView = (ImgView) view.findViewById(R.id.img_news);
+            TextView title = (TextView) view.findViewById(R.id.text_news_title);
+            imgView.load("news/news_src", informations.get(i).getInformationId() + "");
+            title.setText(informations.get(i).getTitle());
+            return view;
+        }
+    };
+
+    BaseAdapter musicListAdapter = new BaseAdapter() {
+        @Override
+        public int getCount() {
+            return musicLists.size() == 0 ? 0 : ((musicLists.size() + 1) / 2);
         }
 
         @Override
@@ -94,32 +138,32 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
                 view = inflater.inflate(R.layout.widget_music_list, null);
-                LinearLayout layout1=(LinearLayout)view.findViewById(R.id.layout1);
-                LinearLayout layout2=(LinearLayout)view.findViewById(R.id.layout2);
-                ImgView imgView1=(ImgView)view.findViewById(R.id.img_view1);
-                ImgView imgView2=(ImgView)view.findViewById(R.id.img_view2);
-                TextView name1=(TextView)view.findViewById(R.id.text_list_name1);
-                TextView name2=(TextView)view.findViewById(R.id.text_list_name2);
+                LinearLayout layout1 = (LinearLayout) view.findViewById(R.id.layout1);
+                LinearLayout layout2 = (LinearLayout) view.findViewById(R.id.layout2);
+                ImgView imgView1 = (ImgView) view.findViewById(R.id.img_view1);
+                ImgView imgView2 = (ImgView) view.findViewById(R.id.img_view2);
+                TextView name1 = (TextView) view.findViewById(R.id.text_list_name1);
+                TextView name2 = (TextView) view.findViewById(R.id.text_list_name2);
                 layout1.setVisibility(View.VISIBLE);
-                imgView1.loadById(musicLists.get(i * 2 ).getSrcPath());
-                name1.setText(musicLists.get(i * 2 ).getListName());
+                imgView1.loadById(musicLists.get(i * 2).getSrcPath());
+                name1.setText(musicLists.get(i * 2).getListName());
                 layout1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         openFragInMain = OPEN_MUSIC_LIST_FRAGMENT;
-                        settingSelect=(i * 2);
+                        settingSelect = (i * 2);
                         OnFindMusicFragmentClickedListener.OnFindMusicFragmentClicked();
                     }
                 });
                 if (musicLists.size() >= (i + 1) * 2) {
                     layout2.setVisibility(View.VISIBLE);
-                    imgView2.loadById(musicLists.get(i * 2 +1).getSrcPath());
-                    name2.setText(musicLists.get(i * 2 +1).getListName());
+                    imgView2.loadById(musicLists.get(i * 2 + 1).getSrcPath());
+                    name2.setText(musicLists.get(i * 2 + 1).getListName());
                     layout2.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             openFragInMain = OPEN_MUSIC_LIST_FRAGMENT;
-                            settingSelect=(i * 2 +1);
+                            settingSelect = (i * 2 + 1);
                             OnFindMusicFragmentClickedListener.OnFindMusicFragmentClicked();
                         }
                     });
@@ -137,6 +181,7 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
         switch (choose) {
             case NEWS_LIST:
                 listChoose = NEWS_LIST;
+                newsConnect();
                 break;
             case MUSIC_LIST:
                 listChoose = MUSIC_LIST;
@@ -145,16 +190,6 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    private int getListCount() {
-        switch (listChoose) {
-            case NEWS_LIST:
-                return 0;
-            case MUSIC_LIST:
-                return musicLists.size() == 0 ? 0 :( (musicLists.size()+1) / 2 );
-            default:
-                return 0;
-        }
-    }
 
     @Override
     public void onResume() {
@@ -173,19 +208,53 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try {
-                    final List<MusicList> data = new Gson().fromJson(response.body().string(), new TypeToken<List<MusicList>>() {
+                    final String data=response.body().string();
+                    musicLists= new Gson().fromJson(data, new TypeToken<List<MusicList>>() {
                     }.getType());
-                    musicLists = data;
                     if (musicLists == null)
-                        musicLists = new ArrayList<MusicList>();
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            listView.removeAllViewsInLayout();
-                            listAdapter.notifyDataSetInvalidated();
-                            listView.setAdapter(listAdapter);
-                        }
-                    });
+                        musicLists = new ArrayList<>();
+                    else
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                listView.removeAllViewsInLayout();
+                                musicListAdapter.notifyDataSetInvalidated();
+                                listView.setAdapter(musicListAdapter);
+                            }
+                        });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    void newsConnect() {
+        Request request = HttpService.requestBuilderWithPath("news/getAll/" + 0).get().build();
+        HttpService.getClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(final Call call, final IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    final String data=response.body().string();
+                    System.out.println(data);
+                    informations= new Gson().fromJson(data, new TypeToken<List<Information>>() {
+                    }.getType());
+                    if (informations == null)
+                        informations = new ArrayList<>();
+                    else
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                listView.removeAllViewsInLayout();
+                                newsListAdapter.notifyDataSetInvalidated();
+                                listView.setAdapter(newsListAdapter);
+                            }
+                        });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -194,10 +263,12 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
     }
 
 
-
-
-    public MusicList getMusicList(){
+    public MusicList getMusicList() {
         return musicLists.get(settingSelect);
+    }
+
+    public int getNewsIdSelect() {
+        return newsIdSelect;
     }
 
     public int getOpenFragmentInMain() {

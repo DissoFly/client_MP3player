@@ -19,6 +19,7 @@ import com.example.mp3player.windows.main.SearchFragment;
 import com.example.mp3player.windows.main.page.FindMusicFragment;
 import com.example.mp3player.windows.main.page.FriendsFragment;
 import com.example.mp3player.windows.main.page.MineFragment;
+import com.example.mp3player.windows.main.page.findMusic.NewsFragment;
 import com.example.mp3player.windows.main.page.mine.download.DownloadFragment;
 import com.example.mp3player.windows.main.page.mine.localMusic.LocalMusicFragment;
 
@@ -39,6 +40,7 @@ import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_FOOTER_P
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_LOCAL_MUSIC_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_MUSIC_ITEM_SETTING_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_MUSIC_LIST_FRAGMENT;
+import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_NEWS_FRAGMENT;
 
 /**
  * Created by DissoCapB on 2017/1/16.
@@ -66,6 +68,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     DownloadFragment downloadFragment = new DownloadFragment();
     SearchFragment searchFragment = new SearchFragment();
     MusicListFragment musicListFragment=new MusicListFragment();
+    NewsFragment newsFragment;
 
 
     DrawerLayout drawable;
@@ -111,6 +114,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 if (openFragInMain==OPEN_MUSIC_LIST_FRAGMENT){
                     musicListFragment=new MusicListFragment();
                     musicListFragment.setMusicList(findMusicFragment.getMusicList());
+                }else if(openFragInMain==OPEN_NEWS_FRAGMENT){
+                    newsFragment=new NewsFragment();
+                    newsFragment.setNewsId(findMusicFragment.getNewsIdSelect());
                 }
                 openNewFragInMain();
             }
@@ -202,7 +208,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 getFragmentManager().beginTransaction()
                         .replace(main_content_outside, musicListFragment).addToBackStack(null).commit();
                 break;
-
+            case OPEN_NEWS_FRAGMENT:
+                getFragmentManager().beginTransaction()
+                        .replace(main_content_outside, newsFragment).addToBackStack(null).commit();
+                break;
 
         }
 

@@ -456,7 +456,6 @@ public class MusicPlayerService extends Service {
             e.printStackTrace();
         }
         content = new StringBuilder();
-        audioList = new ArrayList<>();
         try {
             in = openFileInput("playingMusicState");
             reader = new BufferedReader(new InputStreamReader(in));
