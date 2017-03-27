@@ -3,13 +3,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/frag_song_img"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-
     <LinearLayout
+        android:id="@+id/layout_top"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="#363636"
@@ -34,59 +29,67 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:background="#eee">
+        android:background="#eee"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/text_playing_local_or_online"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="text_playing_local_or_online"/>
+
             <Button
                 android:id="@+id/btn_playing_download"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="download"/>
+
             <Button
                 android:id="@+id/btn_playing_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="评论"/>
+
             <Button
                 android:id="@+id/btn_playing_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="赞"/>
         </LinearLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/text_playing_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00"/>
+
             <TextView
                 android:id="@+id/text_max_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="99:99"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:text="99:99"/>
+
             <SeekBar
                 android:id="@+id/play_music_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/text_playing_time"
-                android:layout_toLeftOf="@id/text_max_time"/>
+                android:layout_toLeftOf="@id/text_max_time"
+                android:layout_toRightOf="@id/text_playing_time"/>
         </RelativeLayout>
-
-
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -132,6 +135,53 @@
                 android:src="@mipmap/ic_launcher"/>
         </LinearLayout>
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frag_song_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/frag_song_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_bottom"
+        android:layout_below="@id/layout_top"/>
+
+    <RelativeLayout
+        android:id="@+id/layout_lrc"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_bottom"
+        android:layout_below="@id/layout_top">
+
+        <TextView
+            android:id="@+id/text_lrc_center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            />
+
+        <TextView
+            android:id="@+id/text_lrc_top"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/text_lrc_center"
+            android:layout_alignParentTop="true"
+            android:gravity="bottom|center_horizontal"
+            />
+
+        <TextView
+            android:id="@+id/text_lrc_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/text_lrc_center"
+            android:gravity="top|center_horizontal"
+            />
+    </RelativeLayout>
+
     <FrameLayout
         android:id="@+id/layout_out"
         android:layout_width="match_parent"

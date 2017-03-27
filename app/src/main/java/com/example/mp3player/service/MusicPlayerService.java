@@ -49,7 +49,6 @@ public class MusicPlayerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        System.out.println("------------MusicPlayerService Building--------------------");
         load();
         if (audioList.size() > 0) {
             if (listPosition < 0)
@@ -168,7 +167,6 @@ public class MusicPlayerService extends Service {
             if (playingItem.getFilePath().equals(playingItem1.getFilePath())) {
                 break;
             }
-            System.out.println(playingItem.getOnlineSongId() + "++" + playingItem1.getOnlineSongId());
             if (playingItem.getOnlineSongId() == playingItem1.getOnlineSongId() && playingItem.getOnlineSongId() > 0) {
                 audioList.get(i).setDownload(true);
                 audioList.get(i).setFilePath(playingItem.getFilePath());
