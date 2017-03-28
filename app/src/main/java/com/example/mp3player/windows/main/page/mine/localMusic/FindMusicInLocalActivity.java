@@ -32,10 +32,10 @@ import java.util.List;
 
 public class FindMusicInLocalActivity extends Activity {
     private List<PlayingItem> audioList = null; //本地音频列表
-    private boolean isSearch=false;
+    private boolean isSearch = false;
     String fileUpdate = null;
     TextView textResult;
-    private Handler handler=null;
+    private Handler handler = null;
     Button search;
     LooperThread thread;
 
@@ -44,13 +44,13 @@ public class FindMusicInLocalActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page_mine_find_music_in_local);
         textResult = (TextView) findViewById(R.id.text_find_music_result);
-        search=(Button)findViewById(R.id.btn_find_music_search) ;
+        search = (Button) findViewById(R.id.btn_find_music_search);
         load();
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handler=new Handler();
+                handler = new Handler();
                 thread = new LooperThread();
                 thread.start();
 
@@ -63,23 +63,36 @@ public class FindMusicInLocalActivity extends Activity {
     protected void onResume() {
         super.onResume();
         textResult.setText("共" + audioList.size() + "首");
-        if(thread.isAlive()){
-            search.setVisibility(View.GONE);
-        }
+        if (thread != null)
+            if (thread.isAlive()) {
+                search.setVisibility(View.GONE);
+            }
     }
 
     ////////////////////////////////////搜索本地文件↓////////////////////////////////////
     public class LooperThread extends Thread {
         @Override
         public void run() {
-            search.setVisibility(View.GONE);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    search.setVisibility(View.GONE);
+                }
+            });
+
             audioList = new ArrayList<>();
-            isSearch=true;      //更新数据ui放getFiles()内会显示错乱
+            isSearch = true;      //更新数据ui放getFiles()内会显示错乱
             getFiles(Environment.getExternalStorageDirectory() + "/");
             save();
-            isSearch=false;
+            isSearch = false;
             handler.post(runnableUi);
-            search.setVisibility(View.VISIBLE);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    search.setVisibility(View.VISIBLE);
+                }
+            });
+
         }
     }
 
@@ -88,8 +101,8 @@ public class FindMusicInLocalActivity extends Activity {
 
         File files = new File(url); // 创建文件对象
         File[] file = files.listFiles();
-        int fileQuantity=file.length;
-        int i=0;
+        int fileQuantity = file.length;
+        int i = 0;
 
         handler.post(runnableUi);
         try {
@@ -101,32 +114,34 @@ public class FindMusicInLocalActivity extends Activity {
                     getFiles(f.getAbsolutePath()); //递归调用
                 } else {
                     if (isAudioFile(f.getPath())) { // 如果是音频文件
-                        PlayingItem playingItem=new PlayingItem();
-                        MusicInfo musicInfo=new MusicInfo();
-                        musicInfo.setPath(f.getPath());
-                        int j=-1;
-                        try{
-                            j=musicInfo.parseMusic();
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                        if (j==0){
-                            String songName=musicInfo.getTitle();
-                            if (songName!=null)
-                                if (!songName.equals("")) {
-                                    playingItem.setSongName(songName);
-                                }else{
-                                    String s1[] =f.getPath().split("/");
-                                    playingItem.setSongName(s1[s1.length-1]);
-                                }
-
-                            else{
-                                String s1[] =f.getPath().split("/");
-                                playingItem.setSongName(s1[s1.length-1]);
-                            }
-                            playingItem.setArtist(musicInfo.getPerformer());
-                            playingItem.setAlbum(musicInfo.getAlbum());
-                        }
+                        PlayingItem playingItem = new PlayingItem();
+                        MusicInfo musicInfo = new MusicInfo();
+//                        musicInfo.setPath(f.getPath());
+//                        int j = -1;
+//                        try {
+//                            j = musicInfo.parseMusic();
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                        if (j == 0) {
+//                            String songName = musicInfo.getTitle("GB2312");
+//                            if (songName != null)
+//                                if (!songName.equals("")) {
+//                                    playingItem.setSongName(songName);
+//                                } else {
+//                                    String s1[] = f.getPath().split("/");
+//                                    playingItem.setSongName(s1[s1.length - 1]);
+//                                }
+//
+//                            else {
+//                                String s1[] = f.getPath().split("/");
+//                                playingItem.setSongName(s1[s1.length - 1]);
+//                            }
+//                            playingItem.setArtist(musicInfo.getPerformer());
+//                            playingItem.setAlbum(musicInfo.getAlbum());
+//                        }
+                        String s1[] = f.getPath().split("/");
+                        playingItem.setSongName(s1[s1.length - 1].replace(".mp3","").replace(".wav","").replace(".3gp",""));
                         playingItem.setOnline(false);
                         playingItem.setFilePath(f.getPath());
                         audioList.add(playingItem); // 将文件的路径添加到list集合中
@@ -145,12 +160,12 @@ public class FindMusicInLocalActivity extends Activity {
 
     }
 
-    Runnable runnableUi=new Runnable() {                //更新ui
+    Runnable runnableUi = new Runnable() {                //更新ui
         @Override
         public void run() {
 
-                textResult.setText("正在查找：已找到" + audioList.size() + "首，"+fileUpdate);
-            if(!isSearch)
+            textResult.setText("正在查找：已找到" + audioList.size() + "首，" + fileUpdate);
+            if (!isSearch)
                 textResult.setText("已完成：已找到" + audioList.size() + "首");
         }
     };
@@ -162,44 +177,45 @@ public class FindMusicInLocalActivity extends Activity {
         return false;
     }
 
+
     //////////////////////////////////搜索本地文件↑//////////////////////////////////////
     /////////////////////////////////本地文件路径储存↓///////////////////////////////////////
 
-    public void save(){							//写入文件
-        FileOutputStream out=null;
-        BufferedWriter writer=null;
-        try{
-            out=openFileOutput("localMusicData", Context.MODE_PRIVATE);
-            writer=new BufferedWriter(new OutputStreamWriter(out));
+    public void save() {                            //写入文件
+        FileOutputStream out = null;
+        BufferedWriter writer = null;
+        try {
+            out = openFileOutput("localMusicData", Context.MODE_PRIVATE);
+            writer = new BufferedWriter(new OutputStreamWriter(out));
             writer.write(new Gson().toJson(audioList));
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
-        }finally{
-            try{
-                if(writer!=null){
+        } finally {
+            try {
+                if (writer != null) {
                     writer.close();
                 }
-            }catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void load(){
-        FileInputStream in =null;
-        BufferedReader reader=null;
-        StringBuilder content=new StringBuilder();
+    public void load() {
+        FileInputStream in = null;
+        BufferedReader reader = null;
+        StringBuilder content = new StringBuilder();
         audioList = new ArrayList<>();
-        try{
-            in=openFileInput("localMusicData");
-            reader=new BufferedReader(new InputStreamReader(in));
-            String line="";
-            while((line=reader.readLine())!=null)
+        try {
+            in = openFileInput("localMusicData");
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line = "";
+            while ((line = reader.readLine()) != null)
                 content.append(line);
             audioList = new Gson().fromJson(content.toString(), new TypeToken<List<PlayingItem>>() {
             }.getType());
 
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

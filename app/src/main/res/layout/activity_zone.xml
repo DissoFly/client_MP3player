@@ -48,7 +48,7 @@
             android:id="@+id/btn_zone_inbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="btn_zone_inbox"/>
+            android:text="私信"/>
     </LinearLayout>
 
 

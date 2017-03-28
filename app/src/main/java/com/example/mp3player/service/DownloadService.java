@@ -131,7 +131,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
                 Toast.makeText(this, "存在完成下载", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            Toast.makeText(this, "开始下载", Toast.LENGTH_SHORT).show();
             Downloading downloading = new Downloading();
             downloading.setLocalPath(path);
             downloading.setMusicId(musicId);
@@ -193,6 +193,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            Toast.makeText(this, "下载完成", Toast.LENGTH_SHORT).show();
             System.out.println("下载完成");
             isDownloading = false;
             downloadingMusicId = 0;
@@ -311,6 +312,5 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             }
         }
     }
-
 
 }

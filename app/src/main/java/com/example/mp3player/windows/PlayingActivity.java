@@ -53,8 +53,7 @@ import okhttp3.Response;
  */
 
 public class PlayingActivity extends Activity implements View.OnClickListener {
-    MusicPlayerService messenger;
-    boolean bound;
+
     private List<PlayingItem> audioList = null;
     private int listPosition = -1;
 
@@ -612,8 +611,8 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
             for (int a = getLyric + 1; (a < lyricList.size()) && (a < getLyric + 6); a++)
                 sf.append(lyricList.get(a) + "\n");
             lrcCenter.setText(lyricList.get(getLyric));
-            lrcTop.setText(sb.length()>=2? sb.substring(0, sb.length() - 2):sb);
-            lrcButton.setText(sf.length()>=2?sf.substring(0, sf.length() - 2):sf);
+            lrcTop.setText(sb.length() >= 2 ? sb.substring(0, sb.length() - 2) : sb);
+            lrcButton.setText(sf.length() >= 2 ? sf.substring(0, sf.length() - 2) : sf);
         }
 
     }
@@ -675,6 +674,9 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
             boundDownload = true;
         }
     };
+
+    MusicPlayerService messenger;
+    boolean bound;
     private ServiceConnection connection = new ServiceConnection() {
 
         public void onServiceDisconnected(ComponentName name) {
@@ -685,6 +687,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
         public void onServiceConnected(ComponentName name, IBinder service) {
             messenger = ((MusicPlayerService.ServiceBinder) service).getService();
             handler.postDelayed(runnable, REFLASH_TIME);
+            messenger.setMusicDownload();
             bound = true;
             bindService(new Intent(PlayingActivity.this, DownloadService.class), connectionDownload, Context.BIND_AUTO_CREATE);
             bindService(new Intent(PlayingActivity.this, LoginService.class), loginConnection, Context.BIND_AUTO_CREATE);

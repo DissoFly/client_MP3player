@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
@@ -12,9 +13,11 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import com.example.mp3player.entity.DownloadMusic;
 import com.example.mp3player.entity.PlayingItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.j256.ormlite.dao.Dao;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -23,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -133,6 +137,26 @@ public class MusicPlayerService extends Service {
         });
         return binder;
     }
+    Dao<DownloadMusic, Integer> downloadMusicDao;
+    public void setMusicDownload() {
+        DataService dataService = DataService.getInstance(this);
+        if(listPosition>=0) {
+            try {
+                downloadMusicDao = dataService.getDownloadMusicDao();
+                List<DownloadMusic> downloadMusics = downloadMusicDao.queryForAll();
+                for (int i = 0; i < audioList.size(); i++) {
+                    for (DownloadMusic downloadMusic : downloadMusics) {
+                        if (audioList.get(i).getOnlineSongId() == downloadMusic.getMusicId()) {
+                            audioList.get(i).setDownload(true);
+                            audioList.get(i).setFilePath(downloadMusic.getLocalPath());
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
     public class ServiceBinder extends Binder {
@@ -220,19 +244,24 @@ public class MusicPlayerService extends Service {
     }
 
     public Bitmap getImg() {
-        //        Bitmap bitmap=null;
-        //        if (listPosition>=0 ){
-        //            try {
-        //                Cursor currentCursor = getCursor(audioList.get(listPosition));
-        //                int album_id = currentCursor.getInt(currentCursor
-        //                        .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
-        //                String albumArt = getAlbumArt(album_id);
-        //
-        //                bitmap = BitmapFactory.decodeFile(albumArt);
-        //            }catch (Exception e){
-        //                e.printStackTrace();
-        //            }
-        //        }
+                Bitmap bitmap=null;
+                if (listPosition>=0 ){
+                    if(!audioList.get(listPosition).isOnline()||(audioList.get(listPosition).isOnline()&&audioList.get(listPosition).isDownload())) {
+                        try {
+                            Cursor currentCursor = getCursor(audioList.get(listPosition).getFilePath());
+                            int album_id = currentCursor.getInt(currentCursor
+                                    .getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+                            String albumArt = getAlbumArt(album_id);
+
+                            bitmap = BitmapFactory.decodeFile(albumArt);
+                            return bitmap;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        //联网显示图片
+                    }
+                }
         return null;
     }
 
@@ -280,6 +309,7 @@ public class MusicPlayerService extends Service {
     /////////////////////////////////播放方法↓///////////////////////////////////////
     private void initMediaPlayerAndPlay() {             //初始化
         try {
+            setMusicDownload();
             isPrepared = false;
             player.reset();
             //File file=new File(audioList.get(listPosition));

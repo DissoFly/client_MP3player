@@ -37,7 +37,7 @@ import okhttp3.Response;
  * Created by DissoCapB on 2017/3/21.
  */
 
-public class ZoneActivity extends Activity implements View.OnClickListener{
+public class ZoneActivity extends Activity implements View.OnClickListener {
     TextView title;
     TextView name;
     ListView listView;
@@ -45,22 +45,24 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
     List<FriendRead> friendReads;
     Button btnAddFriend;
     Button btnInbox;
-    String addFriendMessage="";
+    String addFriendMessage = "";
+    String friendName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone);
-        name = (TextView)findViewById(R.id.text_zone_username);
-        title = (TextView)findViewById(R.id.text_zone_title);
-        listView = (ListView)findViewById(R.id.list_zone);
-        btnAddFriend= (Button)findViewById(R.id.btn_zone_add_friend);
-        btnInbox=(Button)findViewById(R.id.btn_zone_inbox);
+        name = (TextView) findViewById(R.id.text_zone_username);
+        title = (TextView) findViewById(R.id.text_zone_title);
+        listView = (ListView) findViewById(R.id.list_zone);
+        btnAddFriend = (Button) findViewById(R.id.btn_zone_add_friend);
+        btnInbox = (Button) findViewById(R.id.btn_zone_inbox);
         btnAddFriend.setVisibility(View.GONE);
         initData();
         Bundle extras = getIntent().getExtras();
-        friendId=extras.getInt("openZoneId");
+        friendId = extras.getInt("openZoneId");
         bindService(new Intent(this, LoginService.class), connection, Context.BIND_AUTO_CREATE);
+        getNameConnect();
     }
 
     BaseAdapter listAdapter = new BaseAdapter() {
@@ -86,7 +88,7 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
                 view = inflater.inflate(R.layout.widget_friendread_item, null);
-                TextView textView=(TextView)view.findViewById(R.id.text_friendread);
+                TextView textView = (TextView) view.findViewById(R.id.text_friendread);
                 textView.setText(friendReads.get(i).getText());
             } else {
                 view = convertView;
@@ -111,7 +113,7 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
                 ZoneActivity.this.onBackPressed();
                 break;
             case R.id.btn_zone_add_friend:
-                switch (addFriendMessage){
+                switch (addFriendMessage) {
                     case "FALSE_ISADD":
                         addFriend(friendId);
                         break;
@@ -131,12 +133,16 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
             case R.id.btn_zone_inbox:
                 if (messenger.getUser() != null) {
                     int userId = messenger.getUser().getUserId();
-                    Intent itnt=new Intent(this, InboxActivity.class);
-                    itnt.putExtra("userId",userId);
-                    itnt.putExtra("friendId",friendId);
-                    startActivityForResult(itnt, 0);
-                }else{
-                    Toast.makeText(this,"请登录",Toast.LENGTH_SHORT).show();
+                    if (userId != friendId) {
+                        Intent itnt = new Intent(this, InboxActivity.class);
+                        itnt.putExtra("userId", userId);
+                        itnt.putExtra("friendId", friendId);
+                        startActivityForResult(itnt, 0);
+                    }else{
+                        Toast.makeText(this, "不能给自己发私信", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "请登录", Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
@@ -213,11 +219,11 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String data = response.body().string();
-                addFriendMessage=data;
+                addFriendMessage = data;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        switch (data){
+                        switch (data) {
                             case "FALSE_ISADD":
                                 btnAddFriend.setVisibility(View.VISIBLE);
                                 btnAddFriend.setText("关注");
@@ -258,6 +264,13 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
         int userId = -1;
         if (messenger.getUser() != null) {
             userId = messenger.getUser().getUserId();
+        } else {
+            Toast.makeText(this, "请登录", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (messenger.getUser().getUserId() == friendId) {
+            Toast.makeText(this, "不能关注自己", Toast.LENGTH_SHORT).show();
+            return;
         }
         final RequestBody formBody = new FormBody.Builder()
                 .add("userId", userId + "")
@@ -276,7 +289,7 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        switch (data){
+                        switch (data) {
                             case "SUCCESS_ADD":
                                 Toast.makeText(ZoneActivity.this, "关注成功", Toast.LENGTH_SHORT).show();
                                 getIsFriend(friendId);
@@ -307,6 +320,36 @@ public class ZoneActivity extends Activity implements View.OnClickListener{
             }
         });
 
+    }
+
+
+    void getNameConnect() {
+        final RequestBody formBody = new FormBody.Builder()
+                .add("userId", friendId + "")
+                .build();
+        Request request = HttpService.requestBuilderWithPath("getUserName").post(formBody).build();
+        HttpService.getClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(final Call call, final IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String data = response.body().string();
+                if (data.startsWith("NAME:")) {
+                    friendName = data.replace("NAME:", "");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            title.setText(friendName + " 的空间");
+                            name.setText(friendName);
+                        }
+                    });
+                }
+
+            }
+        });
     }
 
     LoginService messenger;
