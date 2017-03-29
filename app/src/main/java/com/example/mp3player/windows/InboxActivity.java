@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.format.DateFormat;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mp3player.R;
+import com.example.mp3player.StatusBarUtils;
 import com.example.mp3player.entity.Inbox;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
@@ -57,6 +59,7 @@ public class InboxActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
+        StatusBarUtils.setWindowStatusBarColor(this, Color.parseColor("#d33a31"));
         Bundle extras = getIntent().getExtras();
         friendId = extras.getInt("friendId");
         userId = extras.getInt("userId");

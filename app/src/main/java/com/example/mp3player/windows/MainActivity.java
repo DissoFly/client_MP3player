@@ -2,6 +2,7 @@ package com.example.mp3player.windows;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.mp3player.R;
+import com.example.mp3player.StatusBarUtils;
 import com.example.mp3player.windows.main.AddMusicToListFragment;
 import com.example.mp3player.windows.main.DelectFragment;
 import com.example.mp3player.windows.main.FooterPlayerFragment;
@@ -23,16 +25,6 @@ import com.example.mp3player.windows.main.page.findMusic.NewsFragment;
 import com.example.mp3player.windows.main.page.mine.download.DownloadFragment;
 import com.example.mp3player.windows.main.page.mine.localMusic.LocalMusicFragment;
 
-import static com.example.mp3player.R.id.btn_main_header_drawer;
-import static com.example.mp3player.R.id.btn_main_header_find_music;
-import static com.example.mp3player.R.id.btn_main_header_friends;
-import static com.example.mp3player.R.id.btn_main_header_mine;
-import static com.example.mp3player.R.id.btn_main_header_search;
-import static com.example.mp3player.R.id.drawer_main;
-import static com.example.mp3player.R.id.main_content_inside;
-import static com.example.mp3player.R.id.main_content_outside;
-import static com.example.mp3player.R.id.main_header;
-import static com.example.mp3player.R.id.main_outside;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_ADD_MUSIC_TO_LIST_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DELECT_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DOWNLOAD_FRAGMENT;
@@ -74,16 +66,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
     DrawerLayout drawable;
     LinearLayout drawableLayout;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        drawable = (DrawerLayout) findViewById(drawer_main);
+        StatusBarUtils.setWindowStatusBarColor(this, Color.parseColor("#d33a31"));
+        drawable = (DrawerLayout) findViewById(R.id.drawer_main);
         drawableLayout = (LinearLayout) findViewById(R.id.left_drawer);
-
-
 
         //需要解决一开始点击findmusic会崩问题
         getFragmentManager().beginTransaction()
@@ -91,7 +80,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         getFragmentManager().beginTransaction()
                 .replace(R.id.left_drawer_head_message, leftDrawerHeadMessageFragment).commit();
         getFragmentManager().beginTransaction()
-                .replace(main_content_inside, findMusicFragment).commit();
+                .replace(R.id.main_content_inside, findMusicFragment).commit();
 
         drawable.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         initData();
@@ -182,7 +171,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         switch (openFragInMain) {
             case OPEN_LOCAL_MUSIC_FRAGMENT:
                 getFragmentManager().beginTransaction()
-                        .replace(main_content_outside, localMusicFragment).addToBackStack(null).commit();
+                        .replace(R.id.main_content_outside, localMusicFragment).addToBackStack(null).commit();
                 break;
             case OPEN_FOOTER_PLAYING_LIST_FRAGMENT:
                 getFragmentManager().beginTransaction()
@@ -190,27 +179,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case OPEN_DOWNLOAD_FRAGMENT:
                 getFragmentManager().beginTransaction()
-                        .replace(main_content_outside, downloadFragment).addToBackStack(null).commit();
+                        .replace(R.id.main_content_outside, downloadFragment).addToBackStack(null).commit();
                 break;
             case OPEN_MUSIC_ITEM_SETTING_FRAGMENT:
                 getFragmentManager().beginTransaction()
-                        .replace(main_outside, musicItemSettingFragment).addToBackStack(null).commit();
+                        .replace(R.id.main_outside, musicItemSettingFragment).addToBackStack(null).commit();
                 break;
             case OPEN_ADD_MUSIC_TO_LIST_FRAGMENT:
                 getFragmentManager().beginTransaction()
-                        .replace(main_outside, addMusicToListFragment).addToBackStack(null).commit();
+                        .replace(R.id.main_outside, addMusicToListFragment).addToBackStack(null).commit();
                 break;
             case OPEN_DELECT_FRAGMENT:
                 getFragmentManager().beginTransaction()
-                        .replace(main_outside, delectFragment).addToBackStack(null).commit();
+                        .replace(R.id.main_outside, delectFragment).addToBackStack(null).commit();
                 break;
             case OPEN_MUSIC_LIST_FRAGMENT:
                 getFragmentManager().beginTransaction()
-                        .replace(main_content_outside, musicListFragment).addToBackStack(null).commit();
+                        .replace(R.id.main_content_outside, musicListFragment).addToBackStack(null).commit();
                 break;
             case OPEN_NEWS_FRAGMENT:
                 getFragmentManager().beginTransaction()
-                        .replace(main_content_outside, newsFragment).addToBackStack(null).commit();
+                        .replace(R.id.main_content_outside, newsFragment).addToBackStack(null).commit();
                 break;
 
         }
@@ -225,35 +214,35 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void initData() {
-        findViewById(btn_main_header_drawer).setOnClickListener(this);
-        findViewById(btn_main_header_find_music).setOnClickListener(this);
-        findViewById(btn_main_header_mine).setOnClickListener(this);
-        findViewById(btn_main_header_friends).setOnClickListener(this);
-        findViewById(btn_main_header_search).setOnClickListener(this);
-        findViewById(main_header).setOnClickListener(this);
+        findViewById(R.id.btn_main_header_drawer).setOnClickListener(this);
+        findViewById(R.id.btn_main_header_find_music).setOnClickListener(this);
+        findViewById(R.id.btn_main_header_mine).setOnClickListener(this);
+        findViewById(R.id.btn_main_header_friends).setOnClickListener(this);
+        findViewById(R.id.btn_main_header_search).setOnClickListener(this);
+        findViewById(R.id.main_header).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case btn_main_header_drawer:
+            case R.id.btn_main_header_drawer:
                 drawable.openDrawer(Gravity.LEFT);
                 break;
-            case btn_main_header_find_music:
+            case R.id.btn_main_header_find_music:
                 getFragmentManager().beginTransaction()
-                        .replace(main_content_inside, findMusicFragment).commit();
+                        .replace(R.id.main_content_inside, findMusicFragment).commit();
                 break;
-            case btn_main_header_mine:
+            case R.id.btn_main_header_mine:
                 getFragmentManager().beginTransaction()
-                        .replace(main_content_inside, mineFragment).commit();
+                        .replace(R.id.main_content_inside, mineFragment).commit();
                 break;
-            case btn_main_header_friends:
+            case R.id.btn_main_header_friends:
                 getFragmentManager().beginTransaction()
-                        .replace(main_content_inside, friendsFragment).commit();
+                        .replace(R.id.main_content_inside, friendsFragment).commit();
                 break;
-            case btn_main_header_search:
+            case R.id.btn_main_header_search:
                 getFragmentManager().beginTransaction()
-                        .replace(main_content_outside, searchFragment).addToBackStack(null).commit();
+                        .replace(R.id.main_content_outside, searchFragment).addToBackStack(null).commit();
 
                 break;
             default:

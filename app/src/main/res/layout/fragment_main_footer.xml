@@ -4,33 +4,64 @@
     android:id="@+id/to_playing_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="#fff">
 
-    <TextView
-        android:id="@+id/text_footer_music_name"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="音乐，让生活更美好"/>
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="11dp"
+        android:layout_weight="1">
 
-    <Button
+        <TextView
+            android:id="@+id/text_footer_music_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#333333"
+            android:lines="1"
+            android:textSize="13dp"
+            android:layout_marginBottom="1dp"
+            android:text="音乐，让生活更美好"
+
+            />
+
+        <TextView
+            android:id="@+id/text_footer_music_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textSize="12dp"
+            android:textColor="#7f7f7f"
+            android:text="音乐，让生活更美好"
+            />
+    </LinearLayout>
+
+
+    <ImageView
         android:id="@+id/btn_footer_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="play"
-        />
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center_vertical"
+        android:src="@mipmap/ic_play"/>
 
-    <Button
+    <ImageView
         android:id="@+id/btn_footer_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="next"
-        />
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center_vertical"
 
-    <Button
+        android:layout_marginLeft="20dp"
+        android:src="@mipmap/ic_next"/>
+
+    <ImageView
         android:id="@+id/btn_footer_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="list"
-        />
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="15dp"
+        android:src="@mipmap/ic_list"/>
+
 </LinearLayout>

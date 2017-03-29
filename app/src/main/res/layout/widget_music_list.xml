@@ -25,6 +25,9 @@
 
             android:text="text_list_name"/>
     </LinearLayout>
+    <FrameLayout
+        android:layout_width="3dp"
+        android:layout_height="wrap_content"/>
 
     <LinearLayout
         android:id="@+id/layout2"

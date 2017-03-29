@@ -124,7 +124,7 @@ public class ImgView extends View {
             float scaleX = srcWidth / dstWidth;
             float scaleY = srcHeight / dstHeight;
 
-            canvas.scale(1 / scaleX, 1 / scaleY);
+            canvas.scale(Math.max(1 / scaleX, 1 / scaleY), Math.max(1 / scaleX, 1 / scaleY));
 
             canvas.drawRect(0, 0, srcWidth, srcHeight, paint);
 

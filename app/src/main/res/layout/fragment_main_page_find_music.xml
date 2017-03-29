@@ -2,28 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+    android:background="#fff">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="37dp"
         android:gravity="center"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_find_music_news"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="资讯"/>
+            android:layout_width="100dp"
+            android:layout_height="37dp"
+            android:text="资讯"
+            android:background="#00000000"
+            android:textColor="#d33a31"
+            android:textSize="17dp"/>
 
         <Button
             android:id="@+id/btn_find_music_lists"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="推荐清单"/>
+            android:layout_width="100dp"
+            android:layout_height="37dp"
+            android:background="#00000000"
+            android:text="推荐清单"
+            android:textSize="17dp"/>
     </LinearLayout>
 
     <ListView
+        android:background="#f2f4f5"
+        android:divider="#00000000"
+        android:dividerHeight="0dip"
         android:id="@+id/find_music_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>

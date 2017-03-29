@@ -1,11 +1,13 @@
 package com.example.mp3player.windows.main.page;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -46,12 +48,16 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
     ListView listView;
     View view;
     List<Information> informations = new ArrayList<>();
+    Button btnNews;
+    Button btnList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view == null)
             view = inflater.inflate(R.layout.fragment_main_page_find_music, null);
         listView = (ListView) view.findViewById(R.id.find_music_list);
+        btnNews=(Button) view.findViewById(R.id.btn_find_music_news);
+        btnList=(Button) view.findViewById(R.id.btn_find_music_lists);
         initData();
         return view;
     }
@@ -180,10 +186,18 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
     private void setList(int choose) {
         switch (choose) {
             case NEWS_LIST:
+                btnNews.setTextColor(Color.parseColor("#d33a31"));
+                btnNews.setBackground(getResources().getDrawable(R.mipmap.bg_choose));
+                btnList.setTextColor(Color.parseColor("#000000"));
+                btnList.setBackground(null);
                 listChoose = NEWS_LIST;
                 newsConnect();
                 break;
             case MUSIC_LIST:
+                btnList.setTextColor(Color.parseColor("#d33a31"));
+                btnList.setBackground(getResources().getDrawable(R.mipmap.bg_choose));
+                btnNews.setTextColor(Color.parseColor("#000000"));
+                btnNews.setBackground(null);
                 listChoose = MUSIC_LIST;
                 musicListConnect();
                 break;

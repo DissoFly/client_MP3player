@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -64,6 +65,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
     int openZoneId;
 
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -92,18 +94,38 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.btn_friend_news_list:
                 choose=NEWS_CHOOSE;
-                newsConnect();
+                setList(choose);
                 break;
             case R.id.btn_friend_inbox_list:
-                inboxListConnect();
                 choose=INBOX_CHOOSE;
+                setList(choose);
                 break;
             case R.id.btn_friend_add_list:
                 choose=ADD_CHOOSE;
-                addsConnect(ADD_CHOOSE);
+                setList(choose);
                 break;
             case R.id.btn_friend_be_add_list:
                 choose=BE_ADD_CHOOSE;
+                setList(choose);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void setList(String choose) {
+        buttonChange(choose);
+        switch (choose) {
+            case NEWS_CHOOSE:
+                newsConnect();
+                break;
+            case INBOX_CHOOSE:
+                inboxListConnect();
+                break;
+            case ADD_CHOOSE:
+                addsConnect(ADD_CHOOSE);
+                break;
+            case BE_ADD_CHOOSE:
                 addsConnect(BE_ADD_CHOOSE);
                 break;
             default:
@@ -511,8 +533,53 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         public void onServiceConnected(ComponentName name, IBinder service) {
             messenger = ((LoginService.ServicesBinder) service).getService();
             bound = true;
-            newsConnect();
+            setList(choose);
         }
     };
-
+    void buttonChange(String choose){
+        switch (choose){
+            case NEWS_CHOOSE:
+                btnNews.setTextColor(Color.parseColor("#d33a31"));
+                btnNews.setBackground(getResources().getDrawable(R.mipmap.bg_choose));
+                btnInbox.setTextColor(Color.parseColor("#000000"));
+                btnInbox.setBackground(null);
+                btnAdds.setTextColor(Color.parseColor("#000000"));
+                btnAdds.setBackground(null);
+                btnBeAdds.setTextColor(Color.parseColor("#000000"));
+                btnBeAdds.setBackground(null);
+                break;
+            case INBOX_CHOOSE:
+                btnNews.setTextColor(Color.parseColor("#000000"));
+                btnNews.setBackground(null);
+                btnInbox.setTextColor(Color.parseColor("#d33a31"));
+                btnInbox.setBackground(getResources().getDrawable(R.mipmap.bg_choose));
+                btnAdds.setTextColor(Color.parseColor("#000000"));
+                btnAdds.setBackground(null);
+                btnBeAdds.setTextColor(Color.parseColor("#000000"));
+                btnBeAdds.setBackground(null);
+                break;
+            case ADD_CHOOSE:
+                btnNews.setTextColor(Color.parseColor("#000000"));
+                btnNews.setBackground(null);
+                btnInbox.setTextColor(Color.parseColor("#000000"));
+                btnInbox.setBackground(null);
+                btnAdds.setTextColor(Color.parseColor("#d33a31"));
+                btnAdds.setBackground(getResources().getDrawable(R.mipmap.bg_choose));
+                btnBeAdds.setTextColor(Color.parseColor("#000000"));
+                btnBeAdds.setBackground(null);
+                break;
+            case BE_ADD_CHOOSE:
+                btnNews.setTextColor(Color.parseColor("#000000"));
+                btnNews.setBackground(null);
+                btnInbox.setTextColor(Color.parseColor("#000000"));
+                btnInbox.setBackground(null);
+                btnAdds.setTextColor(Color.parseColor("#000000"));
+                btnAdds.setBackground(null);
+                btnBeAdds.setTextColor(Color.parseColor("#d33a31"));
+                btnBeAdds.setBackground(getResources().getDrawable(R.mipmap.bg_choose));
+                break;
+            default:
+                break;
+        }
+    }
 }

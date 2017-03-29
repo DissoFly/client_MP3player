@@ -14,24 +14,27 @@
         <RelativeLayout
             android:id="@+id/main_header"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="52dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:background="#363636"
-            android:padding="10dp">
+            android:background="#d33a31"
+            android:padding="15dp">
 
             <ImageView
                 android:id="@+id/btn_main_header_drawer"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@mipmap/ic_launcher"/>
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_left_list"
+                />
 
             <ImageView
                 android:id="@+id/btn_main_header_search"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher"/>
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_search"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -40,23 +43,23 @@
 
                 <ImageView
                     android:id="@+id/btn_main_header_find_music"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
-                    android:src="@mipmap/ic_launcher"/>
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginRight="33dp"
+                    android:src="@mipmap/ic_find_music"/>
 
                 <ImageView
                     android:id="@+id/btn_main_header_mine"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
-                    android:src="@mipmap/ic_launcher"/>
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginRight="33dp"
+                    android:src="@mipmap/ic_mine"/>
 
                 <ImageView
                     android:id="@+id/btn_main_header_friends"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@mipmap/ic_launcher"/>
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@mipmap/ic_friend"/>
             </LinearLayout>
 
 
@@ -86,8 +89,8 @@
             android:id="@+id/main_outside"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"/>
 
 
     </RelativeLayout>
@@ -113,7 +116,8 @@
         <ListView
             android:id="@+id/main_drawer_list"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="#f2f4f5"/>
     </LinearLayout>
 
 

@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mp3player.R;
+import com.example.mp3player.StatusBarUtils;
 import com.example.mp3player.entity.FriendRead;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
@@ -52,6 +54,7 @@ public class ZoneActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone);
+        StatusBarUtils.setWindowStatusBarColor(this, Color.parseColor("#d33a31"));
         name = (TextView) findViewById(R.id.text_zone_username);
         title = (TextView) findViewById(R.id.text_zone_title);
         listView = (ListView) findViewById(R.id.list_zone);
