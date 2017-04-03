@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.example.mp3player.entity.PlayingItem;
 import com.example.mp3player.entity.PublicSong;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.MusicPlayerService;
+import com.example.mp3player.windows.inputcells.ImgView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -46,7 +48,8 @@ public class MusicListFragment extends Fragment implements View.OnClickListener 
     TextView listName;
     TextView listCreateTime;
     TextView listAbout;
-
+    ImgView imgView;
+    ImgView bgImgView;
     ListView listView;
     View view;
     MineMusicList mineMusicList = null;
@@ -63,6 +66,8 @@ public class MusicListFragment extends Fragment implements View.OnClickListener 
         if (view == null) {
             view = inflater.inflate(R.layout.fragment_music_list, null);
         }
+        imgView= (ImgView) view.findViewById(R.id.img_view);
+        bgImgView= (ImgView) view.findViewById(R.id.bg_img_view);
         listView = (ListView) view.findViewById(R.id.music_playing_item_list);
         listName = (TextView) view.findViewById(R.id.music_list_name);
         listCreateTime = (TextView) view.findViewById(R.id.music_list_create_time);
@@ -134,7 +139,8 @@ public class MusicListFragment extends Fragment implements View.OnClickListener 
     void reload(){
         if (type == MINE_MUSIC_LIST) {
             listName.setText(mineMusicList.getListName());
-            listCreateTime.setText(mineMusicList.getCreateDate().toString());
+            String time= DateFormat.format("yyyy-MM-dd hh:mm",musicList.getCreateDate()).toString();
+            listCreateTime.setText(time);
             listAbout.setVisibility(View.INVISIBLE);
             listView.removeAllViewsInLayout();
             musicListAdapter.notifyDataSetInvalidated();
@@ -142,9 +148,12 @@ public class MusicListFragment extends Fragment implements View.OnClickListener 
 
         } else if (type == MUSIC_LIST) {
             listName.setText(musicList.getListName());
-            listCreateTime.setText(musicList.getCreateDate().toString());
+            String time= DateFormat.format("yyyy-MM-dd hh:mm",musicList.getCreateDate()).toString();
+            listCreateTime.setText(time);
             listAbout.setVisibility(View.VISIBLE);
             listAbout.setText(musicList.getListAbout());
+            imgView.loadById(musicList.getSrcPath());
+            bgImgView.loadById(musicList.getSrcPath());
             findOnlineMusicConnect(musicList.getMusics());
         }
     }

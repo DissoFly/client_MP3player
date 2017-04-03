@@ -8,11 +8,10 @@
         android:layout_centerInParent="true"
         android:src="@mipmap/bg_song_test"/>
 
-    <ImageView
+    <com.example.mp3player.windows.inputcells.AvatarView
         android:id="@+id/img_song_picture"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_centerInParent="true"
-        android:src="@mipmap/ic_launcher"/>
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>

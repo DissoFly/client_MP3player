@@ -3,6 +3,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+    <FrameLayout
+        android:id="@+id/layout_bg_playing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <LinearLayout
         android:id="@+id/layout_top"
         android:layout_width="match_parent"

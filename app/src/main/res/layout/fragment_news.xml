@@ -8,22 +8,24 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#363636"
+        android:layout_height="52dp"
+        android:background="#d33a31"
         android:orientation="horizontal"
         android:padding="5dp">
 
         <ImageView
             android:id="@+id/btn_news_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_back"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="13dp"
             android:text="资讯"
             android:textColor="#fff"
             android:textSize="25dp"/>
@@ -40,8 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="2dp"
-        android:lines="1"
+        android:layout_marginTop="4dp"
         android:text="text_news_title"
         android:textColor="#333"
         android:textSize="18dp"
@@ -51,7 +52,9 @@
         android:id="@+id/text_news"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="7dp"
         android:text="text_news"
         />
 

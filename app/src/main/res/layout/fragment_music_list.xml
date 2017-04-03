@@ -6,71 +6,99 @@
               android:background="#fff"
               android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#363636"
-        android:orientation="horizontal"
-        android:padding="5dp">
-
-        <ImageView
-            android:id="@+id/btn_music_list_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/ic_launcher"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:text="歌单"
-            android:textColor="#fff"
-            android:textSize="25dp"/>
-    </LinearLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="#363636"
+        android:layout_height="250dp"
+        android:background="#d33a31"
         >
 
-        <TextView
-            android:id="@+id/img_music_list"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_margin="20dp"
-            android:text="此处应有图片"
-            android:textColor="#fff"
-            android:gravity="center"
-            android:background="#26ffffff"/>
-        <TextView
-            android:id="@+id/music_list_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/img_music_list"
-            android:layout_margin="20dp"
-            android:text="music_list_name"
-            android:textColor="#fff"/>
-        <TextView
-            android:id="@+id/music_list_create_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/img_music_list"
-            android:layout_below="@id/music_list_name"
-            android:layout_margin="20dp"
-            android:text="music_list_create_time"
-            android:textColor="#fff"/>
+        <com.example.mp3player.windows.inputcells.ImgView
+            android:id="@+id/bg_img_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
-        <TextView
-            android:text="music_list_about"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#b5d33a31"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/bg_music_list"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/btn_music_list_back"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:src="@mipmap/ic_back"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="13dp"
+                android:text="歌单"
+                android:textColor="#fff"
+                android:textSize="25dp"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/img_music_list"
-            android:layout_alignStart="@+id/music_list_create_time"
-            android:textColor="#fff"
-            android:id="@+id/music_list_about"/>
+            android:layout_marginTop="50dp">
+
+            <com.example.mp3player.windows.inputcells.ImgView
+                android:id="@+id/img_view"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="20dp"
+                android:gravity="center"
+                android:textSize="28dp"
+                />
+
+            <TextView
+                android:id="@+id/music_list_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:layout_marginTop="24dp"
+                android:layout_toRightOf="@id/img_view"
+                android:text="music_list_name"
+                android:textColor="#fff"/>
+
+            <TextView
+                android:id="@+id/music_list_create_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/music_list_name"
+                android:layout_marginTop="4dp"
+                android:layout_toRightOf="@id/img_view"
+                android:text="music_list_create_time"
+                android:textColor="#dadada"/>
+
+            <TextView
+                android:id="@+id/music_list_about"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/music_list_create_time"
+                android:layout_alignStart="@+id/music_list_create_time"
+                android:layout_marginTop="20dp"
+                android:text="music_list_about"
+                android:textColor="#fff"/>
+        </RelativeLayout>
     </RelativeLayout>
+
+
     <ListView
         android:id="@+id/music_playing_item_list"
         android:layout_width="match_parent"

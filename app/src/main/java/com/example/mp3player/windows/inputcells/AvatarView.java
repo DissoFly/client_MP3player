@@ -109,7 +109,7 @@ public class AvatarView extends View {
 
     @Override
     public void draw(Canvas canvas) {                    //头像处理
-        super.draw(canvas);
+
         if (paint != null) {
             canvas.save();
 
@@ -125,7 +125,7 @@ public class AvatarView extends View {
 
             canvas.restore();
         }
-
+        super.draw(canvas);
 
     }
 }

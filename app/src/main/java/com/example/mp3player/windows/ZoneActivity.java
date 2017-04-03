@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.example.mp3player.StatusBarUtils;
 import com.example.mp3player.entity.FriendRead;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
+import com.example.mp3player.windows.inputcells.AvatarView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -91,8 +93,15 @@ public class ZoneActivity extends Activity implements View.OnClickListener {
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
                 view = inflater.inflate(R.layout.widget_friendread_item, null);
-                TextView textView = (TextView) view.findViewById(R.id.text_friendread);
-                textView.setText(friendReads.get(i).getText());
+                TextView name=(TextView)view.findViewById(R.id.text_friendread_name);
+                TextView time=(TextView)view.findViewById(R.id.text_friendread_time);
+                TextView text=(TextView)view.findViewById(R.id.text_friendread_text);
+                AvatarView avatarView=(AvatarView)view.findViewById(R.id.avatar);
+                avatarView.load(friendReads.get(i).getUserId());
+                name.setText(friendReads.get(i).getUserName());
+                String times= DateFormat.format("MM-dd hh:mm",friendReads.get(i).getCreateDate()).toString();
+                time.setText(times);
+                text.setText(friendReads.get(i).getText());
             } else {
                 view = convertView;
             }

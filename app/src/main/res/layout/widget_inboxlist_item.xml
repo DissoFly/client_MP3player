@@ -5,11 +5,13 @@
               android:layout_height="match_parent"
               android:padding="10dp"
               android:background="#fff">
-    <com.example.mp3player.windows.inputcells.AvatarView
+    <ImageView
         android:id="@+id/avatar"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginRight="10dp"/>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"

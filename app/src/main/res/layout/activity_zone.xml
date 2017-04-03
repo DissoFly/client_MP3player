@@ -3,47 +3,53 @@
               android:id="@+id/fragment_zone"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:background="#fff">
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#363636"
+        android:layout_height="52dp"
+        android:background="#d33a31"
         android:orientation="horizontal"
         android:padding="5dp">
 
         <ImageView
             android:id="@+id/btn_zone_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_back"/>
 
         <TextView
             android:id="@+id/text_zone_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="13dp"
             android:text="text_zone_title"
             android:textColor="#fff"
             android:textSize="25dp"/>
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <TextView
             android:id="@+id/text_zone_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="text_zone_username"/>
+
         <Button
             android:id="@+id/btn_zone_add_friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="btn_zone_add_friend"/>
+
         <Button
             android:id="@+id/btn_zone_inbox"
             android:layout_width="wrap_content"
@@ -52,11 +58,13 @@
     </LinearLayout>
 
 
-
     <ListView
         android:id="@+id/list_zone"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:divider="#00000000"
+        android:dividerHeight="0dip"
+        />
 
 
 </LinearLayout>

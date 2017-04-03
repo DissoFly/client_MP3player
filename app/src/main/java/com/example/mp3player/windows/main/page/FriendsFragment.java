@@ -5,6 +5,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +29,7 @@ import com.example.mp3player.entity.InboxList;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
 import com.example.mp3player.windows.InboxActivity;
+import com.example.mp3player.windows.SrcList.ImageLoader;
 import com.example.mp3player.windows.ZoneActivity;
 import com.example.mp3player.windows.inputcells.AvatarView;
 import com.google.gson.Gson;
@@ -37,9 +41,12 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import static com.example.mp3player.R.id.avatar;
 
 /**
  * Created by DissoCapB on 2017/1/16.
@@ -57,13 +64,12 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
     List<FriendRead> friendReads;
     List<InboxList> inboxLists;
 
-    final String NEWS_CHOOSE="news";
-    final String INBOX_CHOOSE="inbox";
-    final String ADD_CHOOSE="getAddList";
-    final String BE_ADD_CHOOSE="getBeAddList";
-    String choose=NEWS_CHOOSE;
+    final String NEWS_CHOOSE = "news";
+    final String INBOX_CHOOSE = "inbox";
+    final String ADD_CHOOSE = "getAddList";
+    final String BE_ADD_CHOOSE = "getBeAddList";
+    String choose = NEWS_CHOOSE;
     int openZoneId;
-
 
 
     @Nullable
@@ -77,6 +83,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         btnBeAdds = (Button) view.findViewById(R.id.btn_friend_be_add_list);
         listView = (ListView) view.findViewById(R.id.list_friend);
         initData();
+        imageLoader = new ImageLoader(container.getContext());
         return view;
     }
 
@@ -93,19 +100,19 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_friend_news_list:
-                choose=NEWS_CHOOSE;
+                choose = NEWS_CHOOSE;
                 setList(choose);
                 break;
             case R.id.btn_friend_inbox_list:
-                choose=INBOX_CHOOSE;
+                choose = INBOX_CHOOSE;
                 setList(choose);
                 break;
             case R.id.btn_friend_add_list:
-                choose=ADD_CHOOSE;
+                choose = ADD_CHOOSE;
                 setList(choose);
                 break;
             case R.id.btn_friend_be_add_list:
-                choose=BE_ADD_CHOOSE;
+                choose = BE_ADD_CHOOSE;
                 setList(choose);
                 break;
             default:
@@ -138,7 +145,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         getActivity().bindService(new Intent(getActivity(), LoginService.class), connection, Context.BIND_AUTO_CREATE);
     }
-
+    ImageLoader imageLoader;
     BaseAdapter addListAdapter = new BaseAdapter() {
 
         @Override
@@ -167,19 +174,21 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             } else {
                 view = convertView;
             }
-
-            AvatarView avatarView=(AvatarView)view.findViewById(R.id.head_avatar);
-            TextView name=(TextView)view.findViewById(R.id.text_friend_name);
-            Button btnAdd=(Button)view.findViewById(R.id.btn_friend_add);
-            switch (choose){
-                case  ADD_CHOOSE:
-                    openZoneId=friends.get(i).getFriendUserId();
-                    avatarView.load(openZoneId);
+            TextView name = (TextView) view.findViewById(R.id.text_friend_name);
+            Button btnAdd = (Button) view.findViewById(R.id.btn_friend_add);
+            ImageView avatar = (ImageView) view.findViewById(R.id.head_avatar);
+            int srcId=-1;
+            switch (choose) {
+                case ADD_CHOOSE:
+                    openZoneId = friends.get(i).getFriendUserId();
+                    srcId=friends.get(i).getFriendUserId();
+                    //                   loadImage(friends.get(i).getFriendUserId(),view,R.id.head_avatar);
                     btnAdd.setText("已关注");
                     break;
                 case BE_ADD_CHOOSE:
-                    openZoneId=friends.get(i).getUserId();
-                    avatarView.load(openZoneId);
+                    openZoneId = friends.get(i).getUserId();
+                    srcId=friends.get(i).getUserId();
+                    //                   loadImage(friends.get(i).getUserId(),view,R.id.head_avatar);
                     btnAdd.setText("关注");
                     break;
                 default:
@@ -188,8 +197,8 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent itnt=new Intent(getActivity(), ZoneActivity.class);
-                    itnt.putExtra("openZoneId",openZoneId);
+                    Intent itnt = new Intent(getActivity(), ZoneActivity.class);
+                    itnt.putExtra("openZoneId", openZoneId);
                     startActivityForResult(itnt, 0);
                 }
             });
@@ -201,6 +210,8 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             });
             name.setText(friends.get(i).getFriendName());
 
+            imageLoader.DisplayImage("http://api.androidhive.info/music/images/eminem.png", avatar);
+            //imageLoader.DisplayImage(serverAddress+"api/avatar/" +srcId+".png", avatar);
             return view;
         }
     };
@@ -235,30 +246,28 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                     public void onClick(View view) {
                         if (messenger.getUser() != null) {
                             int userId = messenger.getUser().getUserId();
-                            Intent itnt=new Intent(getActivity(), InboxActivity.class);
-                            itnt.putExtra("userId",userId);
-                            itnt.putExtra("friendId",inboxList.getFriendId());
+                            Intent itnt = new Intent(getActivity(), InboxActivity.class);
+                            itnt.putExtra("userId", userId);
+                            itnt.putExtra("friendId", inboxList.getFriendId());
                             startActivityForResult(itnt, 0);
-                        }else{
-                            Toast.makeText(getActivity(),"请登录",Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "请登录", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
                 TextView name = (TextView) view.findViewById(R.id.inboxlist_name);
                 TextView time = (TextView) view.findViewById(R.id.inboxlist_last_time);
                 TextView text = (TextView) view.findViewById(R.id.inboxlist_last_text);
-                AvatarView avatar = (AvatarView) view.findViewById(R.id.avatar);
+                loadImage(inboxList.getFriendId(), view, R.id.avatar);
                 name.setText(inboxList.getFriendName());
-                avatar.load(inboxList.getFriendId());
-
                 String t = DateFormat.format("yyyy年MM月dd日   hh:mm:ss", inboxList.getCreateDate())
                         .toString();
                 time.setText(t);
-                String s="";
-                if (inboxList.getUnReadNumber()>0){
-                    s="(未读"+inboxList.getUnReadNumber()+"条) ";
+                String s = "";
+                if (inboxList.getUnReadNumber() > 0) {
+                    s = "(未读" + inboxList.getUnReadNumber() + "条) ";
                 }
-                text.setText(s+inboxList.getText());
+                text.setText(s + inboxList.getText());
             } else {
                 view = convertView;
             }
@@ -289,8 +298,16 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
                 view = inflater.inflate(R.layout.widget_friendread_item, null);
-                TextView textView=(TextView)view.findViewById(R.id.text_friendread);
-                textView.setText(friendReads.get(i).getText());
+                TextView name = (TextView) view.findViewById(R.id.text_friendread_name);
+                TextView time = (TextView) view.findViewById(R.id.text_friendread_time);
+                TextView text = (TextView) view.findViewById(R.id.text_friendread_text);
+                AvatarView avatarView = (AvatarView) view.findViewById(avatar);
+                avatarView.load(friendReads.get(i).getUserId());
+                name.setText(friendReads.get(i).getUserName());
+                String times = DateFormat.format("MM-dd hh:mm:ss", friendReads.get(i).getCreateDate()).toString();
+                time.setText(times);
+                text.setText(friendReads.get(i).getText());
+
             } else {
                 view = convertView;
             }
@@ -348,8 +365,8 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    void reload(){
-        switch (choose){
+    void reload() {
+        switch (choose) {
             case NEWS_CHOOSE:
                 listView.removeAllViewsInLayout();
                 newsListAdapter.notifyDataSetInvalidated();
@@ -432,7 +449,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         RequestBody formBody = new FormBody.Builder()
                 .add("userId", userId + "")
                 .build();
-        Request request = HttpService.requestBuilderWithPath("friend/"+choose).post(formBody).build();
+        Request request = HttpService.requestBuilderWithPath("friend/" + choose).post(formBody).build();
         HttpService.getClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {
@@ -488,7 +505,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        switch (data){
+                        switch (data) {
                             case "SUCCESS_ADD":
                                 Toast.makeText(getActivity(), "关注成功", Toast.LENGTH_SHORT).show();
                                 reload();
@@ -520,6 +537,48 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         });
 
     }
+
+
+    public void loadImage(int userId, final View view, int i) {
+        OkHttpClient client = HttpService.getClient();
+        final ImageView avatar = (ImageView) view.findViewById(i);
+        Request request = HttpService.requestBuilderWithPath("avatar/" + userId).get().build();
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            public void onResponse(Call arg0, Response arg1) throws IOException {
+                try {
+                    byte[] bytes = arg1.body().bytes();
+                    final Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            avatar.setImageBitmap(bmp);
+                        }
+                    });
+                } catch (Exception ex) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            avatar.setImageDrawable(getResources().getDrawable(R.mipmap.user_null));
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call arg0, IOException arg1) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        avatar.setImageDrawable(getResources().getDrawable(R.mipmap.user_null));
+                    }
+                });
+            }
+        });
+    }
+
+
     LoginService messenger;
     boolean bound;
 
@@ -536,8 +595,9 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             setList(choose);
         }
     };
-    void buttonChange(String choose){
-        switch (choose){
+
+    void buttonChange(String choose) {
+        switch (choose) {
             case NEWS_CHOOSE:
                 btnNews.setTextColor(Color.parseColor("#d33a31"));
                 btnNews.setBackground(getResources().getDrawable(R.mipmap.bg_choose));

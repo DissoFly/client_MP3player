@@ -1,13 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/text_friendread"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="text_friendread"
-        />
+              android:layout_height="match_parent"
+              android:background="#fff"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <com.example.mp3player.windows.inputcells.AvatarView
+            android:id="@+id/avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_friendread_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="text_friendread_name"
+                android:textColor="#616262"
+                android:textSize="17dp"/>
+
+            <TextView
+                android:id="@+id/text_friendread_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="text_friendread_time"
+                android:textColor="#919293"
+                android:textSize="15dp"/>
+
+            <TextView
+                android:id="@+id/text_friendread_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="text_friendread_text"
+                android:textColor="#303131"
+                android:textSize="18dp"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_marginTop="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eee"
+        android:layout_marginLeft="70dp"/>
 
 </LinearLayout>
