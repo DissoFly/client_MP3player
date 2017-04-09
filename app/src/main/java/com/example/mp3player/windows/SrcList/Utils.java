@@ -7,22 +7,21 @@ import java.io.OutputStream;
  * Created by DissoCapB on 2017/4/2.
  */
 
-public class Utils { public static void CopyStream(InputStream is, OutputStream os)
-{
-    final int buffer_size=1024;
-    try
+public class Utils {
+    public static void CopyStream(InputStream is, OutputStream os)
     {
-        byte[] bytes=new byte[buffer_size];
-        for(;;)
+        final int buffer_size=1024;
+        try
         {
-            int count=is.read(bytes, 0, buffer_size);
-            if(count==-1)
-                break;
-            os.write(bytes, 0, count);
-            is.close();
-            os.close();
+            byte[] bytes=new byte[buffer_size];
+            for(;;)
+            {
+                int count=is.read(bytes, 0, buffer_size);
+                if(count==-1)
+                    break;
+                os.write(bytes, 0, count);
+            }
         }
+        catch(Exception ex){}
     }
-    catch(Exception ex){}
-}
 }

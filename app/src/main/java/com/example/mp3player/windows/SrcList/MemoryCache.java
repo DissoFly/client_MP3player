@@ -12,7 +12,7 @@ import java.util.Map;
  */
 
 public class MemoryCache {
-    private Map<String, SoftReference<Bitmap>> cache= Collections.synchronizedMap(new HashMap<String, SoftReference<Bitmap>>());//软引用
+    private Map<String, SoftReference<Bitmap>> cache=Collections.synchronizedMap(new HashMap<String, SoftReference<Bitmap>>());
 
     public Bitmap get(String id){
         if(!cache.containsKey(id))

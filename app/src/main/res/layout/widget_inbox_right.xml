@@ -19,19 +19,32 @@
         android:orientation="horizontal"
         android:padding="5dp" >
 
-        <com.example.mp3player.windows.inputcells.AvatarView
-            android:id="@+id/avatar"
+        <RelativeLayout
+            android:id="@+id/avatar_layout"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            >
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                />
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:src="@mipmap/user_frame_inbox"/>
+        </RelativeLayout>
         <TextView
             android:id="@+id/inbox_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="80dp"
             android:layout_marginRight="7dp"
-            android:layout_toLeftOf="@id/avatar"
+            android:layout_toLeftOf="@id/avatar_layout"
             android:background="#ddd"
             android:padding="5dp"
             android:text="请输入文字聊天"

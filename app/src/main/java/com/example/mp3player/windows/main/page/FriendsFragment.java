@@ -5,8 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -31,7 +29,6 @@ import com.example.mp3player.service.LoginService;
 import com.example.mp3player.windows.InboxActivity;
 import com.example.mp3player.windows.SrcList.ImageLoader;
 import com.example.mp3player.windows.ZoneActivity;
-import com.example.mp3player.windows.inputcells.AvatarView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -41,12 +38,9 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
-import static com.example.mp3player.R.id.avatar;
 
 /**
  * Created by DissoCapB on 2017/1/16.
@@ -168,7 +162,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             View view = null;
 
             if (convertView == null) {
-                LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+                LayoutInflater inflater =  (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.widget_friend_item, null);
 
             } else {
@@ -180,38 +174,33 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             int srcId=-1;
             switch (choose) {
                 case ADD_CHOOSE:
-                    openZoneId = friends.get(i).getFriendUserId();
                     srcId=friends.get(i).getFriendUserId();
-                    //                   loadImage(friends.get(i).getFriendUserId(),view,R.id.head_avatar);
                     btnAdd.setText("已关注");
                     break;
                 case BE_ADD_CHOOSE:
-                    openZoneId = friends.get(i).getUserId();
                     srcId=friends.get(i).getUserId();
-                    //                   loadImage(friends.get(i).getUserId(),view,R.id.head_avatar);
                     btnAdd.setText("关注");
                     break;
                 default:
                     break;
             }
+            final int finalSrcId = srcId;
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent itnt = new Intent(getActivity(), ZoneActivity.class);
-                    itnt.putExtra("openZoneId", openZoneId);
+                    itnt.putExtra("openZoneId", finalSrcId);
                     startActivityForResult(itnt, 0);
                 }
             });
             btnAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addFriend(openZoneId);
+                    addFriend(finalSrcId);
                 }
             });
             name.setText(friends.get(i).getFriendName());
-
-            imageLoader.DisplayImage("http://api.androidhive.info/music/images/eminem.png", avatar);
-            //imageLoader.DisplayImage(serverAddress+"api/avatar/" +srcId+".png", avatar);
+            imageLoader.DisplayUserImage(srcId, avatar);
             return view;
         }
     };
@@ -258,7 +247,8 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                 TextView name = (TextView) view.findViewById(R.id.inboxlist_name);
                 TextView time = (TextView) view.findViewById(R.id.inboxlist_last_time);
                 TextView text = (TextView) view.findViewById(R.id.inboxlist_last_text);
-                loadImage(inboxList.getFriendId(), view, R.id.avatar);
+                ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
+                imageLoader.DisplayUserImage(inboxList.getFriendId(), avatar);
                 name.setText(inboxList.getFriendName());
                 String t = DateFormat.format("yyyy年MM月dd日   hh:mm:ss", inboxList.getCreateDate())
                         .toString();
@@ -301,8 +291,8 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                 TextView name = (TextView) view.findViewById(R.id.text_friendread_name);
                 TextView time = (TextView) view.findViewById(R.id.text_friendread_time);
                 TextView text = (TextView) view.findViewById(R.id.text_friendread_text);
-                AvatarView avatarView = (AvatarView) view.findViewById(avatar);
-                avatarView.load(friendReads.get(i).getUserId());
+                ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
+                imageLoader.DisplayUserImage(friendReads.get(i).getUserId(), avatar);
                 name.setText(friendReads.get(i).getUserName());
                 String times = DateFormat.format("MM-dd hh:mm:ss", friendReads.get(i).getCreateDate()).toString();
                 time.setText(times);
@@ -537,47 +527,6 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         });
 
     }
-
-
-    public void loadImage(int userId, final View view, int i) {
-        OkHttpClient client = HttpService.getClient();
-        final ImageView avatar = (ImageView) view.findViewById(i);
-        Request request = HttpService.requestBuilderWithPath("avatar/" + userId).get().build();
-        client.newCall(request).enqueue(new Callback() {
-
-            @Override
-            public void onResponse(Call arg0, Response arg1) throws IOException {
-                try {
-                    byte[] bytes = arg1.body().bytes();
-                    final Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            avatar.setImageBitmap(bmp);
-                        }
-                    });
-                } catch (Exception ex) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            avatar.setImageDrawable(getResources().getDrawable(R.mipmap.user_null));
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call arg0, IOException arg1) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        avatar.setImageDrawable(getResources().getDrawable(R.mipmap.user_null));
-                    }
-                });
-            }
-        });
-    }
-
 
     LoginService messenger;
     boolean bound;

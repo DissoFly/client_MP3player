@@ -4,11 +4,19 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <com.example.mp3player.windows.inputcells.ImgView
-        android:id="@+id/img_news"
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="130dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center">
+        <ImageView
+            android:id="@+id/img_news"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            />
+    </RelativeLayout>
+
 
     <TextView
         android:id="@+id/text_news_title"

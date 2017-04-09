@@ -5,13 +5,22 @@
               android:layout_height="match_parent"
               android:padding="10dp"
               android:background="#fff">
-    <ImageView
-        android:id="@+id/avatar"
+
+    <RelativeLayout
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginRight="10dp"/>
-
-
+        android:layout_marginRight="10dp">
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/user_frame"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -19,10 +19,22 @@
         android:orientation="horizontal"
         android:padding="5dp" >
 
-        <com.example.mp3player.windows.inputcells.AvatarView
-            android:id="@+id/avatar"
+        <RelativeLayout
             android:layout_width="60dp"
-            android:layout_height="60dp" />
+            android:layout_height="60dp"
+            >
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/user_frame_inbox"/>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/inbox_text"

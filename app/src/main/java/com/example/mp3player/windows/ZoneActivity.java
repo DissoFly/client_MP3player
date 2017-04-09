@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +24,7 @@ import com.example.mp3player.StatusBarUtils;
 import com.example.mp3player.entity.FriendRead;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
-import com.example.mp3player.windows.inputcells.AvatarView;
+import com.example.mp3player.windows.SrcList.ImageLoader;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -51,11 +52,12 @@ public class ZoneActivity extends Activity implements View.OnClickListener {
     Button btnInbox;
     String addFriendMessage = "";
     String friendName;
-
+    ImageLoader imageLoader;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone);
+        imageLoader = new ImageLoader(this);
         StatusBarUtils.setWindowStatusBarColor(this, Color.parseColor("#d33a31"));
         name = (TextView) findViewById(R.id.text_zone_username);
         title = (TextView) findViewById(R.id.text_zone_title);
@@ -96,8 +98,8 @@ public class ZoneActivity extends Activity implements View.OnClickListener {
                 TextView name=(TextView)view.findViewById(R.id.text_friendread_name);
                 TextView time=(TextView)view.findViewById(R.id.text_friendread_time);
                 TextView text=(TextView)view.findViewById(R.id.text_friendread_text);
-                AvatarView avatarView=(AvatarView)view.findViewById(R.id.avatar);
-                avatarView.load(friendReads.get(i).getUserId());
+                ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
+                imageLoader.DisplayUserImage(friendReads.get(i).getUserId(), avatar);
                 name.setText(friendReads.get(i).getUserName());
                 String times= DateFormat.format("MM-dd hh:mm",friendReads.get(i).getCreateDate()).toString();
                 time.setText(times);

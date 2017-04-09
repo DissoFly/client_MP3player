@@ -10,6 +10,7 @@ import com.example.mp3player.R;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,6 +22,8 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.example.mp3player.service.HttpService.serverAddress;
+
 /**
  * Created by DissoCapB on 2017/4/2.
  */
@@ -28,24 +31,28 @@ import java.util.concurrent.Executors;
 public class ImageLoader {
     MemoryCache memoryCache=new MemoryCache();
     FileCache fileCache;
-    private Map<ImageView, String> imageViews= Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
+    private Map<ImageView, String> imageViews=Collections.synchronizedMap(new WeakHashMap<ImageView, String>());
     ExecutorService executorService;
 
     public ImageLoader(Context context){
         fileCache=new FileCache(context);
-        executorService= Executors.newFixedThreadPool(5);
+        executorService=Executors.newFixedThreadPool(5);
     }
 
     final int stub_id = R.mipmap.user_null;
+
+    public void DisplayUserImage(int userId,ImageView imageView){
+        DisplayImage(serverAddress+"api/avatar/" +userId+".png", imageView);
+    }
+
     public void DisplayImage(String url, ImageView imageView)
     {
         imageViews.put(imageView, url);
         Bitmap bitmap=memoryCache.get(url);
-        if(bitmap!=null) {
-            System.out.println("success:");
+        if(bitmap!=null)
             imageView.setImageBitmap(bitmap);
-        }else
-        {System.out.println("fail:");
+        else
+        {
             queuePhoto(url, imageView);
             imageView.setImageResource(stub_id);
         }
@@ -61,19 +68,18 @@ public class ImageLoader {
     {
         File f=fileCache.getFile(url);
 
-        //从sd卡
+        //from SD cache
         Bitmap b = decodeFile(f);
         if(b!=null)
             return b;
 
-        //从网络
+        //from web
         try {
-            System.out.println(url);
             Bitmap bitmap=null;
             URL imageUrl = new URL(url);
             HttpURLConnection conn = (HttpURLConnection)imageUrl.openConnection();
-            conn.setConnectTimeout(10000);
-            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(30000);
+            conn.setReadTimeout(30000);
             conn.setInstanceFollowRedirects(true);
             InputStream is=conn.getInputStream();
             OutputStream os = new FileOutputStream(f);
@@ -87,16 +93,16 @@ public class ImageLoader {
         }
     }
 
-    //解码图像用来减少内存消耗
+    //decodes image and scales it to reduce memory consumption
     private Bitmap decodeFile(File f){
         try {
-            //解码图像大小
+            //decode image size
             BitmapFactory.Options o = new BitmapFactory.Options();
             o.inJustDecodeBounds = true;
             BitmapFactory.decodeStream(new FileInputStream(f),null,o);
 
-            //找到正确的刻度值，它应该是2的幂。
-            final int REQUIRED_SIZE=70;
+            //Find the correct scale value. It should be the power of 2.
+            final int REQUIRED_SIZE=700;
             int width_tmp=o.outWidth, height_tmp=o.outHeight;
             int scale=1;
             while(true){
@@ -107,16 +113,15 @@ public class ImageLoader {
                 scale*=2;
             }
 
+            //decode with inSampleSize
             BitmapFactory.Options o2 = new BitmapFactory.Options();
             o2.inSampleSize=scale;
             return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (FileNotFoundException e) {}
         return null;
     }
 
-    //任务队列
+    //Task for the queue
     private class PhotoToLoad
     {
         public String url;
@@ -154,7 +159,7 @@ public class ImageLoader {
         return false;
     }
 
-    //用于显示位图在UI线程
+    //Used to display bitmap in the UI thread
     class BitmapDisplayer implements Runnable
     {
         Bitmap bitmap;

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +25,7 @@ import com.example.mp3player.StatusBarUtils;
 import com.example.mp3player.entity.Inbox;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
-import com.example.mp3player.windows.inputcells.AvatarView;
+import com.example.mp3player.windows.SrcList.ImageLoader;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -54,7 +55,7 @@ public class InboxActivity extends Activity implements View.OnClickListener {
     String userName;
     String friendName;
     List<Inbox> inboxes;
-
+    ImageLoader imageLoader;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +68,7 @@ public class InboxActivity extends Activity implements View.OnClickListener {
         editText = (EditText) findViewById(R.id.edit_inbox);
         btnSend = (Button) findViewById(R.id.btn_inbox_send);
         listView = (ListView) findViewById(R.id.list_inbox);
+        imageLoader = new ImageLoader(this);
         bindService(new Intent(this, LoginService.class), connection, Context.BIND_AUTO_CREATE);
         initData();
     }
@@ -137,10 +139,10 @@ public class InboxActivity extends Activity implements View.OnClickListener {
 
                 TextView inboxTime=(TextView)view.findViewById(R.id.inbox_time);
                 TextView inboxText=(TextView)view.findViewById(R.id.inbox_text);
-                AvatarView avatar=(AvatarView)view.findViewById(R.id.avatar);
+                ImageView avatar=(ImageView)view.findViewById(R.id.avatar);
                 String time= DateFormat.format("yyyy-MM-dd hh:mm:ss",inboxes.get(i).getCreateDate()).toString();
                 inboxTime.setText(time);
-                avatar.load(avatarId);
+                imageLoader.DisplayUserImage(avatarId, avatar);
                 inboxText.setText(inboxes.get(i).getText());
             } else {
                 view = convertView;

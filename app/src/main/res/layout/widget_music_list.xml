@@ -11,11 +11,13 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <com.example.mp3player.windows.inputcells.ImgView
+
+        <ImageView
             android:id="@+id/img_view1"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/text_list_name1"
@@ -36,11 +38,12 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <com.example.mp3player.windows.inputcells.ImgView
+        <ImageView
             android:id="@+id/img_view2"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/text_list_name2"

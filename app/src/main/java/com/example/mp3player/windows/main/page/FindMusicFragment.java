@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -16,7 +17,7 @@ import com.example.mp3player.R;
 import com.example.mp3player.entity.Information;
 import com.example.mp3player.entity.MusicList;
 import com.example.mp3player.service.HttpService;
-import com.example.mp3player.windows.inputcells.ImgView;
+import com.example.mp3player.windows.SrcList.ImageLoader;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -29,6 +30,7 @@ import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.example.mp3player.service.HttpService.serverAddress;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_MUSIC_LIST_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_NEWS_FRAGMENT;
 
@@ -50,7 +52,7 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
     List<Information> informations = new ArrayList<>();
     Button btnNews;
     Button btnList;
-
+    ImageLoader imageLoader;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view == null)
@@ -59,6 +61,7 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
         btnNews=(Button) view.findViewById(R.id.btn_find_music_news);
         btnList=(Button) view.findViewById(R.id.btn_find_music_lists);
         initData();
+        imageLoader = new ImageLoader(container.getContext());
         return view;
     }
 
@@ -114,9 +117,9 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
                     OnFindMusicFragmentClickedListener.OnFindMusicFragmentClicked();
                 }
             });
-            ImgView imgView = (ImgView) view.findViewById(R.id.img_news);
             TextView title = (TextView) view.findViewById(R.id.text_news_title);
-            imgView.load("news/news_src", informations.get(i).getInformationId() + "");
+            ImageView imgView=(ImageView)view.findViewById(R.id.img_news) ;
+            imageLoader.DisplayImage(serverAddress+"api/news/news_src/"+informations.get(i).getInformationId(), imgView);
             title.setText(informations.get(i).getTitle());
             return view;
         }
@@ -146,12 +149,12 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
                 view = inflater.inflate(R.layout.widget_music_list, null);
                 LinearLayout layout1 = (LinearLayout) view.findViewById(R.id.layout1);
                 LinearLayout layout2 = (LinearLayout) view.findViewById(R.id.layout2);
-                ImgView imgView1 = (ImgView) view.findViewById(R.id.img_view1);
-                ImgView imgView2 = (ImgView) view.findViewById(R.id.img_view2);
+                ImageView imgView1=(ImageView)view.findViewById(R.id.img_view1);
+                ImageView imgView2=(ImageView)view.findViewById(R.id.img_view2);
                 TextView name1 = (TextView) view.findViewById(R.id.text_list_name1);
                 TextView name2 = (TextView) view.findViewById(R.id.text_list_name2);
                 layout1.setVisibility(View.VISIBLE);
-                imgView1.loadById(musicLists.get(i * 2).getSrcPath());
+                imageLoader.DisplayImage(HttpService.serverAddress + "api/musicList/listsrc/"+musicLists.get(i * 2).getSrcPath(), imgView1);
                 name1.setText(musicLists.get(i * 2).getListName());
                 layout1.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -163,7 +166,7 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
                 });
                 if (musicLists.size() >= (i + 1) * 2) {
                     layout2.setVisibility(View.VISIBLE);
-                    imgView2.loadById(musicLists.get(i * 2 + 1).getSrcPath());
+                    imageLoader.DisplayImage(HttpService.serverAddress + "api/musicList/listsrc/"+musicLists.get(i * 2 + 1).getSrcPath(), imgView2);
                     name2.setText(musicLists.get(i * 2 + 1).getListName());
                     layout2.setOnClickListener(new View.OnClickListener() {
                         @Override
