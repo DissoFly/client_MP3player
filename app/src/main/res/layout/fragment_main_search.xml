@@ -3,46 +3,70 @@
               android:id="@+id/fragment_main_search"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
-    android:background="#fff">
+              android:background="#eee"
+              android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#363636"
+        android:layout_height="52dp"
+        android:background="#d33a31"
         android:orientation="horizontal"
         android:padding="5dp">
 
         <ImageView
             android:id="@+id/btn_search_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/ic_launcher"/>
-
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_back"/>
 
         <Spinner
             android:id="@+id/spinner_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+
             />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
 
-        <EditText
-            android:id="@+id/edit_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="请输入要搜索的内容"
-            android:textColorHint="#fff"
-            />
+            <Button
+                android:id="@+id/btn_search"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@mipmap/bg_buttom"
+                android:text="确认"
+                android:textColor="#d33a31"
+                android:textSize="18dp"/>
 
-        <Button
-            android:id="@+id/btn_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="确认"/>
+            <EditText
+                android:id="@+id/edit_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@id/btn_search"
+                android:hint="请输入"
+                android:textColor="#fff"
+                android:maxLines="1"
+                android:textColorHint="#ddd"
+                android:background="@mipmap/ic_edit_talk"
+                android:textSize="20dp"
+                />
+
+
+        </RelativeLayout>
 
 
     </LinearLayout>
+
     <ListView
         android:id="@+id/search_list"
         android:layout_width="match_parent"

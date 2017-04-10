@@ -246,7 +246,7 @@ public class MusicPlayerService extends Service {
     public Bitmap getImg() {
                 Bitmap bitmap=null;
                 if (listPosition>=0 ){
-                    if(!audioList.get(listPosition).isOnline()||(audioList.get(listPosition).isOnline()&&audioList.get(listPosition).isDownload())) {
+                    if((!audioList.get(listPosition).isOnline())||(audioList.get(listPosition).isOnline()&&audioList.get(listPosition).isDownload())) {
                         try {
                             Cursor currentCursor = getCursor(audioList.get(listPosition).getFilePath());
                             int album_id = currentCursor.getInt(currentCursor

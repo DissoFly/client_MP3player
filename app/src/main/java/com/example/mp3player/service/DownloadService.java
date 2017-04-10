@@ -131,6 +131,12 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
                 Toast.makeText(this, "存在完成下载", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if(!file.getParentFile().exists()){
+                if(!file.getParentFile().mkdirs()){
+                    Toast.makeText(this, "创建目标文件所在目录失败！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             Toast.makeText(this, "开始下载", Toast.LENGTH_SHORT).show();
             Downloading downloading = new Downloading();
             downloading.setLocalPath(path);

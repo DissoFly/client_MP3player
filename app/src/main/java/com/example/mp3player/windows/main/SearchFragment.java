@@ -93,8 +93,9 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         data_list.add("歌手");
         data_list.add("专辑");
         searchType = 0;
+
         //适配器
-        ArrayAdapter<String> arr_adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, data_list);
+        ArrayAdapter<String> arr_adapter = new ArrayAdapter<>(getActivity(),R.layout.widget_spinner_item, data_list);
         //设置样式
         arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //加载适配器
@@ -111,6 +112,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
+
+
 
     BaseAdapter listAdapter = new BaseAdapter() {
         @Override

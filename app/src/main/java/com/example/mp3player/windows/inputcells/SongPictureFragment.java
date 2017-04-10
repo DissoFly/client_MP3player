@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.mp3player.R;
 
@@ -25,22 +26,20 @@ import static android.R.attr.radius;
 public class SongPictureFragment extends Fragment {
 
 
-    AvatarView avatarView;
+    ImageView avatarView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_inputcell_song_picture,null);
-        avatarView=(AvatarView)view.findViewById(R.id.img_song_picture);
+        avatarView=(ImageView)view.findViewById(R.id.img_song_picture);
         return view;
     }
 
-    public void setImg(Bitmap bitmap){
-        if(bitmap==null){
-            Resources res=getResources();
-            bitmap= BitmapFactory.decodeResource(res, R.mipmap.bg_music_src);
-        }
-        avatarView.setBitmap(bitmap);
+    public void setImg(Bitmap bitmap,Resources resources){
+        if(bitmap==null)
+            bitmap = BitmapFactory.decodeResource(resources, R.mipmap.bg_music_src);
+        avatarView.setImageBitmap(bitmap);
     }
 
     public void setBlurImg(Bitmap sentBitmap){
@@ -59,6 +58,6 @@ public class SongPictureFragment extends Fragment {
         script.setInput(input);
         script.forEach(output);
         output.copyTo(bitmap);
-        setImg(bitmap);
+       // setImg(bitmap);
     }
 }

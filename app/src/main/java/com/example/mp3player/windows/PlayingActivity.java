@@ -389,7 +389,11 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                         lyricTimeList.add(String.valueOf((minute * 60 + second) * 1000 + millisecond * 10));
                         s = s.replace(ss, "");
                     } catch (NumberFormatException e) {
-                        lyricTimeList.add(lyricTimeList.get(lyricTimeList.size() - 1));
+                        if(lyricTimeList.size()>0) {
+                            lyricTimeList.add(lyricTimeList.get(lyricTimeList.size() - 1));
+                        }else{
+                            lyricTimeList.add("1");
+                        }
                     }
 
                 } else {
@@ -476,6 +480,11 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                 int len = 0;
                 FileOutputStream fos = null;
                 try {
+                    if(!file.getParentFile().exists()){
+                        if(!file.getParentFile().mkdirs()){
+                            System.out.println("false:创建目标文件所在目录失败！");
+                        }
+                    }
                     is = response.body().byteStream();
                     fos = new FileOutputStream(file);
                     while ((len = is.read(buf)) != -1) {
@@ -485,6 +494,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                     setLrc(file);
                     //加载歌词
                 } catch (IOException e) {
+                    e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -597,6 +607,9 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                     a = false;
                 }
             }
+            if (getLyric < 0) {
+                getLyric=0;
+            }
             StringBuilder sb = new StringBuilder();
             StringBuilder sf = new StringBuilder();
             List<String> sb1 = new ArrayList<String>();
@@ -630,7 +643,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
         if (!isMusicBarTouch)
             musicBar.setProgress(current);
         if (oneReloadPosition != listPosition) {
-            songPictureFragment.setImg(messenger.getImg());
+            songPictureFragment.setImg(messenger.getImg(),getResources());
             oneReloadPosition = listPosition;
         }
 

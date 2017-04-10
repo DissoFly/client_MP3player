@@ -2,34 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+    android:paddingLeft="9dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="4dp"
+    android:background="#fff">
 
     <TextView
         android:id="@+id/text_song_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="text_song_name"
-        android:textSize="20dp"/>
+        android:textSize="17dp"
+        android:textColor="#000"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="7dp">
 
         <TextView
             android:id="@+id/text_artist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="#555"
+            android:textSize="11dp"
             android:text="text_artist"/>
 
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="/"/>
+    android:textColor="#555"
+    android:textSize="11dp"
+    android:text=" - "/>
         <TextView
             android:id="@+id/text_album"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="#555"
+            android:textSize="11dp"
             android:text="text_album"/>
     </LinearLayout>
 
