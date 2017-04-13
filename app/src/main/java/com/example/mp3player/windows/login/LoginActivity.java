@@ -55,13 +55,17 @@ public class LoginActivity extends Activity implements View.OnClickListener{
     private void initData() {
         findViewById(R.id.btn_login).setOnClickListener(this);
         findViewById(R.id.btn_register).setOnClickListener(this);
-        findViewById(R.id.btn_password_forget).setOnClickListener(this);
+        findViewById(R.id.btn_login_back).setOnClickListener(this);
+//        findViewById(R.id.btn_password_forget).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         Intent itnt;
         switch (view.getId()){
+            case R.id.btn_login_back:
+                onBackPressed();
+                break;
             case R.id.btn_login:
                 //登录
                 account=accountEdit.getText().toString();
@@ -77,11 +81,11 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                 itnt=new Intent(this, RegisterActivity.class);
                 startActivity(itnt);
                 break;
-            case R.id.btn_password_forget:
-                //忘记密码
-                itnt=new Intent(this, ForgetPasswordActivity.class);
-                startActivity(itnt);
-                break;
+//            case R.id.btn_password_forget:
+//                //忘记密码
+//                itnt=new Intent(this, ForgetPasswordActivity.class);
+//                startActivity(itnt);
+//                break;
             default:
                 break;
         }
@@ -127,6 +131,9 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                                     break;
                                 case "FAIL_WITH_WRONG_PASSWORD":
                                     Toast.makeText(getApplication(),"密码错误",Toast.LENGTH_LONG).show();
+                                    break;
+                                case "FAIL_WITH_FREEZE":
+                                    Toast.makeText(getApplication()," 已被冻结 ",Toast.LENGTH_LONG).show();
                                     break;
                                 default:
                                     Toast.makeText(getApplication(), data, Toast.LENGTH_LONG).show();

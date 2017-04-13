@@ -12,11 +12,25 @@
     <LinearLayout
         android:id="@+id/layout_in"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="350dp"
 
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         android:background="#fff">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="播放列表"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textColor="#000"
+            android:textSize="17dp"
+            android:background="@mipmap/bg_choose_left"
+            />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#eee"/>
         <TextView
             android:id="@+id/text_footer_no_music"
             android:layout_width="match_parent"

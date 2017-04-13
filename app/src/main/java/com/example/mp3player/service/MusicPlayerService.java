@@ -256,7 +256,7 @@ public class MusicPlayerService extends Service {
                             bitmap = BitmapFactory.decodeFile(albumArt);
                             return bitmap;
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            System.out.println("读取音乐图片文件失败");
                         }
                     }else{
                         //联网显示图片

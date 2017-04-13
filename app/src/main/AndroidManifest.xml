@@ -33,6 +33,7 @@
         <activity android:name=".windows.PlayingActivity"/>
         <activity android:name=".windows.ZoneActivity"/>
         <activity android:name=".windows.InboxActivity"/>
+        <activity android:name=".windows.login.ChangeActivity"/>
     </application>
 
 </manifest>

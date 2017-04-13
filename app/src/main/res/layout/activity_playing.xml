@@ -1,36 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/layout_bg_playing"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="@mipmap/bg_playing"/>
 
     <LinearLayout
         android:id="@+id/layout_top"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#363636"
+        android:layout_height="52dp"
+        android:background="@mipmap/bg_title_playing"
         android:orientation="horizontal"
         android:padding="5dp">
 
         <ImageView
             android:id="@+id/btn_playing_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_back"/>
 
-        <TextView
-            android:id="@+id/text_play_name"
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
-            android:text="音乐，发现生活的美好"
-            android:textColor="#fff"
-            android:textSize="25dp"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_play_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:text="音乐，发现生活的美好"
+                android:textColor="#fff"
+                android:textSize="17dp"/>
+
+            <TextView
+                android:id="@+id/text_play_name_others"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MP3player"
+                android:textColor="#edc7c7c7"
+                android:textSize="13dp"/>
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -38,60 +59,103 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#eee"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/text_playing_local_or_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="text_playing_local_or_online"
+            android:textColor="#eee"
+            android:textSize="17dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="15dp"
+            android:visibility="visible"/>
+
         <LinearLayout
+            android:id="@+id/layout_online"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            >
 
-            <TextView
-                android:id="@+id/text_playing_local_or_online"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="text_playing_local_or_online"/>
-
-            <Button
+            <ImageView
                 android:id="@+id/btn_playing_download"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="download"/>
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_weight="1"
+                android:src="@mipmap/ic_playing_download"
+                />
 
-            <Button
+            <ImageView
                 android:id="@+id/btn_playing_comment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="评论"/>
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_weight="1"
+                android:src="@mipmap/ic_playing_comment"
+                />
 
-            <Button
-                android:id="@+id/btn_playing_like"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="赞"/>
+            <RelativeLayout
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/btn_playing_like"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_playing_unlike"
+                    />
+
+                <TextView
+                    android:id="@+id/text_comment_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:text="999"
+                    android:gravity="center"
+                    android:textColor="#ddd"
+                    android:textSize="9dp"/>
+            </RelativeLayout>
+
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp">
 
             <TextView
                 android:id="@+id/text_playing_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:00"/>
+                android:layout_centerVertical="true"
+                android:text="00:00"
+                android:textColor="#cecece"
+                android:textSize="12dp"
+                />
 
             <TextView
                 android:id="@+id/text_max_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="99:99"/>
+                android:layout_centerVertical="true"
+                android:text="99:99"
+                android:textColor="#949494"
+                android:textSize="12dp"/>
 
             <SeekBar
                 android:id="@+id/play_music_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/text_max_time"
                 android:layout_toRightOf="@id/text_playing_time"/>
         </RelativeLayout>
@@ -100,44 +164,47 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#ddd"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="6dp"
             android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/btn_play_cycle"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_weight="1"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@mipmap/ic_playing_one"/>
 
             <ImageView
                 android:id="@+id/btn_play_back"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_weight="1"
-                android:src="@mipmap/ic_back"/>
+                android:src="@mipmap/ic_playing_back"/>
 
             <ImageView
                 android:id="@+id/btn_play_changes"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_weight="1"
-                android:src="@mipmap/ic_play"/>
+                android:src="@mipmap/ic_playing_play"/>
 
             <ImageView
                 android:id="@+id/btn_play_next"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_weight="1"
-                android:src="@mipmap/ic_next"/>
+                android:src="@mipmap/ic_playing_next"/>
 
             <ImageView
                 android:id="@+id/btn_play_list"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_weight="1"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@mipmap/ic_playing_list"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -166,6 +233,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal"
+            android:textColor="#fff"
+            android:textSize="19dp"
             />
 
         <TextView
@@ -175,6 +244,8 @@
             android:layout_above="@id/text_lrc_center"
             android:layout_alignParentTop="true"
             android:gravity="bottom|center_horizontal"
+            android:textColor="#eec3c3c3"
+            android:textSize="19dp"
             />
 
         <TextView
@@ -184,13 +255,17 @@
             android:layout_alignParentBottom="true"
             android:layout_below="@id/text_lrc_center"
             android:gravity="top|center_horizontal"
+            android:textColor="#eec3c3c3"
+            android:textSize="19dp"
             />
     </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/layout_out"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
     </FrameLayout>
 

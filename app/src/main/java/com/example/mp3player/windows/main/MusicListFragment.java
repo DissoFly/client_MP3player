@@ -139,12 +139,14 @@ public class MusicListFragment extends Fragment implements View.OnClickListener 
     void reload(){
         if (type == MINE_MUSIC_LIST) {
             listName.setText(mineMusicList.getListName());
-            String time= DateFormat.format("yyyy-MM-dd hh:mm",musicList.getCreateDate()).toString();
+            String time= DateFormat.format("yyyy-MM-dd hh:mm",mineMusicList.getCreateDate()).toString();
             listCreateTime.setText(time);
             listAbout.setVisibility(View.INVISIBLE);
             listView.removeAllViewsInLayout();
             musicListAdapter.notifyDataSetInvalidated();
             listView.setAdapter(musicListAdapter);
+            imgView.loadListNull();
+            bgImgView.loadListNull();
 
         } else if (type == MUSIC_LIST) {
             listName.setText(musicList.getListName());

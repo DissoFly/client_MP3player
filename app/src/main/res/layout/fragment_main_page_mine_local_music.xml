@@ -8,39 +8,59 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#363636"
+        android:layout_height="52dp"
+        android:background="#d33a31"
         android:orientation="horizontal"
         android:padding="5dp">
 
         <ImageView
             android:id="@+id/btn_local_music_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_back"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="13dp"
             android:text="本地音乐"
             android:textColor="#fff"
             android:textSize="25dp"/>
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="this is local music list"/>
-
-    <Button
+    <LinearLayout
         android:id="@+id/btn_local_music_find_music"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="btn_local_music_find_music"/>
+        android:background="@mipmap/bg_choose_left"
+        >
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="17dp"
+            android:textColor="#111"
+            android:text="查找本地音乐"/>
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="3dp"
+            android:src="@mipmap/ic_button_next"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eee"/>
+
+
     <ListView
         android:id="@+id/list_local_music"
         android:layout_width="match_parent"

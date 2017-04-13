@@ -8,12 +8,13 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,17 +96,21 @@ public class CommentFragment extends Fragment implements View.OnClickListener {
                 TextView floor=(TextView)view.findViewById(R.id.text_comment_floor);
                 TextView name=(TextView)view.findViewById(R.id.text_comment_username);
                 TextView comment=(TextView)view.findViewById(R.id.text_comment);
-                Button like=(Button)view.findViewById(R.id.btn_comment_like);
-                floor.setText(comments.get(i).getFloor()+"L");
+                TextView likeCount=(TextView)view.findViewById(R.id.text_comment_like_count);
+                ImageView like=(ImageView)view.findViewById(R.id.btn_comment_like);
+                String time= DateFormat.format("MM月dd日 hh:mm",comments.get(i).getCreateDate()).toString();
+                floor.setText(time+"  "+comments.get(i).getFloor()+"L");
                 name.setText(comments.get(i).getUserName());
                 comment.setText(comments.get(i).getText());
                 String s[]=comments.get(i).getLikeIds().split(";");
                 if (comments.get(i).isUserLike()){
-                    like.setText("已点赞("+(s.length-1)+")");
+                    likeCount.setText((s.length-1)+"");
+                    like.setImageResource(R.mipmap.ic_like_red);
                 }else{
-                    like.setText("赞("+(s.length-1)+")");
+                    likeCount.setText((s.length-1)+"");
+                    like.setImageResource(R.mipmap.ic_like);
                 }
-                like.setOnClickListener(new View.OnClickListener() {
+                view.findViewById(R.id.layout_right).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         likeConnect(comments.get(i).getCommentId());

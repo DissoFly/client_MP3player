@@ -3,11 +3,25 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/bg_choose_left">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="#000"
+            android:textSize="18dp"
+            android:layout_marginLeft="10dp"
+            android:text="我的音乐"/>
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/page_mine_local_list"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
+        android:background="#fff"
         />
     <FrameLayout
         android:layout_width="match_parent"
@@ -16,17 +30,23 @@
         />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@mipmap/bg_choose_left">
         <TextView
             android:id="@+id/text_mine_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="#000"
+            android:textSize="18dp"
+            android:layout_marginLeft="10dp"
             android:text="创建的歌单"/>
         <ImageView
             android:id="@+id/btn_mine_add_list"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/ic_add"
+            android:layout_marginRight="15dp"
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
@@ -37,7 +57,8 @@
         />
     <ListView
         android:id="@+id/page_mine_music_list"
+        android:background="#fff"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         />
 </LinearLayout>

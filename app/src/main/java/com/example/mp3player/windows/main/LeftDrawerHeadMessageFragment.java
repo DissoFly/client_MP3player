@@ -5,6 +5,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -12,14 +14,23 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mp3player.R;
+import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
-import com.example.mp3player.windows.inputcells.AvatarView;
 import com.example.mp3player.windows.login.LoginActivity;
 import com.example.mp3player.windows.login.MyDataActivity;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by DissoCapB on 2017/2/18.
@@ -28,7 +39,7 @@ import com.example.mp3player.windows.login.MyDataActivity;
 public class LeftDrawerHeadMessageFragment extends Fragment implements View.OnClickListener{
     View view;
     TextView headAccount;
-    AvatarView headAvatar;
+    ImageView headAvatar;
     final int REFLASH_TIME=200;
     final int CONNECTING=10;
     final int CONNECT_SUCCESS=11;
@@ -41,7 +52,7 @@ public class LeftDrawerHeadMessageFragment extends Fragment implements View.OnCl
             statue=CONNECTING;
             view = inflater.inflate(R.layout.fragment_main_leftdrawer_head_message, null);
             headAccount=(TextView)view.findViewById(R.id.text_head_account);
-            headAvatar=(AvatarView)view.findViewById(R.id.head_avatar);
+            headAvatar=(ImageView)view.findViewById(R.id.head_avatar);
             headAccount.setText("正在登录");
             initData();
         }
@@ -107,12 +118,12 @@ public class LeftDrawerHeadMessageFragment extends Fragment implements View.OnCl
                 if (!isChanges) {
                     if (messenger.getConnectResult().equals("SUCCESS_IN_AUTOLOGIN")) {
                         headAccount.setText("你好，" + messenger.getUser().getAccount());
-                        headAvatar.load(messenger.getUser().getUserId());
+                        userAvatarConnect(messenger.getUser().getUserId());
                         statue=CONNECT_SUCCESS;
                     } else {
                         headAccount.setText(messenger.getConnectResult());
                         statue=CONNECT_FAIL;
-                        headAvatar.loadNull();
+                        setAvatarNull();
                     }
                     isChanges=true;
                 }
@@ -120,4 +131,46 @@ public class LeftDrawerHeadMessageFragment extends Fragment implements View.OnCl
             handler.postDelayed(runnable, REFLASH_TIME);
         }
     };
+    public void userAvatarConnect(int userId) {
+        OkHttpClient client = HttpService.getClient();
+
+        Request request = HttpService.requestBuilderWithPath("avatar/" + userId).get().build();
+        client.newCall(request).enqueue(new Callback() {
+
+            @Override
+            public void onResponse(Call arg0, Response arg1) throws IOException {
+                try {
+                    byte[] bytes = arg1.body().bytes();
+                    final Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            headAvatar.setImageBitmap(bmp);
+                        }
+                    });
+                } catch (Exception ex) {
+                    setAvatarNull();
+                }
+            }
+
+            @Override
+            public void onFailure(Call arg0, IOException arg1) {
+                setAvatarNull();
+            }
+        });
+    }
+
+    void setAvatarNull(){
+        try{
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    headAvatar.setImageResource(R.mipmap.user_null);
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 }

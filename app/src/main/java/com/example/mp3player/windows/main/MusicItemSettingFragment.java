@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.mp3player.R;
 import com.example.mp3player.entity.PlayingItem;
+import com.example.mp3player.windows.main.page.mine.localMusic.LocalMusicFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class MusicItemSettingFragment extends Fragment implements View.OnClickLi
     List<String> listItemName = new ArrayList<>();
     List<Integer> listItemNumber = new ArrayList<>();
     List<Integer> listItemSrc = new ArrayList<>();
-
+    LocalMusicFragment from;
 
     @Nullable
     @Override
@@ -75,9 +76,9 @@ public class MusicItemSettingFragment extends Fragment implements View.OnClickLi
         listItemName = new ArrayList<>();
         listItemNumber = new ArrayList<>();
         listItemSrc = new ArrayList<>();
-        setOneListItem("收藏到歌单", OPEN_ADD_MUSIC_TO_LIST_FRAGMENT, R.mipmap.ic_launcher);
-        setOneListItem("删除", OPEN_DELECT_FRAGMENT, R.mipmap.ic_launcher);
-        setOneListItem("下载（没做）", 0, R.mipmap.ic_launcher);
+        setOneListItem("收藏到歌单", OPEN_ADD_MUSIC_TO_LIST_FRAGMENT, R.mipmap.ic_add_list);
+        setOneListItem("删除", OPEN_DELECT_FRAGMENT, R.mipmap.ic_delect);
+        //setOneListItem("下载（没做）", 0, R.mipmap.ic_launcher);
 
         listView.setAdapter(localListAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -132,7 +133,7 @@ public class MusicItemSettingFragment extends Fragment implements View.OnClickLi
     public void onResume() {
         super.onResume();
         if (settingItem != null) {
-            name.setText(settingItem.getSongName());
+            name.setText("歌曲："+settingItem.getSongName());
         }
     }
 
@@ -164,6 +165,14 @@ public class MusicItemSettingFragment extends Fragment implements View.OnClickLi
 
     public int getOpenFragmentInMain() {
         return openFragInMain;
+    }
+
+    public void setFrom(LocalMusicFragment from) {
+        this.from = from;
+    }
+
+    public LocalMusicFragment getFrom() {
+        return from;
     }
 
     public static interface OnMusicItemSettingListener {

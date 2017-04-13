@@ -3,8 +3,8 @@
               android:id="@+id/fragment_zone"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:background="#fff">
+              android:background="#fff"
+              android:orientation="vertical">
 
 
     <LinearLayout
@@ -33,29 +33,75 @@
             android:textSize="25dp"/>
     </LinearLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="190dp"
+        android:background="#ffb245">
 
-        <TextView
-            android:id="@+id/text_zone_username"
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/bg_zone"/>
+
+        <ImageView
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:src="@mipmap/bg_avatar"/>
+
+        <com.example.mp3player.windows.inputcells.AvatarView
+            android:id="@+id/head_avatar"
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"/>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="text_zone_username"/>
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="33dp"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btn_zone_add_friend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="btn_zone_add_friend"/>
+            <TextView
+                android:id="@+id/text_zone_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="MY PROFILE"
+                android:textColor="#fff"/>
 
-        <Button
-            android:id="@+id/btn_zone_inbox"
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="私信"/>
-    </LinearLayout>
+            android:layout_height="26dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_zone_add_friend"
+                android:layout_width="57dp"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/bg_button_translucent"
+                android:text="未关注"
+                android:textColor="#fff"
+                android:layout_marginRight="6dp"/>
+
+            <Button
+                android:id="@+id/btn_zone_inbox"
+                android:layout_width="57dp"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/bg_button_translucent"
+                android:text="私信"
+                android:textColor="#fff"/>
+        </LinearLayout>
+
+    </FrameLayout>
 
 
     <ListView

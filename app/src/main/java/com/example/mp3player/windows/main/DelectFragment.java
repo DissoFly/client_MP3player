@@ -8,10 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.example.mp3player.R;
 import com.example.mp3player.entity.PlayingItem;
+import com.example.mp3player.windows.main.page.mine.localMusic.LocalMusicFragment;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -35,6 +37,7 @@ public class DelectFragment extends Fragment implements View.OnClickListener {
     private List<PlayingItem> audioList = null;
     CheckBox checkBox;
     PlayingItem settingItem;
+    boolean select=false;
 
     @Nullable
     @Override
@@ -43,6 +46,12 @@ public class DelectFragment extends Fragment implements View.OnClickListener {
             view = inflater.inflate(R.layout.fragment_delect, null);
         }
         checkBox = (CheckBox) view.findViewById(R.id.checkBox_delect);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                select=b;
+            }
+        });
         initData();
         return view;
     }
@@ -66,7 +75,7 @@ public class DelectFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.btn_delect_confirm:
                 load();
-                if (checkBox.isSelected()) {
+                if (select) {
                     delectFile();
                 }
                 int j = 0;
@@ -78,6 +87,8 @@ public class DelectFragment extends Fragment implements View.OnClickListener {
                     j++;
                 }
                 save();
+                from.reload();
+                getActivity().onBackPressed();
                 break;
 
         }
@@ -145,5 +156,9 @@ public class DelectFragment extends Fragment implements View.OnClickListener {
                 e.printStackTrace();
             }
         }
+    }
+    LocalMusicFragment from;
+    public void setFrom(LocalMusicFragment from) {
+        this.from = from;
     }
 }

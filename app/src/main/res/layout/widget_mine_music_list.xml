@@ -2,22 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:paddingBottom="5dp"
+              android:paddingLeft="13dp"
+              android:paddingTop="5dp"
+    >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="music list"/>
 
     <TextView
         android:id="@+id/music_list_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="list name "/>
+        android:layout_marginBottom="3dp"
+        android:text="list name "
+        android:textColor="#000"
+        android:textSize="20dp"/>
+
     <TextView
         android:id="@+id/music_list_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="14dp"
         android:text="list size"/>
 </LinearLayout>

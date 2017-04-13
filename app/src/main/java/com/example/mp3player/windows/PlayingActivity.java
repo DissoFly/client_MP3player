@@ -13,9 +13,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -29,6 +29,7 @@ import com.example.mp3player.service.LoginService;
 import com.example.mp3player.service.MusicPlayerService;
 import com.example.mp3player.windows.inputcells.SongPictureFragment;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,6 +48,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.mp3player.service.MusicType.LIST_CYCLE;
+import static com.example.mp3player.service.MusicType.ONE_CYCLE;
+import static com.example.mp3player.service.MusicType.RANDOM_CYCLE;
+
 
 /**
  * Created by DissoCapB on 2017/1/21.
@@ -60,6 +65,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
     int REFLASH_TIME = 50;
 
     TextView playingName;
+    TextView playingNameOthers;
     TextView playingCurrentPosition;
     TextView playingDuration;
     SeekBar musicBar;
@@ -71,13 +77,14 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
     SongPictureFragment songPictureFragment = new SongPictureFragment();
 
     TextView localOrOnline;
-    Button btnDownload;
-    Button btnComment;
-    Button btnLike;
+    ImageView btnDownload;
+    ImageView btnComment;
+    ImageView btnLike;
+    TextView likeCount;
+    LinearLayout layoutOnline;
 
     ImageView btnPlayChanges;
-    ImageView btnPlayBack;
-    ImageView btnPlayNext;
+    ImageView btnPlay;
 
     boolean isLrcShow;
     RelativeLayout layoutLrc;
@@ -94,16 +101,22 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing);
-
+        btnPlayChanges = (ImageView) findViewById(R.id.btn_play_cycle);
+        btnPlay = (ImageView) findViewById(R.id.btn_play_changes);
         playingName = (TextView) findViewById(R.id.text_play_name);
+        playingNameOthers = (TextView) findViewById(R.id.text_play_name_others);
         playingCurrentPosition = (TextView) findViewById(R.id.text_playing_time);
         playingDuration = (TextView) findViewById(R.id.text_max_time);
         musicBar = (SeekBar) findViewById(R.id.play_music_bar);
         songImg = (FrameLayout) findViewById(R.id.frag_song_img);
         localOrOnline = (TextView) findViewById(R.id.text_playing_local_or_online);
-        btnDownload = (Button) findViewById(R.id.btn_playing_download);
-        btnComment = (Button) findViewById(R.id.btn_playing_comment);
-        btnLike = (Button) findViewById(R.id.btn_playing_like);
+        btnDownload = (ImageView) findViewById(R.id.btn_playing_download);
+        btnComment = (ImageView) findViewById(R.id.btn_playing_comment);
+        btnLike = (ImageView) findViewById(R.id.btn_playing_like);
+        likeCount = (TextView) findViewById(R.id.text_comment_number);
+        layoutOnline=(LinearLayout)findViewById(R.id.layout_online) ;
+        localOrOnline.setVisibility(View.VISIBLE);
+        layoutOnline.setVisibility(View.GONE);
         layoutLrc = (RelativeLayout) findViewById(R.id.layout_lrc);
         lrcCenter = (TextView) findViewById(R.id.text_lrc_center);
         lrcTop = (TextView) findViewById(R.id.text_lrc_top);
@@ -265,21 +278,24 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                btnLike.setText("赞" + "(" + data.replace("FALSE", "") + ")");
+                                btnLike.setImageResource(R.mipmap.ic_playing_unlike);
+                                likeCount.setText(data.replace("FALSE", ""));
                             }
                         });
                     } else if (data.endsWith("TRUE")) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                btnLike.setText("已赞" + "(" + data.replace("TRUE", "") + ")");
+                                btnLike.setImageResource(R.mipmap.ic_playing_like);
+                                likeCount.setText(data.replace("TRUE", ""));
                             }
                         });
                     } else {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                btnLike.setText("连接错误");
+                                btnLike.setImageResource(R.mipmap.ic_playing_unlike);
+                                likeCount.setText("连接错误");
                             }
                         });
                         System.out.println(data);
@@ -292,6 +308,10 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
     }
 
     private void setMusiclikeConnect(int userId, int onlineSongId) {
+        if(userId<0){
+            Toast.makeText(PlayingActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
+            return;
+        }
         RequestBody formBody = new FormBody.Builder()
                 .add("userId", userId + "")
                 .add("musicId", onlineSongId + "")
@@ -360,39 +380,61 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
     void setLrc(File file) {
 
         try {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            InputStreamReader inputStreamReader = new InputStreamReader(
-                    fileInputStream, "GB2312");
-            BufferedReader bufferedReader = new BufferedReader(
-                    inputStreamReader);
+            FileInputStream fis = new FileInputStream(file);
+            BufferedInputStream in = new BufferedInputStream(fis);
+            BufferedReader bufferedReader;
+            in.mark(4);
+            byte[] first3bytes = new byte[3];
+            in.read(first3bytes);
+            in.reset();
+            if (first3bytes[0] == (byte) 0xEF && first3bytes[1] == (byte) 0xBB
+                    && first3bytes[2] == (byte) 0xBF) {// utf-8
+                System.out.println("utf-8");
+                bufferedReader = new BufferedReader(new InputStreamReader(in, "utf-8"));
+            } else if (first3bytes[0] == (byte) 0xFF
+                    && first3bytes[1] == (byte) 0xFE) {
+                System.out.println("unicode");
+                bufferedReader = new BufferedReader(new InputStreamReader(in, "unicode"));
+            } else if (first3bytes[0] == (byte) 0xFE && first3bytes[1] == (byte) 0xFF) {
+                System.out.println("utf-16be");
+                bufferedReader = new BufferedReader(new InputStreamReader(in, "utf-16be"));
+            } else if (first3bytes[0] == (byte) 0xFF && first3bytes[1] == (byte) 0xFF) {
+                bufferedReader = new BufferedReader(new InputStreamReader(in, "utf-16le"));
+                System.out.println("utf-16le");
+            } else {
+                System.out.println("GBK");
+                bufferedReader = new BufferedReader(new InputStreamReader(in, "GBK"));
+            }
+            //            FileInputStream fileInputStream = new FileInputStream(file);
+            //            InputStreamReader inputStreamReader = new InputStreamReader(
+            //                    fileInputStream, "UTF-8");
             String s = "";
             lyricList = new ArrayList<String>();
             lyricTimeList = new ArrayList<String>();
 
             while ((s = bufferedReader.readLine()) != null) {
 
-                if ((s.indexOf("[ar:") != -1) || (s.indexOf("[ti:") != -1) || (s.indexOf("[al:") != -1)) {
+                if ((s.indexOf("[ar:") != -1) || (s.indexOf("[ti:") != -1) || (s.indexOf("[al:") != -1) || (s.indexOf("[t_time:") != -1)) {
                     s = s.substring(s.indexOf(":") + 1, s.indexOf("]"));
                     lyricTimeList.add("-1");
                 } else if (s.indexOf("[") != -1) {
                     String ss = s.substring(s.indexOf("["), s.indexOf("]") + 1);
-
                     String timeStr = (ss.replace("[", "").replace("]", ""));
                     timeStr = timeStr.replace(":", ".");
                     timeStr = timeStr.replace(".", "@");
                     String timeData[] = timeStr.split("@");
+                    s = s.replace(ss, "");
                     int minute, second, millisecond;
                     try {
                         minute = Integer.parseInt(timeData[0]);
                         second = Integer.parseInt(timeData[1]);
                         millisecond = Integer.parseInt(timeData[2]);
                         lyricTimeList.add(String.valueOf((minute * 60 + second) * 1000 + millisecond * 10));
-                        s = s.replace(ss, "");
                     } catch (NumberFormatException e) {
-                        if(lyricTimeList.size()>0) {
+                        if (lyricTimeList.size() > 0) {
                             lyricTimeList.add(lyricTimeList.get(lyricTimeList.size() - 1));
-                        }else{
-                            lyricTimeList.add("1");
+                        } else {
+                            lyricTimeList.add("0");
                         }
                     }
 
@@ -404,8 +446,8 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
 
             isLyric = true;
             bufferedReader.close();
-            inputStreamReader.close();
-            fileInputStream.close();
+            fis.close();
+            in.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             isLyric = false;
@@ -480,8 +522,8 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                 int len = 0;
                 FileOutputStream fos = null;
                 try {
-                    if(!file.getParentFile().exists()){
-                        if(!file.getParentFile().mkdirs()){
+                    if (!file.getParentFile().exists()) {
+                        if (!file.getParentFile().mkdirs()) {
                             System.out.println("false:创建目标文件所在目录失败！");
                         }
                     }
@@ -538,41 +580,64 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                     reflashSign = listPosition;
                 }
             }
-
+            switch (messenger.getType()) {
+                case LIST_CYCLE:
+                    btnPlayChanges.setImageResource(R.mipmap.ic_playing_repeat);
+                    break;
+                case ONE_CYCLE:
+                    btnPlayChanges.setImageResource(R.mipmap.ic_playing_one);
+                    break;
+                case RANDOM_CYCLE:
+                    btnPlayChanges.setImageResource(R.mipmap.ic_playing_random);
+                    break;
+                default:
+                    break;
+            }
             if (listPosition == -1) {
                 playingName.setText("音乐，让生活更美好");
+                playingNameOthers.setText("MP3player");
                 playingCurrentPosition.setText("00:00");
                 playingDuration.setText("00:00");
-                localOrOnline.setText("无");
-                btnDownload.setEnabled(false);
-                btnDownload.setText("无下载");
+                localOrOnline.setVisibility(View.VISIBLE);
+                localOrOnline.setText("没有音乐？快去挑选点音乐吧！");
+                layoutOnline.setVisibility(View.GONE);
             } else {
                 playingName.setText(audioList.get(listPosition).getSongName());
+                playingNameOthers.setText(audioList.get(listPosition).getArtist() + " - " + audioList.get(listPosition).getAlbum());
                 lyricUpdata();
                 if (!audioList.get(listPosition).isOnline()) {
+                    localOrOnline.setVisibility(View.VISIBLE);
+                    layoutOnline.setVisibility(View.GONE);
                     localOrOnline.setText("本地音乐");
                     btnDownload.setEnabled(false);
                     btnComment.setEnabled(false);
                     btnLike.setVisibility(View.GONE);
                     btnLike.setEnabled(false);
-                    btnDownload.setText("本地");
                 } else if (audioList.get(listPosition).isOnline() && audioList.get(listPosition).isDownload()) {
+                    localOrOnline.setVisibility(View.GONE);
+                    layoutOnline.setVisibility(View.VISIBLE);
                     localOrOnline.setText("网络下载");
                     btnDownload.setEnabled(false);
                     btnComment.setEnabled(true);
                     btnLike.setVisibility(View.VISIBLE);
                     btnLike.setEnabled(true);
-                    btnDownload.setText("已下载");
+                    btnDownload.setImageResource(R.mipmap.ic_playing_download_finish);
                 } else {
+                    localOrOnline.setVisibility(View.GONE);
+                    layoutOnline.setVisibility(View.VISIBLE);
                     localOrOnline.setText("网络在线");
                     btnDownload.setEnabled(true);
                     btnComment.setEnabled(true);
                     btnLike.setVisibility(View.VISIBLE);
                     btnLike.setEnabled(true);
-                    btnDownload.setText("下载");
+                    btnDownload.setImageResource(R.mipmap.ic_playing_download);
                 }
-                if (messenger.isPlaying())
+                if (messenger.isPlaying()) {
+                    btnPlay.setImageResource(R.mipmap.ic_playing_pause);
                     play();
+                } else {
+                    btnPlay.setImageResource(R.mipmap.ic_playing_play);
+                }
                 if (!rotateAnimation.isPaused()) {
                     if (!messenger.isPlaying()) {
                         rotateAnimation.pause();
@@ -608,7 +673,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                 }
             }
             if (getLyric < 0) {
-                getLyric=0;
+                getLyric = 0;
             }
             StringBuilder sb = new StringBuilder();
             StringBuilder sf = new StringBuilder();
@@ -620,12 +685,12 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
             }
             if (b)
                 for (int a = 0; a < sb1.size(); a++)
-                    sb.append(sb1.get(sb1.size() - a - 1) + "\n");
+                    sb.append("\n\n"+sb1.get(sb1.size() - a - 1));
             for (int a = getLyric + 1; (a < lyricList.size()) && (a < getLyric + 6); a++)
-                sf.append(lyricList.get(a) + "\n");
+                sf.append(lyricList.get(a) + "\n\n");
             lrcCenter.setText(lyricList.get(getLyric));
-            lrcTop.setText(sb.length() >= 2 ? sb.substring(0, sb.length() - 2) : sb);
-            lrcButton.setText(sf.length() >= 2 ? sf.substring(0, sf.length() - 2) : sf);
+            lrcTop.setText(sb+"\n");
+            lrcButton.setText("\n"+sf);
         }
 
     }
@@ -643,7 +708,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
         if (!isMusicBarTouch)
             musicBar.setProgress(current);
         if (oneReloadPosition != listPosition) {
-            songPictureFragment.setImg(messenger.getImg(),getResources());
+            songPictureFragment.setImg(messenger.getImg(), getResources());
             oneReloadPosition = listPosition;
         }
 

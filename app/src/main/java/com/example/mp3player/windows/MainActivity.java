@@ -125,6 +125,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public void OnMusicItemSettingClicked() {
                 openFragInMain = localMusicFragment.getOpenFragmentInMain();
                 musicItemSettingFragment.setSettingItem(localMusicFragment.getSelectMusic());
+                musicItemSettingFragment.setFrom(localMusicFragment);
                 openNewFragInMain();
             }
         });
@@ -138,6 +139,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         break;
                     case OPEN_DELECT_FRAGMENT:
                         delectFragment.setSettingItem(musicItemSettingFragment.getSelectMusic());
+                        delectFragment.setFrom(localMusicFragment);
                         break;
                 }
                 openNewFragInMain();

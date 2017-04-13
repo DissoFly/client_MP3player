@@ -3,6 +3,85 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="#d33a31"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/btn_data_back"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_back"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="13dp"
+            android:text="我的信息"
+            android:textColor="#fff"
+            android:textSize="25dp"/>
+    </LinearLayout>
+    <FrameLayout
+        android:layout_below="@id/layout_top"
+        android:id="@+id/layout_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:background="#ffb245">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/bg_zone"/>
+
+        <ImageView
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:src="@mipmap/bg_avatar"/>
+
+        <com.example.mp3player.windows.inputcells.AvatarView
+            android:id="@+id/head_avatar"
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="33dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_zone_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="MY PROFILE"
+                android:textColor="#fff"/>
+
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+    <Button
+        android:id="@+id/btn_mydata_changes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_avatar"
+        android:text="修改个人信息"/>
+
     <Button
         android:id="@+id/btn_mydata_logout"
         android:layout_width="match_parent"

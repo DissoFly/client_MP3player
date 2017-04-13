@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mp3player.entity.PlayingItem;
@@ -41,6 +42,8 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
     TextView musicName;
     TextView musicArtist;
 
+    ImageView btnPlay;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
             getActivity().bindService(new Intent(getActivity(), MusicPlayerService.class), connection, Context.BIND_AUTO_CREATE);
             musicName = (TextView) view.findViewById(R.id.text_footer_music_name);
             musicArtist = (TextView) view.findViewById(R.id.text_footer_music_artist);
+            btnPlay= (ImageView) view.findViewById(R.id.btn_footer_play);
             initData();
         }
         return view;
@@ -131,6 +135,11 @@ public class FooterPlayerFragment extends Fragment implements View.OnClickListen
             }else {
                 musicName.setText(audioList.get(listPosition).getSongName());
                 musicArtist.setText(audioList.get(listPosition).getArtist());
+            }
+            if(messenger.isPlaying()){
+                btnPlay.setImageResource(R.mipmap.ic_pause);
+            }else{
+                btnPlay.setImageResource(R.mipmap.ic_play);
             }
 
             handler.postDelayed(runnable, REFLASH_TIME);

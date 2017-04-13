@@ -68,6 +68,10 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
         return binder;
     }
 
+    public int getDownloadingMusicId() {
+        return downloadingMusicId;
+    }
+
     public class ServicesBinder extends Binder {
         public DownloadService getService() {
             return DownloadService.this;
@@ -79,6 +83,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
     }
 
     public List<Downloading> getDownloadingList() {
+
         return downloadingList;
     }
 
@@ -131,8 +136,8 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
                 Toast.makeText(this, "存在完成下载", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(!file.getParentFile().exists()){
-                if(!file.getParentFile().mkdirs()){
+            if (!file.getParentFile().exists()) {
+                if (!file.getParentFile().mkdirs()) {
                     Toast.makeText(this, "创建目标文件所在目录失败！", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -140,6 +145,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             Toast.makeText(this, "开始下载", Toast.LENGTH_SHORT).show();
             Downloading downloading = new Downloading();
             downloading.setLocalPath(path);
+            downloading.setMusicName(musicName);
             downloading.setMusicId(musicId);
             downloading.setBreakPoints(0);
             downloading.setContentLength(0);
@@ -148,6 +154,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             downloadingList = downloadingDao.queryForAll();
         } catch (SQLException e) {
             e.printStackTrace();
+            return;
         }
 
         breakPoints = 0L;
@@ -198,11 +205,14 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
 
             } catch (SQLException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             Toast.makeText(this, "下载完成", Toast.LENGTH_SHORT).show();
             System.out.println("下载完成");
             isDownloading = false;
             downloadingMusicId = 0;
+
         }
         if (isDownloading) {
             //System.out.println("update:" + totalBytes + "," + (int) (totalBytes) / 1024);

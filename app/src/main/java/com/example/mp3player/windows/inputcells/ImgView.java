@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.example.mp3player.R;
 import com.example.mp3player.service.HttpService;
 
 import java.io.IOException;
@@ -68,6 +69,10 @@ public class ImgView extends View {
     public void loadById(String i) {
         load(HttpService.serverAddress + "api/musicList/listsrc/"+i);
 
+    }
+
+    public void loadListNull(){
+        setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.bg_music_src));
     }
 
     public void load(String path,String id) {

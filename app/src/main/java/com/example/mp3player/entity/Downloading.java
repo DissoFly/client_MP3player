@@ -12,6 +12,8 @@ public class Downloading {
     @DatabaseField(generatedId = true)
     private int id;
     @DatabaseField(canBeNull = false)
+    private String musicName;
+    @DatabaseField(canBeNull = false)
     private int musicId;
     @DatabaseField(canBeNull = false)
     private String localPath;
@@ -21,6 +23,14 @@ public class Downloading {
     private long totalBytes;    //开始下载长度
     @DatabaseField(canBeNull = false)
     private long contentLength; //最长长度
+
+    public String getMusicName() {
+        return musicName;
+    }
+
+    public void setMusicName(String musicName) {
+        this.musicName = musicName;
+    }
 
     public int getId() {
         return id;

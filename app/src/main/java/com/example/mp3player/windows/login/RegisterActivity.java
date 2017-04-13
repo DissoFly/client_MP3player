@@ -57,6 +57,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
 
     private void initData() {
         findViewById(R.id.btn_register_confirm).setOnClickListener(this);
+        findViewById(R.id.btn_local_music_back).setOnClickListener(this);
 
     }
 
@@ -65,6 +66,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
         switch (view.getId()) {
             case R.id.btn_register_confirm:
                 register();
+                break;
+            case R.id.btn_local_music_back:
+                onBackPressed();
                 break;
             default:
                 break;

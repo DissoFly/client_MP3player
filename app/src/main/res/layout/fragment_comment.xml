@@ -8,48 +8,76 @@
         android:id="@+id/layout_out"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
-
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/layout_in"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_alignParentBottom="true"
-        android:background="#fff">
-
-        <TextView
-            android:id="@+id/text_footer_no_comment"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:gravity="center"
-            android:text="这里还没有有人评论呢，快去抢沙发吧~"/>
+        android:orientation="vertical"
+        android:background="#eee"
+        >
 
         <RelativeLayout
-            android:id="@+id/relativeLayout_footer_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-            <Button
-                android:id="@+id/btn_comment_send"
+            android:background="@mipmap/bg_choose_left">
+            <TextView
+                android:id="@+id/text_mine_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="发送"/>
-
-            <EditText
-                android:id="@+id/edit_comment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/btn_comment_send"/>
-
+                android:layout_centerVertical="true"
+                android:textColor="#000"
+                android:textSize="18dp"
+                android:layout_marginLeft="10dp"
+                android:text="评论"/>
         </RelativeLayout>
 
-        <ListView
-            android:id="@+id/comment_list"
-            android:layout_marginTop="10dp"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_above="@id/relativeLayout_footer_comment"
-            />
-    </RelativeLayout>
+            android:layout_height="match_parent"
+            android:background="#fff">
+
+
+            <TextView
+                android:id="@+id/text_footer_no_comment"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="这里还没有有人评论呢，快去抢沙发吧~"/>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout_footer_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
+                <Button
+                    android:id="@+id/btn_comment_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="发送"/>
+
+                <EditText
+                    android:id="@+id/edit_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/btn_comment_send"/>
+
+            </RelativeLayout>
+
+            <ListView
+                android:id="@+id/comment_list"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_above="@id/relativeLayout_footer_comment"
+                />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+
 </RelativeLayout>

@@ -110,8 +110,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         listItemName = new ArrayList<>();
         listItemNumber = new ArrayList<>();
         listItemSrc = new ArrayList<>();
-        setOneListItem("本地音乐", OPEN_LOCAL_MUSIC_FRAGMENT, R.mipmap.ic_launcher);
-        setOneListItem("下载管理", OPEN_DOWNLOAD_FRAGMENT, R.mipmap.ic_launcher);
+        setOneListItem("本地音乐", OPEN_LOCAL_MUSIC_FRAGMENT, R.mipmap.ic_music_red);
+        setOneListItem("下载管理", OPEN_DOWNLOAD_FRAGMENT, R.mipmap.ic_download_red);
     }
 
     private void setOneListItem(String listName, int itemNumber, int itemSrc) {
@@ -202,7 +202,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                System.out.println(editText.getText());
                                 String text = editText.getText().toString();
                                 if (text.equals("")) {
                                     Toast.makeText(getActivity(), "不能为空", Toast.LENGTH_SHORT).show();
@@ -289,6 +288,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             }.getType());
 
         } catch (IOException e) {
+            System.out.println("可能没有本地文件：mineMusicLists");
             e.printStackTrace();
         }
     }

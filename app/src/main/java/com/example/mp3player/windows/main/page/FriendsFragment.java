@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,10 @@ import okhttp3.Response;
 
 public class FriendsFragment extends Fragment implements View.OnClickListener {
     View view;
+
+    View loadMore;
+    TextView txtLoadmore;
+
     Button btnNews;
     Button btnInbox;
     Button btnAdds;
@@ -63,21 +68,32 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
     final String ADD_CHOOSE = "getAddList";
     final String BE_ADD_CHOOSE = "getBeAddList";
     String choose = NEWS_CHOOSE;
-    int openZoneId;
 
+    int page=0;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (view == null)
+        if (view == null) {
             view = inflater.inflate(R.layout.fragment_main_page_friends, null);
-        btnNews = (Button) view.findViewById(R.id.btn_friend_news_list);
-        btnInbox = (Button) view.findViewById(R.id.btn_friend_inbox_list);
-        btnAdds = (Button) view.findViewById(R.id.btn_friend_add_list);
-        btnBeAdds = (Button) view.findViewById(R.id.btn_friend_be_add_list);
-        listView = (ListView) view.findViewById(R.id.list_friend);
-        initData();
-        imageLoader = new ImageLoader(container.getContext());
+            loadMore = inflater.inflate(R.layout.widget_load_root_more_btn, null);
+            txtLoadmore = (TextView) loadMore.findViewById(R.id.more_text);
+            btnNews = (Button) view.findViewById(R.id.btn_friend_news_list);
+            btnInbox = (Button) view.findViewById(R.id.btn_friend_inbox_list);
+            btnAdds = (Button) view.findViewById(R.id.btn_friend_add_list);
+            btnBeAdds = (Button) view.findViewById(R.id.btn_friend_be_add_list);
+            listView = (ListView) view.findViewById(R.id.list_friend);
+            listView.addFooterView(loadMore);
+            initData();
+            imageLoader = new ImageLoader(container.getContext());
+            // 加载更多
+            txtLoadmore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    loadMore();
+                }
+            });
+        }
         return view;
     }
 
@@ -115,6 +131,9 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setList(String choose) {
+        page=0;
+        loadMore.setEnabled(true);
+        txtLoadmore.setText("加载更多");
         buttonChange(choose);
         switch (choose) {
             case NEWS_CHOOSE:
@@ -229,38 +248,38 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
                 view = inflater.inflate(R.layout.widget_inboxlist_item, null);
-                final InboxList inboxList = inboxLists.get(i);
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (messenger.getUser() != null) {
-                            int userId = messenger.getUser().getUserId();
-                            Intent itnt = new Intent(getActivity(), InboxActivity.class);
-                            itnt.putExtra("userId", userId);
-                            itnt.putExtra("friendId", inboxList.getFriendId());
-                            startActivityForResult(itnt, 0);
-                        } else {
-                            Toast.makeText(getActivity(), "请登录", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-                TextView name = (TextView) view.findViewById(R.id.inboxlist_name);
-                TextView time = (TextView) view.findViewById(R.id.inboxlist_last_time);
-                TextView text = (TextView) view.findViewById(R.id.inboxlist_last_text);
-                ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
-                imageLoader.DisplayUserImage(inboxList.getFriendId(), avatar);
-                name.setText(inboxList.getFriendName());
-                String t = DateFormat.format("yyyy年MM月dd日   hh:mm:ss", inboxList.getCreateDate())
-                        .toString();
-                time.setText(t);
-                String s = "";
-                if (inboxList.getUnReadNumber() > 0) {
-                    s = "(未读" + inboxList.getUnReadNumber() + "条) ";
-                }
-                text.setText(s + inboxList.getText());
             } else {
                 view = convertView;
             }
+            final InboxList inboxList = inboxLists.get(i);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (messenger.getUser() != null) {
+                        int userId = messenger.getUser().getUserId();
+                        Intent itnt = new Intent(getActivity(), InboxActivity.class);
+                        itnt.putExtra("userId", userId);
+                        itnt.putExtra("friendId", inboxList.getFriendId());
+                        startActivityForResult(itnt, 0);
+                    } else {
+                        Toast.makeText(getActivity(), "请登录", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            TextView name = (TextView) view.findViewById(R.id.inboxlist_name);
+            TextView time = (TextView) view.findViewById(R.id.inboxlist_last_time);
+            TextView text = (TextView) view.findViewById(R.id.inboxlist_last_text);
+            ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
+            imageLoader.DisplayUserImage(inboxList.getFriendId(), avatar);
+            name.setText(inboxList.getFriendName());
+            String t = DateFormat.format("yyyy年MM月dd日   hh:mm:ss", inboxList.getCreateDate())
+                    .toString();
+            time.setText(t);
+            String s = "";
+            if (inboxList.getUnReadNumber() > 0) {
+                s = "(未读" + inboxList.getUnReadNumber() + "条) ";
+            }
+            text.setText(s + inboxList.getText());
             return view;
         }
     };
@@ -288,19 +307,27 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
                 view = inflater.inflate(R.layout.widget_friendread_item, null);
-                TextView name = (TextView) view.findViewById(R.id.text_friendread_name);
-                TextView time = (TextView) view.findViewById(R.id.text_friendread_time);
-                TextView text = (TextView) view.findViewById(R.id.text_friendread_text);
-                ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
-                imageLoader.DisplayUserImage(friendReads.get(i).getUserId(), avatar);
-                name.setText(friendReads.get(i).getUserName());
-                String times = DateFormat.format("MM-dd hh:mm:ss", friendReads.get(i).getCreateDate()).toString();
-                time.setText(times);
-                text.setText(friendReads.get(i).getText());
-
             } else {
                 view = convertView;
             }
+            TextView name = (TextView) view.findViewById(R.id.text_friendread_name);
+            TextView time = (TextView) view.findViewById(R.id.text_friendread_time);
+            TextView text = (TextView) view.findViewById(R.id.text_friendread_text);
+            ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
+            imageLoader.DisplayUserImage(friendReads.get(i).getUserId(), avatar);
+            name.setText(friendReads.get(i).getUserName());
+            String times = DateFormat.format("MM-dd hh:mm:ss", friendReads.get(i).getCreateDate()).toString();
+            time.setText(times);
+            text.setText(friendReads.get(i).getText());
+            final int zoneId=friendReads.get(i).getUserId();
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent itnt = new Intent(getActivity(), ZoneActivity.class);
+                    itnt.putExtra("openZoneId", zoneId);
+                    startActivityForResult(itnt, 0);
+                }
+            });
             return view;
         }
     };
@@ -403,7 +430,6 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String data = response.body().string();
-                System.out.println(data);
                 try {
                     inboxLists = new Gson().fromJson(data, new TypeToken<List<InboxList>>() {
                     }.getType());
@@ -449,7 +475,6 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String data = response.body().string();
-                System.out.println(data);
                 try {
                     friends = new Gson().fromJson(data, new TypeToken<List<Friend>>() {
                     }.getType());
@@ -526,6 +551,109 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+    }
+    void loadMore() {
+        int userId = -1;
+        if (messenger.getUser() != null) {
+            userId = messenger.getUser().getUserId();
+        }
+        RequestBody formBody = new FormBody.Builder()
+                .add("userId", userId + "")
+                .build();
+        loadMore.setEnabled(false);
+        txtLoadmore.setText("载入中...");
+        String path="";
+        switch (choose) {
+            case NEWS_CHOOSE:
+                path="friend/getFriendNews/";
+                break;
+            case INBOX_CHOOSE:
+                path="inbox/getInboxList/";
+                break;
+            case ADD_CHOOSE:
+                path="friend/" + choose+"/";
+                break;
+            case BE_ADD_CHOOSE:
+                path="friend/" + choose+"/";
+                break;
+        }
+        page ++;
+        Request request = HttpService.requestBuilderWithPath(path + page).post(formBody).build();
+
+        HttpService.getClient().newCall(request).enqueue(new Callback() {
+
+            @Override
+            public void onResponse(Call arg0, final Response response) throws IOException {
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadMore.setEnabled(true);
+                        txtLoadmore.setText("加载更多");
+
+                    }
+                });
+                try {
+                    final String data = response.body().string();
+                    if(data.equals("GET_ALL")){
+                        loadMore.setEnabled(false);
+                        txtLoadmore.setText("已经最后一页了");
+                        return;
+                    }
+                    switch (choose) {
+                        case NEWS_CHOOSE:
+                            List<FriendRead> friendReads = new Gson().fromJson(data, new TypeToken<List<FriendRead>>() {
+                            }.getType());
+                            FriendsFragment.this.friendReads.addAll(friendReads);
+                            break;
+                        case INBOX_CHOOSE:
+                            List<InboxList> inboxLists=new Gson().fromJson(data, new TypeToken<List<InboxList>>() {
+                            }.getType());
+                            FriendsFragment.this.inboxLists.addAll(inboxLists);
+                            break;
+                        case ADD_CHOOSE:
+                            List<Friend> friends1=new Gson().fromJson(data, new TypeToken<List<Friend>>() {
+                            }.getType());
+                            FriendsFragment.this.friends.addAll(friends1);
+                            break;
+                        case BE_ADD_CHOOSE:
+                            List<Friend> friends2=new Gson().fromJson(data, new TypeToken<List<Friend>>() {
+                            }.getType());
+                            FriendsFragment.this.friends.addAll(friends2);
+                            break;
+                    }
+                        getActivity().runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                switch (choose) {
+                                    case NEWS_CHOOSE:
+                                        newsListAdapter.notifyDataSetChanged();
+                                        break;
+                                    case INBOX_CHOOSE:
+                                        inboxListAdapter.notifyDataSetChanged();
+                                        break;
+                                    case ADD_CHOOSE:
+                                        addListAdapter.notifyDataSetChanged();
+                                        break;
+                                    case BE_ADD_CHOOSE:
+                                        addListAdapter.notifyDataSetChanged();
+                                        break;
+                                }
+                            }
+                        });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call arg0, final IOException e) {
+                Log.d("SellerFragment", e.getMessage());
+                loadMore.setEnabled(true);
+                txtLoadmore.setText("连接错误，请检查网络");
+            }
+        });
     }
 
     LoginService messenger;

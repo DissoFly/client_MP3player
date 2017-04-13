@@ -8,27 +8,29 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#363636"
+        android:layout_height="52dp"
+        android:background="#d33a31"
         android:orientation="horizontal"
         android:padding="5dp">
 
         <ImageView
             android:id="@+id/btn_download_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_back"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="13dp"
             android:text="下载管理"
             android:textColor="#fff"
             android:textSize="25dp"/>
     </LinearLayout>
-    <LinearLayout
+<!--    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -48,24 +50,28 @@
             android:layout_height="wrap_content"
             android:text="清除所有下载记录"/>
 
-    </LinearLayout>
+    </LinearLayout>-->
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="37dp"
+        android:gravity="center"
         android:orientation="horizontal">
         <Button
             android:id="@+id/btn_download_list_music"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="37dp"
             android:text="单曲"
-            android:layout_weight="1"/>
+            android:background="#00000000"
+            android:textColor="#d33a31"
+            android:textSize="17dp"/>
         <Button
             android:id="@+id/btn_download_list_downloading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="37dp"
+            android:background="#00000000"
             android:text="正在下载"
-            android:layout_weight="1"/>
+            android:textSize="17dp"/>
     </LinearLayout>
     <ListView
         android:id="@+id/download_list"

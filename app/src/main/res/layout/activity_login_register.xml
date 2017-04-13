@@ -7,101 +7,110 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#363636"
+        android:layout_height="52dp"
+        android:background="#d33a31"
         android:orientation="horizontal"
         android:padding="5dp">
 
         <ImageView
             android:id="@+id/btn_local_music_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_back"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="13dp"
             android:text="注册"
             android:textColor="#fff"
             android:textSize="25dp"/>
     </LinearLayout>
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="用户名："
-        />
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="用户名："
+            />
 
-    <EditText
-        android:id="@+id/register_edit_account"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="请输入用户名"/>
+        <EditText
+            android:id="@+id/register_edit_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入用户名"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="密码："
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="密码："
+            />
 
-    <EditText
-        android:id="@+id/register_edit_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="请输入密码"
-        android:inputType="textWebPassword"/>
+        <EditText
+            android:id="@+id/register_edit_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入密码"
+            android:inputType="textWebPassword"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="密码确认："
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="密码确认："
+            />
 
-    <EditText
-        android:id="@+id/register_edit_password_confirm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="请再次输入一次密码"
-        android:inputType="textPassword"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="邮箱："
-        />
+        <EditText
+            android:id="@+id/register_edit_password_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请再次输入一次密码"
+            android:inputType="textPassword"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="邮箱："
+            />
 
-    <EditText
-        android:id="@+id/register_edit_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="请输入邮箱"
-        android:inputType="textEmailAddress"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="手机号："
-        />
+        <EditText
+            android:id="@+id/register_edit_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入邮箱"
+            android:inputType="textEmailAddress"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="手机号："
+            />
 
-    <EditText
-        android:id="@+id/register_edit_phonenumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="请输入手机号"
-        android:inputType="phone"/>
+        <EditText
+            android:id="@+id/register_edit_phonenumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入手机号"
+            android:inputType="phone"/>
 
-    <fragment
-        android:id="@+id/register_avatar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        class="com.example.mp3player.windows.inputcells.PictureInputCellFragment"
-        tools:layout="@layout/fragment_inputcell_avatar" />
+        <fragment
+            android:id="@+id/register_avatar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            class="com.example.mp3player.windows.inputcells.PictureInputCellFragment"
+            tools:layout="@layout/fragment_inputcell_avatar" />
 
-    <Button
-        android:text="注册"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_register_confirm"/>
+        <Button
+            android:text="注册"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_register_confirm"/>
+    </LinearLayout>
+
 
 
 </LinearLayout>

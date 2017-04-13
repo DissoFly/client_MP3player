@@ -30,7 +30,7 @@ import java.util.List;
  * Created by DissoCapB on 2017/1/18.
  */
 
-public class FindMusicInLocalActivity extends Activity {
+public class FindMusicInLocalActivity extends Activity implements View.OnClickListener{
     private List<PlayingItem> audioList = null; //本地音频列表
     private boolean isSearch = false;
     String fileUpdate = null;
@@ -45,24 +45,37 @@ public class FindMusicInLocalActivity extends Activity {
         setContentView(R.layout.activity_main_page_mine_find_music_in_local);
         textResult = (TextView) findViewById(R.id.text_find_music_result);
         search = (Button) findViewById(R.id.btn_find_music_search);
+        initData();
         load();
 
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    }
+
+    private void initData() {
+        findViewById(R.id.btn_back).setOnClickListener(this);
+        search.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_back:
+                onBackPressed();
+                break;
+            case R.id.btn_find_music_search:
                 handler = new Handler();
                 thread = new LooperThread();
                 thread.start();
-
-            }
-        });
+                break;
+            default:
+                break;
+        }
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        textResult.setText("共" + audioList.size() + "首");
+        textResult.setText("共有" + audioList.size() + "首歌");
         if (thread != null)
             if (thread.isAlive()) {
                 search.setVisibility(View.GONE);
@@ -76,7 +89,8 @@ public class FindMusicInLocalActivity extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    search.setVisibility(View.GONE);
+                    search.setText("正在查找。。。");
+                    search.setEnabled(false);
                 }
             });
 
@@ -89,7 +103,8 @@ public class FindMusicInLocalActivity extends Activity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    search.setVisibility(View.VISIBLE);
+                    search.setText("全盘扫描");
+                    search.setEnabled(true);
                 }
             });
 

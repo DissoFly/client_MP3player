@@ -25,6 +25,7 @@ import com.example.mp3player.entity.FriendRead;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
 import com.example.mp3player.windows.SrcList.ImageLoader;
+import com.example.mp3player.windows.inputcells.AvatarView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -53,6 +54,7 @@ public class ZoneActivity extends Activity implements View.OnClickListener {
     String addFriendMessage = "";
     String friendName;
     ImageLoader imageLoader;
+    AvatarView headAvatar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,7 @@ public class ZoneActivity extends Activity implements View.OnClickListener {
         listView = (ListView) findViewById(R.id.list_zone);
         btnAddFriend = (Button) findViewById(R.id.btn_zone_add_friend);
         btnInbox = (Button) findViewById(R.id.btn_zone_inbox);
+        headAvatar=(AvatarView)findViewById(R.id.head_avatar);
         btnAddFriend.setVisibility(View.GONE);
         initData();
         Bundle extras = getIntent().getExtras();
@@ -358,6 +361,7 @@ public class ZoneActivity extends Activity implements View.OnClickListener {
                         public void run() {
                             title.setText(friendName + " 的空间");
                             name.setText(friendName);
+                            headAvatar.load(friendId);
                         }
                     });
                 }

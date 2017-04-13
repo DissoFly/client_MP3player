@@ -100,6 +100,7 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
                 view=convertView;
             }
             ImageView imageView=(ImageView)view.findViewById(R.id.btn_local_music_setting);
+            imageView.setVisibility(View.VISIBLE);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -139,10 +140,12 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
     public void onResume() {
 
         super.onResume();
+        reload();
+    }
+
+    public void reload(){
         load();
-        listView.removeAllViewsInLayout();
         listAdapter.notifyDataSetInvalidated();
-        listView.setAdapter(listAdapter);
     }
 
     @Override
