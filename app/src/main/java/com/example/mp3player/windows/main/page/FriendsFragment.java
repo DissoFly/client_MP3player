@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -50,6 +51,9 @@ import okhttp3.Response;
 public class FriendsFragment extends Fragment implements View.OnClickListener {
     View view;
 
+    View headView;
+    TextView headViewMessage;
+
     View loadMore;
     TextView txtLoadmore;
 
@@ -59,9 +63,9 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
     Button btnBeAdds;
     ListView listView;
 
-    List<Friend> friends;
-    List<FriendRead> friendReads;
-    List<InboxList> inboxLists;
+    List<Friend> friends = new ArrayList<>();
+    List<FriendRead> friendReads = new ArrayList<>();
+    List<InboxList> inboxLists = new ArrayList<>();
 
     final String NEWS_CHOOSE = "news";
     final String INBOX_CHOOSE = "inbox";
@@ -69,13 +73,15 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
     final String BE_ADD_CHOOSE = "getBeAddList";
     String choose = NEWS_CHOOSE;
 
-    int page=0;
+    int page = 0;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view == null) {
             view = inflater.inflate(R.layout.fragment_main_page_friends, null);
+            headView = inflater.inflate(R.layout.widget_listview_head_view, null);
+            headViewMessage = (TextView) headView.findViewById(R.id.head_view_message);
             loadMore = inflater.inflate(R.layout.widget_load_root_more_btn, null);
             txtLoadmore = (TextView) loadMore.findViewById(R.id.more_text);
             btnNews = (Button) view.findViewById(R.id.btn_friend_news_list);
@@ -83,6 +89,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             btnAdds = (Button) view.findViewById(R.id.btn_friend_add_list);
             btnBeAdds = (Button) view.findViewById(R.id.btn_friend_be_add_list);
             listView = (ListView) view.findViewById(R.id.list_friend);
+            listView.setAdapter(newsListAdapter);
             listView.addFooterView(loadMore);
             initData();
             imageLoader = new ImageLoader(container.getContext());
@@ -131,10 +138,13 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setList(String choose) {
-        page=0;
+        page = 0;
         loadMore.setEnabled(true);
         txtLoadmore.setText("加载更多");
         buttonChange(choose);
+        friendReads = new ArrayList<>();
+        inboxLists = new ArrayList<>();
+        friends = new ArrayList<>();
         switch (choose) {
             case NEWS_CHOOSE:
                 newsConnect();
@@ -158,6 +168,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         getActivity().bindService(new Intent(getActivity(), LoginService.class), connection, Context.BIND_AUTO_CREATE);
     }
+
     ImageLoader imageLoader;
     BaseAdapter addListAdapter = new BaseAdapter() {
 
@@ -181,7 +192,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             View view = null;
 
             if (convertView == null) {
-                LayoutInflater inflater =  (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.widget_friend_item, null);
 
             } else {
@@ -190,14 +201,14 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             TextView name = (TextView) view.findViewById(R.id.text_friend_name);
             Button btnAdd = (Button) view.findViewById(R.id.btn_friend_add);
             ImageView avatar = (ImageView) view.findViewById(R.id.head_avatar);
-            int srcId=-1;
+            int srcId = -1;
             switch (choose) {
                 case ADD_CHOOSE:
-                    srcId=friends.get(i).getFriendUserId();
+                    srcId = friends.get(i).getFriendUserId();
                     btnAdd.setText("已关注");
                     break;
                 case BE_ADD_CHOOSE:
-                    srcId=friends.get(i).getUserId();
+                    srcId = friends.get(i).getUserId();
                     btnAdd.setText("关注");
                     break;
                 default:
@@ -272,7 +283,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
             imageLoader.DisplayUserImage(inboxList.getFriendId(), avatar);
             name.setText(inboxList.getFriendName());
-            String t = DateFormat.format("yyyy年MM月dd日   hh:mm:ss", inboxList.getCreateDate())
+            String t = DateFormat.format("yyyy年MM月dd日   HH:mm:ss", inboxList.getEditDate())
                     .toString();
             time.setText(t);
             String s = "";
@@ -316,10 +327,10 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
             ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
             imageLoader.DisplayUserImage(friendReads.get(i).getUserId(), avatar);
             name.setText(friendReads.get(i).getUserName());
-            String times = DateFormat.format("MM-dd hh:mm:ss", friendReads.get(i).getCreateDate()).toString();
+            String times = DateFormat.format("MM-dd HH:mm:ss", friendReads.get(i).getEditDate()).toString();
             time.setText(times);
             text.setText(friendReads.get(i).getText());
-            final int zoneId=friendReads.get(i).getUserId();
+            final int zoneId = friendReads.get(i).getUserId();
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -335,8 +346,16 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
     void newsConnect() {
         int userId = -1;
+        listView.removeHeaderView(headView);
+        listView.removeAllViewsInLayout();
+        listView.deferNotifyDataSetChanged();
         if (messenger.getUser() != null) {
             userId = messenger.getUser().getUserId();
+        } else {
+            headViewMessage.setText("请先登录");
+            listView.deferNotifyDataSetChanged();
+            listView.addHeaderView(headView);
+            return;
         }
         RequestBody formBody = new FormBody.Builder()
                 .add("userId", userId + "")
@@ -411,10 +430,15 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
     void inboxListConnect() {
         int userId = -1;
+        listView.removeHeaderView(headView);
+        listView.removeAllViewsInLayout();
+        listView.deferNotifyDataSetChanged();
         if (messenger.getUser() != null) {
             userId = messenger.getUser().getUserId();
         } else {
-            Toast.makeText(getActivity(), "请先登录", Toast.LENGTH_SHORT).show();
+            headViewMessage.setText("请先登录");
+            listView.addHeaderView(headView);
+            listView.deferNotifyDataSetChanged();
             return;
         }
         RequestBody formBody = new FormBody.Builder()
@@ -443,8 +467,14 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            e.printStackTrace();
-                            Toast.makeText(getActivity(), "连接出错", Toast.LENGTH_SHORT).show();
+                            if (data.equals("IN_BLACKLIST")) {
+                                Toast.makeText(getActivity(), "访问限制", Toast.LENGTH_SHORT).show();
+                            } else if (data.equals("GET_ALL")) {
+                                Toast.makeText(getActivity(), "最后一页了", Toast.LENGTH_SHORT).show();
+                            } else {
+                                e.printStackTrace();
+                                Toast.makeText(getActivity(), "连接出错", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 
@@ -456,10 +486,15 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
 
     void addsConnect(String choose) {
         int userId = -1;
+        listView.removeHeaderView(headView);
+        listView.removeAllViewsInLayout();
+        listView.deferNotifyDataSetChanged();
         if (messenger.getUser() != null) {
             userId = messenger.getUser().getUserId();
         } else {
-            Toast.makeText(getActivity(), "请先登录", Toast.LENGTH_SHORT).show();
+            headViewMessage.setText("请先登录");
+            listView.addHeaderView(headView);
+            listView.deferNotifyDataSetChanged();
             return;
         }
         RequestBody formBody = new FormBody.Builder()
@@ -488,8 +523,14 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            e.printStackTrace();
-                            Toast.makeText(getActivity(), "连接出错", Toast.LENGTH_SHORT).show();
+                            if (data.equals("IN_BLACKLIST")) {
+                                Toast.makeText(getActivity(), "访问限制", Toast.LENGTH_SHORT).show();
+                            } else if (data.equals("GET_ALL")) {
+                                Toast.makeText(getActivity(), "这里空空如也", Toast.LENGTH_SHORT).show();
+                            } else {
+                                e.printStackTrace();
+                                Toast.makeText(getActivity(), "连接出错", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 
@@ -552,6 +593,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
         });
 
     }
+
     void loadMore() {
         int userId = -1;
         if (messenger.getUser() != null) {
@@ -562,22 +604,22 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                 .build();
         loadMore.setEnabled(false);
         txtLoadmore.setText("载入中...");
-        String path="";
+        String path = "";
         switch (choose) {
             case NEWS_CHOOSE:
-                path="friend/getFriendNews/";
+                path = "friend/getFriendNews/";
                 break;
             case INBOX_CHOOSE:
-                path="inbox/getInboxList/";
+                path = "inbox/getInboxList/";
                 break;
             case ADD_CHOOSE:
-                path="friend/" + choose+"/";
+                path = "friend/" + choose + "/";
                 break;
             case BE_ADD_CHOOSE:
-                path="friend/" + choose+"/";
+                path = "friend/" + choose + "/";
                 break;
         }
-        page ++;
+        page++;
         Request request = HttpService.requestBuilderWithPath(path + page).post(formBody).build();
 
         HttpService.getClient().newCall(request).enqueue(new Callback() {
@@ -595,7 +637,7 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                 });
                 try {
                     final String data = response.body().string();
-                    if(data.equals("GET_ALL")){
+                    if (data.equals("GET_ALL")) {
                         loadMore.setEnabled(false);
                         txtLoadmore.setText("已经最后一页了");
                         return;
@@ -607,41 +649,41 @@ public class FriendsFragment extends Fragment implements View.OnClickListener {
                             FriendsFragment.this.friendReads.addAll(friendReads);
                             break;
                         case INBOX_CHOOSE:
-                            List<InboxList> inboxLists=new Gson().fromJson(data, new TypeToken<List<InboxList>>() {
+                            List<InboxList> inboxLists = new Gson().fromJson(data, new TypeToken<List<InboxList>>() {
                             }.getType());
                             FriendsFragment.this.inboxLists.addAll(inboxLists);
                             break;
                         case ADD_CHOOSE:
-                            List<Friend> friends1=new Gson().fromJson(data, new TypeToken<List<Friend>>() {
+                            List<Friend> friends1 = new Gson().fromJson(data, new TypeToken<List<Friend>>() {
                             }.getType());
                             FriendsFragment.this.friends.addAll(friends1);
                             break;
                         case BE_ADD_CHOOSE:
-                            List<Friend> friends2=new Gson().fromJson(data, new TypeToken<List<Friend>>() {
+                            List<Friend> friends2 = new Gson().fromJson(data, new TypeToken<List<Friend>>() {
                             }.getType());
                             FriendsFragment.this.friends.addAll(friends2);
                             break;
                     }
-                        getActivity().runOnUiThread(new Runnable() {
+                    getActivity().runOnUiThread(new Runnable() {
 
-                            @Override
-                            public void run() {
-                                switch (choose) {
-                                    case NEWS_CHOOSE:
-                                        newsListAdapter.notifyDataSetChanged();
-                                        break;
-                                    case INBOX_CHOOSE:
-                                        inboxListAdapter.notifyDataSetChanged();
-                                        break;
-                                    case ADD_CHOOSE:
-                                        addListAdapter.notifyDataSetChanged();
-                                        break;
-                                    case BE_ADD_CHOOSE:
-                                        addListAdapter.notifyDataSetChanged();
-                                        break;
-                                }
+                        @Override
+                        public void run() {
+                            switch (choose) {
+                                case NEWS_CHOOSE:
+                                    newsListAdapter.notifyDataSetChanged();
+                                    break;
+                                case INBOX_CHOOSE:
+                                    inboxListAdapter.notifyDataSetChanged();
+                                    break;
+                                case ADD_CHOOSE:
+                                    addListAdapter.notifyDataSetChanged();
+                                    break;
+                                case BE_ADD_CHOOSE:
+                                    addListAdapter.notifyDataSetChanged();
+                                    break;
                             }
-                        });
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

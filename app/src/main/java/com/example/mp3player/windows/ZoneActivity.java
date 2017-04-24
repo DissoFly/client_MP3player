@@ -98,18 +98,18 @@ public class ZoneActivity extends Activity implements View.OnClickListener {
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
                 view = inflater.inflate(R.layout.widget_friendread_item, null);
-                TextView name=(TextView)view.findViewById(R.id.text_friendread_name);
-                TextView time=(TextView)view.findViewById(R.id.text_friendread_time);
-                TextView text=(TextView)view.findViewById(R.id.text_friendread_text);
-                ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
-                imageLoader.DisplayUserImage(friendReads.get(i).getUserId(), avatar);
-                name.setText(friendReads.get(i).getUserName());
-                String times= DateFormat.format("MM-dd hh:mm",friendReads.get(i).getCreateDate()).toString();
-                time.setText(times);
-                text.setText(friendReads.get(i).getText());
             } else {
                 view = convertView;
             }
+            TextView name=(TextView)view.findViewById(R.id.text_friendread_name);
+            TextView time=(TextView)view.findViewById(R.id.text_friendread_time);
+            TextView text=(TextView)view.findViewById(R.id.text_friendread_text);
+            ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
+            imageLoader.DisplayUserImage(friendReads.get(i).getUserId(), avatar);
+            name.setText(friendReads.get(i).getUserName());
+            String times= DateFormat.format("MM-dd HH:mm",friendReads.get(i).getEditDate()).toString();
+            time.setText(times);
+            text.setText(friendReads.get(i).getText());
             return view;
         }
     };

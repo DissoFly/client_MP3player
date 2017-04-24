@@ -139,7 +139,7 @@ public class MusicListFragment extends Fragment implements View.OnClickListener 
     void reload(){
         if (type == MINE_MUSIC_LIST) {
             listName.setText(mineMusicList.getListName());
-            String time= DateFormat.format("yyyy-MM-dd hh:mm",mineMusicList.getCreateDate()).toString();
+            String time= DateFormat.format("yyyy-MM-dd HH:mm",mineMusicList.getCreateDate()).toString();
             listCreateTime.setText(time);
             listAbout.setVisibility(View.INVISIBLE);
             listView.removeAllViewsInLayout();
@@ -150,7 +150,7 @@ public class MusicListFragment extends Fragment implements View.OnClickListener 
 
         } else if (type == MUSIC_LIST) {
             listName.setText(musicList.getListName());
-            String time= DateFormat.format("yyyy-MM-dd hh:mm",musicList.getCreateDate()).toString();
+            String time= DateFormat.format("yyyy-MM-dd HH:mm",musicList.getCreateDate()).toString();
             listCreateTime.setText(time);
             listAbout.setVisibility(View.VISIBLE);
             listAbout.setText(musicList.getListAbout());

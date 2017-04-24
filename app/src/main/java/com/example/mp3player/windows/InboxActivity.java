@@ -140,7 +140,7 @@ public class InboxActivity extends Activity implements View.OnClickListener {
                 TextView inboxTime=(TextView)view.findViewById(R.id.inbox_time);
                 TextView inboxText=(TextView)view.findViewById(R.id.inbox_text);
                 ImageView avatar=(ImageView)view.findViewById(R.id.avatar);
-                String time= DateFormat.format("yyyy-MM-dd hh:mm:ss",inboxes.get(i).getCreateDate()).toString();
+                String time= DateFormat.format("yyyy-MM-dd HH:mm:ss",inboxes.get(i).getCreateDate()).toString();
                 inboxTime.setText(time);
                 imageLoader.DisplayUserImage(avatarId, avatar);
                 inboxText.setText(inboxes.get(i).getText());
