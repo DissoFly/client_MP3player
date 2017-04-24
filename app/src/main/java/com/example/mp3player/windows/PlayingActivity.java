@@ -617,7 +617,7 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
                     localOrOnline.setVisibility(View.GONE);
                     layoutOnline.setVisibility(View.VISIBLE);
                     localOrOnline.setText("网络下载");
-                    btnDownload.setEnabled(false);
+                    btnDownload.setEnabled(true);
                     btnComment.setEnabled(true);
                     btnLike.setVisibility(View.VISIBLE);
                     btnLike.setEnabled(true);

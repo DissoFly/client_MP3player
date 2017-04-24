@@ -131,11 +131,18 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
                 return;
             }
             //验证已完成下载
-            File file = new File(path);
-            if (file.exists()) {
+            List<DownloadMusic> dlm = downloadMusicDao.queryBuilder().
+                    where().
+                    eq("musicId", musicId).query();
+            if (dlm.size() != 0) {
                 Toast.makeText(this, "存在完成下载", Toast.LENGTH_SHORT).show();
                 return;
             }
+            File file = new File(path);
+//            if (file.exists()) {          //验证本地文件
+//                Toast.makeText(this, "存在完成下载", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
             if (!file.getParentFile().exists()) {
                 if (!file.getParentFile().mkdirs()) {
                     Toast.makeText(this, "创建目标文件所在目录失败！", Toast.LENGTH_SHORT).show();

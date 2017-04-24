@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import com.j256.ormlite.dao.Dao;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -132,6 +134,7 @@ public class MusicPlayerService extends Service {
         player.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+                Toast.makeText(MusicPlayerService.this,"播放出错",Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
@@ -313,6 +316,21 @@ public class MusicPlayerService extends Service {
             isPrepared = false;
             player.reset();
             //File file=new File(audioList.get(listPosition));
+            if(audioList.get(listPosition).getFilePath().startsWith(Environment.getExternalStorageDirectory()+"")){
+                File file=new File(audioList.get(listPosition).getFilePath());
+                if(!file.exists()){
+                    if(audioList.get(listPosition).isOnline()){
+                        audioList.get(listPosition).setFilePath(HttpService.serverAddress + "api/online_song/" + audioList.get(listPosition).getOnlineSongId());
+                        audioList.get(listPosition).setDownload(false);
+                        Toast.makeText(this,audioList.get(listPosition).getSongName()+"本地音乐不存在，切换到网络播放",Toast.LENGTH_SHORT).show();
+                        //需要增加删除已下载记录功能
+                        save();
+                    }else {
+                        Toast.makeText(this, audioList.get(listPosition).getSongName() + "不存在，切换下一首", Toast.LENGTH_SHORT).show();
+                        next();
+                    }
+                }
+            }
             player.setDataSource(audioList.get(listPosition).getFilePath());
             player.prepareAsync();
         } catch (Exception e) {
@@ -323,7 +341,6 @@ public class MusicPlayerService extends Service {
     public void start() {
         if (listPosition >= 0) {
             initMediaPlayerAndPlay();
-
         }
     }
 

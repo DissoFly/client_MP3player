@@ -106,16 +106,16 @@ public class DownloadFragment extends Fragment implements View.OnClickListener {
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
                 view = inflater.inflate(R.layout.widget_downloading_list_item, null);
-                TextView name = (TextView) view.findViewById(R.id.text_name);
-                TextView progress = (TextView) view.findViewById(R.id.text_progress);
-                Downloading dl = downloadingList.get(i);
-                String titalBytes = new DecimalFormat("##.##").format(dl.getTotalBytes() / 1024.0 / 1024.0);
-                String contentLength = new DecimalFormat("##.##").format(dl.getContentLength() / 1024.0 / 1024.0);
-                name.setText(dl.getMusicName());
-                progress.setText("已下载：" + titalBytes + "M/" + contentLength + "M");
             } else {
                 view = convertView;
             }
+            TextView name = (TextView) view.findViewById(R.id.text_name);
+            TextView progress = (TextView) view.findViewById(R.id.text_progress);
+            Downloading dl = downloadingList.get(i);
+            String titalBytes = new DecimalFormat("##.##").format(dl.getTotalBytes() / 1024.0 / 1024.0);
+            String contentLength = new DecimalFormat("##.##").format(dl.getContentLength() / 1024.0 / 1024.0);
+            name.setText(dl.getMusicName());
+            progress.setText("已下载：" + titalBytes + "M/" + contentLength + "M");
             return view;
         }
     };
@@ -142,14 +142,14 @@ public class DownloadFragment extends Fragment implements View.OnClickListener {
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
                 view = inflater.inflate(R.layout.widget_download_finish, null);
-                TextView name = (TextView) view.findViewById(R.id.list_name);
-                TextView others = (TextView) view.findViewById(R.id.list_others);
-                DownloadMusic dMusic = downloadMusicList.get(i);
-                name.setText(dMusic.getSongName());
-                others.setText(dMusic.getArtist() + " - " + dMusic.getAlbum());
             } else {
                 view = convertView;
             }
+            TextView name = (TextView) view.findViewById(R.id.list_name);
+            TextView others = (TextView) view.findViewById(R.id.list_others);
+            DownloadMusic dMusic = downloadMusicList.get(i);
+            name.setText(dMusic.getSongName());
+            others.setText(dMusic.getArtist() + " - " + dMusic.getAlbum());
             return view;
         }
     };

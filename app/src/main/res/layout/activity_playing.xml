@@ -70,7 +70,7 @@
             android:textSize="17dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="15dp"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/layout_online"
@@ -81,7 +81,7 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:orientation="horizontal"
-            android:visibility="gone"
+            android:visibility="visible"
             >
 
             <ImageView
