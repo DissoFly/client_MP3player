@@ -44,10 +44,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     //left_drawer_head_message
     LeftDrawerHeadMessageFragment leftDrawerHeadMessageFragment = new LeftDrawerHeadMessageFragment();
     //main_outside
-   //FooterPlayingListFragment footerPlayingListFragment = new FooterPlayingListFragment();
+    //FooterPlayingListFragment footerPlayingListFragment = new FooterPlayingListFragment();
     MusicItemSettingFragment musicItemSettingFragment = new MusicItemSettingFragment();
     AddMusicToListFragment addMusicToListFragment = new AddMusicToListFragment();
-    DelectFragment delectFragment=new DelectFragment();
+    DelectFragment delectFragment = new DelectFragment();
     //main_footer
     FooterPlayerFragment footerPlayerFragment = new FooterPlayerFragment();
 
@@ -59,7 +59,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     LocalMusicFragment localMusicFragment = new LocalMusicFragment();
     DownloadFragment downloadFragment = new DownloadFragment();
     SearchFragment searchFragment = new SearchFragment();
-    MusicListFragment musicListFragment=new MusicListFragment();
+    MusicListFragment musicListFragment = new MusicListFragment();
     NewsFragment newsFragment;
 
 
@@ -89,9 +89,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             public void OnBtnLocalMusicClicked() {
                 openFragInMain = mineFragment.getOpenFragmentInMain();
-                if (openFragInMain==OPEN_MUSIC_LIST_FRAGMENT){
-                    musicListFragment=new MusicListFragment();
-                    musicListFragment.setMineMusicList(mineFragment.getMineMusicList());
+                if (openFragInMain == OPEN_MUSIC_LIST_FRAGMENT) {
+                    if (mineFragment.isLocal()) {
+                        musicListFragment = new MusicListFragment();
+                        musicListFragment.setMineMusicList(mineFragment.getMineMusicList());
+                    } else {
+                        musicListFragment = new MusicListFragment();
+                        musicListFragment.setMusicList(mineFragment.getMusicList());
+                    }
                 }
                 openNewFragInMain();
             }
@@ -100,11 +105,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             public void OnFindMusicFragmentClicked() {
                 openFragInMain = findMusicFragment.getOpenFragmentInMain();
-                if (openFragInMain==OPEN_MUSIC_LIST_FRAGMENT){
-                    musicListFragment=new MusicListFragment();
+                if (openFragInMain == OPEN_MUSIC_LIST_FRAGMENT) {
+                    musicListFragment = new MusicListFragment();
                     musicListFragment.setMusicList(findMusicFragment.getMusicList());
-                }else if(openFragInMain==OPEN_NEWS_FRAGMENT){
-                    newsFragment=new NewsFragment();
+                } else if (openFragInMain == OPEN_NEWS_FRAGMENT) {
+                    newsFragment = new NewsFragment();
                     newsFragment.setNewsId(findMusicFragment.getNewsIdSelect());
                 }
                 openNewFragInMain();
@@ -133,7 +138,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             public void OnMusicItemSetting() {
                 openFragInMain = musicItemSettingFragment.getOpenFragmentInMain();
-                switch (openFragInMain){
+                switch (openFragInMain) {
                     case OPEN_ADD_MUSIC_TO_LIST_FRAGMENT:
                         addMusicToListFragment.setSettingItem(musicItemSettingFragment.getSelectMusic());
                         break;
@@ -172,6 +177,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void openNewFragInMain() {
         switch (openFragInMain) {
             case OPEN_LOCAL_MUSIC_FRAGMENT:
+                localMusicFragment.setFrom(mineFragment);
                 getFragmentManager().beginTransaction()
                         .replace(R.id.main_content_outside, localMusicFragment).addToBackStack(null).commit();
                 break;
@@ -206,6 +212,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        //待解决mineFragment的更新问题
+        super.onBackPressed();
     }
 
     @Override

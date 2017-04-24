@@ -102,11 +102,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
             errorOutput=errorOutput.concat("·"+error+"\n");
         }
         if (errorOutput.equals("")) {
-            System.out.println("111");
             connectToHttp();
         }
         else {
-            System.out.println("222");
             Toast.makeText(getApplication(), errorOutput, Toast.LENGTH_LONG).show();
         }
 

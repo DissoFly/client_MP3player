@@ -51,7 +51,6 @@ public class HttpService {
         client = new OkHttpClient.Builder()
                 .cookieJar(new JavaNetCookieJar(cookieManager))
                 .build();
-
         client = new OkHttpClient.Builder().cookieJar(cookieJar).cookieJar(new JavaNetCookieJar(cookieManager)).build();
     }
 

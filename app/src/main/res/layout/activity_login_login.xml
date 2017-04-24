@@ -75,13 +75,15 @@
             android:layout_height="wrap_content"
             android:text="注册"/>
 
+        <Button
+            android:id="@+id/btn_password_forget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="忘记密码"/>
+
     </LinearLayout>
 
-<!--    <Button
-        android:id="@+id/btn_password_forget"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="忘记密码"/>-->
+
 
 
 </LinearLayout>

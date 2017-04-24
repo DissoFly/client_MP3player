@@ -56,7 +56,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         findViewById(R.id.btn_login).setOnClickListener(this);
         findViewById(R.id.btn_register).setOnClickListener(this);
         findViewById(R.id.btn_login_back).setOnClickListener(this);
-//        findViewById(R.id.btn_password_forget).setOnClickListener(this);
+        findViewById(R.id.btn_password_forget).setOnClickListener(this);
     }
 
     @Override
@@ -81,11 +81,11 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                 itnt=new Intent(this, RegisterActivity.class);
                 startActivity(itnt);
                 break;
-//            case R.id.btn_password_forget:
-//                //忘记密码
-//                itnt=new Intent(this, ForgetPasswordActivity.class);
-//                startActivity(itnt);
-//                break;
+            case R.id.btn_password_forget:
+                //忘记密码
+                itnt=new Intent(this, ForgetPasswordActivity.class);
+                startActivity(itnt);
+                break;
             default:
                 break;
         }

@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.example.mp3player.R;
 import com.example.mp3player.entity.MineMusicList;
+import com.example.mp3player.entity.MusicList;
+import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -37,6 +39,13 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DOWNLOAD_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_LOCAL_MUSIC_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_MUSIC_LIST_FRAGMENT;
@@ -49,14 +58,17 @@ import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_MUSIC_LI
 public class MineFragment extends Fragment implements View.OnClickListener {
 
     View view;
+    View headListView;
     int openFragInMain = 0;
     ListView localListView;
     ListView musicListView;
+    MusicList musicList;
     List<String> listItemName = new ArrayList<>();
     List<Integer> listItemNumber = new ArrayList<>();
     List<Integer> listItemSrc = new ArrayList<>();
     List<MineMusicList> mineMusicLists = new ArrayList<>();
-    int settingSelect=-1;
+    int settingSelect = -1;
+    boolean isLocal=false;
 
     @Nullable
     @Override
@@ -66,7 +78,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             view = inflater.inflate(R.layout.fragment_main_page_mine, null);
             localListView = (ListView) view.findViewById(R.id.page_mine_local_list);
             musicListView = (ListView) view.findViewById(R.id.page_mine_music_list);
-
+            headListView = inflater.inflate(R.layout.widget_mine_music_list, null);
             initData();
             setListItem();
 
@@ -80,29 +92,71 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     OnBtnLocalMusicClickedListener.OnBtnLocalMusicClicked();
                 }
             });
-            musicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    onResume();
-                    openFragInMain = OPEN_MUSIC_LIST_FRAGMENT;
-                    settingSelect=i;
-                    OnBtnLocalMusicClickedListener.OnBtnLocalMusicClicked();
-                }
-            });
 
         }
         return view;
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         load();
+        if (bound) {
+            if (messenger.getUser() != null)
+                getUserLike(messenger.getUser().getUserId());
+        }
+//        musicListAdapter.notifyDataSetChanged();
         musicListView.removeAllViewsInLayout();
         musicListAdapter.notifyDataSetInvalidated();
         musicListView.setAdapter(musicListAdapter);
+    }
 
+    private void getUserLike(int userId) {
+        RequestBody formBody = new FormBody.Builder()
+                .add("userId", userId + "")
+                .build();
+        Request request = HttpService.requestBuilderWithPath("like/userMusicLikeList/").post(formBody).build();
+        HttpService.getClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println("获取“我的最爱”列表失败");
+                e.printStackTrace();
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String data = response.body().string();
+                System.out.println(data);
+                final MusicList musicList = new Gson().fromJson(data, MusicList.class);
+                MineFragment.this.musicList=musicList;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        musicListView.removeHeaderView(headListView);
+                        TextView name = (TextView) headListView.findViewById(R.id.music_list_name);
+                        TextView size = (TextView) headListView.findViewById(R.id.music_list_size);
+                        name.setText(musicList.getListName());
+                        String s[]=musicList.getMusics().split(";");
+                        size.setText("共" + s.length + "首");
+                        headListView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                isLocal=false;
+                                openFragInMain = OPEN_MUSIC_LIST_FRAGMENT;
+                                OnBtnLocalMusicClickedListener.OnBtnLocalMusicClicked();
+                            }
+                        });
+                        musicListView.addHeaderView(headListView);
+                    }
+                });
+
+            }
+        });
     }
 
 
@@ -137,7 +191,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        public View getView(int i, View convertView, ViewGroup viewGroup) {
+        public View getView(final int i, View convertView, ViewGroup viewGroup) {
             View view = null;
             if (view == null) {
                 LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
@@ -145,10 +199,20 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             } else {
                 view = convertView;
             }
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onResume();
+                    isLocal=true;
+                    openFragInMain = OPEN_MUSIC_LIST_FRAGMENT;
+                    settingSelect = i;
+                    OnBtnLocalMusicClickedListener.OnBtnLocalMusicClicked();
+                }
+            });
             TextView name = (TextView) view.findViewById(R.id.music_list_name);
             TextView size = (TextView) view.findViewById(R.id.music_list_size);
             name.setText(mineMusicLists.get(i).getListName());
-            size.setText("共"+mineMusicLists.get(i).getMusicList().size()+"首");
+            size.setText("共" + mineMusicLists.get(i).getMusicList().size() + "首");
             return view;
         }
     };
@@ -294,8 +358,15 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    public MineMusicList getMineMusicList(){
+    public MineMusicList getMineMusicList() {
         return mineMusicLists.get(settingSelect);
+    }
+    public MusicList getMusicList() {
+        return musicList;
+    }
+
+    public boolean isLocal() {
+        return isLocal;
     }
 
     public int getOpenFragmentInMain() {
@@ -312,4 +383,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     public void setOnBtnLocalMusicClickedListener(OnBtnLocalMusicClickedListener onBtnLocalMusicClickedListener) {
         this.OnBtnLocalMusicClickedListener = onBtnLocalMusicClickedListener;
     }
+
+
 }

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.example.mp3player.R;
 import com.example.mp3player.entity.PlayingItem;
 import com.example.mp3player.service.MusicPlayerService;
+import com.example.mp3player.windows.main.page.MineFragment;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -60,6 +61,12 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
         }
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        from.onResume();
+        super.onDestroy();
     }
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -138,7 +145,6 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onResume() {
-
         super.onResume();
         reload();
     }
@@ -181,6 +187,11 @@ public class LocalMusicFragment extends Fragment implements View.OnClickListener
         }catch(IOException e){
             e.printStackTrace();
         }
+    }
+
+    MineFragment from;
+    public void setFrom(MineFragment from) {
+        this.from = from;
     }
 
     public  PlayingItem getSelectMusic(){
