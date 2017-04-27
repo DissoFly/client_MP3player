@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/head_message_outside"
+              android:layout_width="240dp"
+              android:layout_height="match_parent"
+              android:background="#eee"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/head_message"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:background="#fff"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            >
+
+            <ImageView
+                android:id="@+id/head_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/user_frame"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/text_head_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="text_head_account"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_leftdrawer_changes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="7dp">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:padding="3dp"
+            android:src="@mipmap/ic_setting"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:gravity="center"
+            android:text="修改个人信息"
+            android:textColor="#333"
+            android:textSize="18dp"/>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/text_log"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="#fff"
+        android:gravity="center"
+        android:text="登录显示更多功能"
+        android:visibility="gone"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ddd"/>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"></FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ddd"/>
+
+
+    <LinearLayout
+        android:id="@+id/btn_leftdrawer_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="7dp">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:padding="3dp"
+            android:src="@mipmap/ic_close"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:gravity="center"
+            android:text="注销"
+            android:textColor="#333"
+            android:textSize="18dp"/>
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -112,7 +112,6 @@ public class LoginService extends Service {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     final String data = response.body().string();
-                    System.out.println(data);
                     getRequest(data);
 
                 } catch (Exception e) {

@@ -21,9 +21,6 @@
         <service android:name=".service.LoginService"/>
         <service android:name=".service.MusicPlayerService"/>
         <service android:name=".service.DownloadService"/>
-
-                 <!--android:process=":remote"-->
-
         <activity android:name=".windows.login.LoginActivity"/>
         <activity android:name=".windows.login.ForgetPasswordActivity"/>
         <activity android:name=".windows.login.MyDataActivity"/>

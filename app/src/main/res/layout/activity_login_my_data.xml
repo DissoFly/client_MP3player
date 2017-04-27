@@ -79,6 +79,11 @@
         android:id="@+id/btn_mydata_changes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#fff"
+        android:gravity="left|center_vertical"
+        android:textSize="17dp"
+        android:textColor="#333"
+        android:paddingLeft="15dp"
         android:layout_below="@id/layout_avatar"
         android:text="修改个人信息"/>
 
@@ -87,5 +92,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="#fff"
+        android:textSize="19dp"
+        android:textColor="#d33a31"
+        android:paddingLeft="15dp"
         android:text="注销"/>
 </RelativeLayout>

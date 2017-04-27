@@ -14,7 +14,7 @@ import com.example.mp3player.StatusBarUtils;
 import com.example.mp3player.windows.main.AddMusicToListFragment;
 import com.example.mp3player.windows.main.DelectFragment;
 import com.example.mp3player.windows.main.FooterPlayerFragment;
-import com.example.mp3player.windows.main.LeftDrawerHeadMessageFragment;
+import com.example.mp3player.windows.main.LeftDrawerMessageFragment;
 import com.example.mp3player.windows.main.MusicItemSettingFragment;
 import com.example.mp3player.windows.main.MusicListFragment;
 import com.example.mp3player.windows.main.SearchFragment;
@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     int openFragInMain = 0;
     //left_drawer_head_message
-    LeftDrawerHeadMessageFragment leftDrawerHeadMessageFragment = new LeftDrawerHeadMessageFragment();
+    LeftDrawerMessageFragment leftDrawerMessageFragment = new LeftDrawerMessageFragment();
     //main_outside
     //FooterPlayingListFragment footerPlayingListFragment = new FooterPlayingListFragment();
     MusicItemSettingFragment musicItemSettingFragment = new MusicItemSettingFragment();
@@ -78,7 +78,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_footer, footerPlayerFragment).commit();
         getFragmentManager().beginTransaction()
-                .replace(R.id.left_drawer_head_message, leftDrawerHeadMessageFragment).commit();
+                .replace(R.id.left_drawer_head_message, leftDrawerMessageFragment).commit();
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_content_inside, findMusicFragment).commit();
 
