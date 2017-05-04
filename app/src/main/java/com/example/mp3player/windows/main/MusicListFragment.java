@@ -225,7 +225,7 @@ public class MusicListFragment extends Fragment implements View.OnClickListener 
                         playingItem.setSongName(publicSong.getSongName());
                         playingItem.setArtist(publicSong.getArtist());
                         playingItem.setAlbum(publicSong.getAlbum());
-                        playingItem.setFilePath(HttpService.serverAddress + "api/online_song/" + publicSong.getSongID());
+                        playingItem.setFilePath(HttpService.serverAddress() + "api/online_song/" + publicSong.getSongID());
                         playingItem.setOnline(true);
 
                         playingItems.add(playingItem);

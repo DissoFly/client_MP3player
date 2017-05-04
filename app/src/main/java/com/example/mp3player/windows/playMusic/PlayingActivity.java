@@ -1,4 +1,4 @@
-package com.example.mp3player.windows;
+package com.example.mp3player.windows.playMusic;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -27,6 +27,7 @@ import com.example.mp3player.service.DownloadService;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
 import com.example.mp3player.service.MusicPlayerService;
+import com.example.mp3player.windows.FooterPlayingListFragment;
 import com.example.mp3player.windows.inputcells.SongPictureFragment;
 
 import java.io.BufferedInputStream;

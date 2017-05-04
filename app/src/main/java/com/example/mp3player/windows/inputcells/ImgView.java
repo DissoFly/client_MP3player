@@ -67,7 +67,7 @@ public class ImgView extends View {
     }
 
     public void loadById(String i) {
-        load(HttpService.serverAddress + "api/musicList/listsrc/"+i);
+        load(HttpService.serverAddress() + "api/musicList/listsrc/"+i);
 
     }
 
@@ -76,7 +76,7 @@ public class ImgView extends View {
     }
 
     public void load(String path,String id) {
-        load(HttpService.serverAddress + "api/"+path+"/"+id);
+        load(HttpService.serverAddress() + "api/"+path+"/"+id);
 
     }
 

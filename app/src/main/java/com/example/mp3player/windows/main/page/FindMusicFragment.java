@@ -119,7 +119,7 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
             });
             TextView title = (TextView) view.findViewById(R.id.text_news_title);
             ImageView imgView=(ImageView)view.findViewById(R.id.img_news) ;
-            imageLoader.DisplayImage(serverAddress+"api/news/news_src/"+informations.get(i).getInformationId(), imgView);
+            imageLoader.DisplayImage(serverAddress()+"api/news/news_src/"+informations.get(i).getInformationId(), imgView);
             title.setText(informations.get(i).getTitle());
             return view;
         }
@@ -154,7 +154,7 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
                 TextView name1 = (TextView) view.findViewById(R.id.text_list_name1);
                 TextView name2 = (TextView) view.findViewById(R.id.text_list_name2);
                 layout1.setVisibility(View.VISIBLE);
-                imageLoader.DisplayImage(HttpService.serverAddress + "api/musicList/listsrc/"+musicLists.get(i * 2).getSrcPath(), imgView1);
+                imageLoader.DisplayImage(HttpService.serverAddress() + "api/musicList/listsrc/"+musicLists.get(i * 2).getSrcPath(), imgView1);
                 name1.setText(musicLists.get(i * 2).getListName());
                 layout1.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -166,7 +166,7 @@ public class FindMusicFragment extends Fragment implements View.OnClickListener 
                 });
                 if (musicLists.size() >= (i + 1) * 2) {
                     layout2.setVisibility(View.VISIBLE);
-                    imageLoader.DisplayImage(HttpService.serverAddress + "api/musicList/listsrc/"+musicLists.get(i * 2 + 1).getSrcPath(), imgView2);
+                    imageLoader.DisplayImage(HttpService.serverAddress() + "api/musicList/listsrc/"+musicLists.get(i * 2 + 1).getSrcPath(), imgView2);
                     name2.setText(musicLists.get(i * 2 + 1).getListName());
                     layout2.setOnClickListener(new View.OnClickListener() {
                         @Override

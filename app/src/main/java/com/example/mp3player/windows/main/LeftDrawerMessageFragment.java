@@ -27,6 +27,7 @@ import com.example.mp3player.service.LoginService;
 import com.example.mp3player.windows.login.ChangeActivity;
 import com.example.mp3player.windows.login.LoginActivity;
 import com.example.mp3player.windows.login.MyDataActivity;
+import com.example.mp3player.windows.setting.SettingActivity;
 
 import java.io.IOException;
 
@@ -44,6 +45,7 @@ public class LeftDrawerMessageFragment extends Fragment implements View.OnClickL
     View view;
     TextView headAccount;
     ImageView headAvatar;
+    LinearLayout setting;
     LinearLayout changes;
     LinearLayout logout;
     TextView text;
@@ -63,6 +65,7 @@ public class LeftDrawerMessageFragment extends Fragment implements View.OnClickL
         headAccount=(TextView)view.findViewById(R.id.text_head_account);
         headAvatar=(ImageView)view.findViewById(R.id.head_avatar);
         changes=(LinearLayout)view.findViewById(R.id.btn_leftdrawer_changes);
+        setting=(LinearLayout)view.findViewById(R.id.btn_leftdrawer_setting);
         logout=(LinearLayout)view.findViewById(R.id.btn_leftdrawer_logout);
         text=(TextView)view.findViewById(R.id.text_log);
         headAccount.setText("正在登录");
@@ -81,9 +84,11 @@ public class LeftDrawerMessageFragment extends Fragment implements View.OnClickL
         view.findViewById(R.id.head_message_outside).setOnClickListener(this);
         view.findViewById(R.id.btn_leftdrawer_changes).setOnClickListener(this);
         view.findViewById(R.id.btn_leftdrawer_logout).setOnClickListener(this);
+        view.findViewById(R.id.btn_leftdrawer_setting).setOnClickListener(this);
     }
     @Override
     public void onClick(View view) {
+        Intent itnt;
         switch (view.getId()) {
             case R.id.head_message:
                 switch (statue){
@@ -91,19 +96,23 @@ public class LeftDrawerMessageFragment extends Fragment implements View.OnClickL
                         Toast.makeText(getActivity().getApplicationContext(),"正在连接。。。。",Toast.LENGTH_SHORT).show();
                         break;
                     case CONNECT_SUCCESS:
-                        Intent itnt=new Intent(getActivity(), MyDataActivity.class);
+                        itnt=new Intent(getActivity(), MyDataActivity.class);
                         startActivity(itnt);
                         break;
                     case CONNECT_FAIL:
-                        Intent intent=new Intent(getActivity(), LoginActivity.class);
-                        startActivity(intent);
+                        itnt=new Intent(getActivity(), LoginActivity.class);
+                        startActivity(itnt );
                         break;
                     default:
                         break;
                 }
                 break;
             case R.id.btn_leftdrawer_changes:
-                Intent itnt=new Intent(getActivity(), ChangeActivity.class);
+                itnt=new Intent(getActivity(), ChangeActivity.class);
+                startActivity(itnt);
+                break;
+            case R.id.btn_leftdrawer_setting:
+                itnt=new Intent(getActivity(), SettingActivity.class);
                 startActivity(itnt);
                 break;
             case R.id.btn_leftdrawer_logout:
@@ -186,7 +195,6 @@ public class LeftDrawerMessageFragment extends Fragment implements View.OnClickL
                                 headAccount.setText(messenger.getConnectResult());
                                 break;
                         }
-                        headAccount.setText(messenger.getConnectResult());
                         statue=CONNECT_FAIL;
                         setAvatarNull();
                     }

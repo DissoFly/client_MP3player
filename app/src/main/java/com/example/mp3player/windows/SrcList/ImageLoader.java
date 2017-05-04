@@ -42,7 +42,7 @@ public class ImageLoader {
     final int stub_id = R.mipmap.user_null;
 
     public void DisplayUserImage(int userId,ImageView imageView){
-        DisplayImage(serverAddress+"api/avatar/" +userId, imageView);
+        DisplayImage(serverAddress()+"api/avatar/" +userId, imageView);
     }
 
     public void DisplayImage(String url, ImageView imageView)

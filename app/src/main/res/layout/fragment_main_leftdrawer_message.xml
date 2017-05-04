@@ -68,6 +68,31 @@
             android:textSize="18dp"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/btn_leftdrawer_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="7dp">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:padding="3dp"
+            android:src="@mipmap/ic_setting"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:gravity="center"
+            android:text="设置"
+            android:textColor="#333"
+            android:textSize="18dp"/>
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/text_log"

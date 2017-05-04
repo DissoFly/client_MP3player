@@ -110,25 +110,6 @@ public class MusicPlayerService extends Service {
                 bufferingProgress = i;
             }
         });
-        //监听事件，网络流媒体播放结束监听
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                switch (type) {
-                    case LIST_CYCLE:
-                        listPosition =
-                                listPosition >= audioList.size() - 1 ?
-                                        0 : listPosition + 1;
-                        break;
-                    case ONE_CYCLE:
-                        break;
-                    case RANDOM_CYCLE:
-                        listPosition = new Random().nextInt(audioList.size());
-                        break;
-                }
-                initMediaPlayerAndPlay();
-            }
-        });
 
         //出错事件
         player.setOnErrorListener(new MediaPlayer.OnErrorListener() {
@@ -320,7 +301,7 @@ public class MusicPlayerService extends Service {
                 File file=new File(audioList.get(listPosition).getFilePath());
                 if(!file.exists()){
                     if(audioList.get(listPosition).isOnline()){
-                        audioList.get(listPosition).setFilePath(HttpService.serverAddress + "api/online_song/" + audioList.get(listPosition).getOnlineSongId());
+                        audioList.get(listPosition).setFilePath(HttpService.serverAddress() + "api/online_song/" + audioList.get(listPosition).getOnlineSongId());
                         audioList.get(listPosition).setDownload(false);
                         Toast.makeText(this,audioList.get(listPosition).getSongName()+"本地音乐不存在，切换到网络播放",Toast.LENGTH_SHORT).show();
                         //需要增加删除已下载记录功能

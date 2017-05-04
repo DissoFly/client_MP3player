@@ -105,7 +105,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             Downloading dl = downloadingDao.queryBuilder().
                     where().
                     eq("musicId", musicId).query().get(0);
-            downloader = new ProgressDownloader(HttpService.serverAddress + "api/online_song/" + musicId, new File(dl.getLocalPath()), this);
+            downloader = new ProgressDownloader(HttpService.serverAddress() + "api/online_song/" + musicId, new File(dl.getLocalPath()), this);
             downloader.download(dl.getBreakPoints());
             breakPoints = dl.getBreakPoints();
             contentLength = dl.getContentLength();
@@ -165,7 +165,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
         }
 
         breakPoints = 0L;
-        downloader = new ProgressDownloader(HttpService.serverAddress + "api/online_song/" + musicId, new File(path), DownloadService.this);
+        downloader = new ProgressDownloader(HttpService.serverAddress() + "api/online_song/" + musicId, new File(path), DownloadService.this);
         downloader.download(0L);
         contentLength = 0;
         isDownloading = true;
@@ -215,7 +215,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Toast.makeText(this, "下载完成", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "下载完成", Toast.LENGTH_SHORT).show();
             System.out.println("下载完成");
             isDownloading = false;
             downloadingMusicId = 0;

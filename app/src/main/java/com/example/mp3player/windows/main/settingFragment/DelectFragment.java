@@ -1,4 +1,4 @@
-package com.example.mp3player.windows.main;
+package com.example.mp3player.windows.main.settingFragment;
 
 import android.app.Fragment;
 import android.content.Context;

@@ -11,6 +11,7 @@ import android.os.IBinder;
 
 import com.example.mp3player.R;
 import com.example.mp3player.service.DataService;
+import com.example.mp3player.service.DownloadService;
 import com.example.mp3player.service.LoginService;
 import com.example.mp3player.service.MusicPlayerService;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -66,6 +67,7 @@ public class BootActivity extends Activity {
         DataService dataService= OpenHelperManager.getHelper(BootActivity.this,DataService.class);
         startService(new Intent(this, MusicPlayerService.class));
         startService(new Intent(this, LoginService.class));
+        startService(new Intent(this, DownloadService.class));
     }
 
     LoginService messenger;

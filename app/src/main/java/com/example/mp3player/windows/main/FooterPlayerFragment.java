@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mp3player.entity.PlayingItem;
-import com.example.mp3player.windows.PlayingActivity;
+import com.example.mp3player.windows.playMusic.PlayingActivity;
 import com.example.mp3player.R;
 import com.example.mp3player.service.MusicPlayerService;
 

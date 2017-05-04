@@ -11,11 +11,11 @@ import android.widget.LinearLayout;
 
 import com.example.mp3player.R;
 import com.example.mp3player.StatusBarUtils;
-import com.example.mp3player.windows.main.AddMusicToListFragment;
-import com.example.mp3player.windows.main.DelectFragment;
+import com.example.mp3player.windows.main.settingFragment.AddMusicToListFragment;
+import com.example.mp3player.windows.main.settingFragment.DelectFragment;
 import com.example.mp3player.windows.main.FooterPlayerFragment;
 import com.example.mp3player.windows.main.LeftDrawerMessageFragment;
-import com.example.mp3player.windows.main.MusicItemSettingFragment;
+import com.example.mp3player.windows.main.settingFragment.MusicItemSettingFragment;
 import com.example.mp3player.windows.main.MusicListFragment;
 import com.example.mp3player.windows.main.SearchFragment;
 import com.example.mp3player.windows.main.page.FindMusicFragment;

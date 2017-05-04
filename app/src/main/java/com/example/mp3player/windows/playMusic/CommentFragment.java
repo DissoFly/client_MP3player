@@ -1,4 +1,4 @@
-package com.example.mp3player.windows;
+package com.example.mp3player.windows.playMusic;
 
 import android.app.Fragment;
 import android.content.ComponentName;
@@ -23,6 +23,7 @@ import com.example.mp3player.R;
 import com.example.mp3player.entity.Comment;
 import com.example.mp3player.service.HttpService;
 import com.example.mp3player.service.LoginService;
+import com.example.mp3player.windows.ZoneActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
