@@ -55,21 +55,22 @@ public class SettingActivity extends Activity implements View.OnClickListener{
                 load();
                 EditText eText = new EditText(this);
                 eText.setText(networkAddress);
+                eText.setHint("192.168.253.3");
                 final EditText editText = eText;
                 new AlertDialog.Builder(this)
-                        .setTitle("请输入服务器地址")
+                        .setTitle("请输入服务器ip地址")
                         .setView(editText)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 String text = editText.getText().toString();
                                 if (text.equals("")) {
-                                    Toast.makeText(SettingActivity.this, "不能为空", Toast.LENGTH_SHORT).show();
+                                    networkAddress="192.168.253.3";
                                 } else {
                                     networkAddress=text;
-                                    save();
-                                    serverAddressChanges();
                                 }
+                                save();
+                                serverAddressChanges();
                             }
                         })
                         .setNegativeButton("取消", null)

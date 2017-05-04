@@ -75,7 +75,7 @@ public class HttpService {
         FileInputStream in = null;
         BufferedReader reader = null;
         StringBuilder content = new StringBuilder();
-        networkAddress = "192.168.253.3:8080";
+        networkAddress = "192.168.253.3";
         try {
             in =new FileInputStream("/data/data/com.example.mp3player/files/networkAddressData");
             reader = new BufferedReader(new InputStreamReader(in));
