@@ -190,14 +190,20 @@ public class PlayingActivity extends Activity implements View.OnClickListener {
             case R.id.btn_playing_comment:
                 CommentFragment commentFragment = new CommentFragment();
                 commentFragment.setSongId(audioList.get(listPosition).getOnlineSongId());
-                getFragmentManager().beginTransaction()
+                getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_in_top,
+                        R.animator.slide_out_bottom,
+                        R.animator.slide_in_bottom,
+                        R.animator.slide_out_top)
                         .replace(R.id.layout_out, commentFragment).addToBackStack(null).commit();
                 break;
             case R.id.btn_playing_like:
                 setLike();
                 break;
             case R.id.btn_play_list:
-                getFragmentManager().beginTransaction()
+                getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_in_top,
+                        R.animator.slide_out_bottom,
+                        R.animator.slide_in_bottom,
+                        R.animator.slide_out_top)
                         .replace(R.id.layout_out, new FooterPlayingListFragment()).addToBackStack(null).commit();
                 break;
             case R.id.btn_playing_download:

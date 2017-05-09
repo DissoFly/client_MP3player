@@ -1,6 +1,7 @@
 package com.example.mp3player.windows;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,11 +12,8 @@ import android.widget.LinearLayout;
 
 import com.example.mp3player.R;
 import com.example.mp3player.StatusBarUtils;
-import com.example.mp3player.windows.main.settingFragment.AddMusicToListFragment;
-import com.example.mp3player.windows.main.settingFragment.DelectFragment;
 import com.example.mp3player.windows.main.FooterPlayerFragment;
 import com.example.mp3player.windows.main.LeftDrawerMessageFragment;
-import com.example.mp3player.windows.main.settingFragment.MusicItemSettingFragment;
 import com.example.mp3player.windows.main.MusicListFragment;
 import com.example.mp3player.windows.main.SearchFragment;
 import com.example.mp3player.windows.main.page.FindMusicFragment;
@@ -24,6 +22,9 @@ import com.example.mp3player.windows.main.page.MineFragment;
 import com.example.mp3player.windows.main.page.findMusic.NewsFragment;
 import com.example.mp3player.windows.main.page.mine.download.DownloadFragment;
 import com.example.mp3player.windows.main.page.mine.localMusic.LocalMusicFragment;
+import com.example.mp3player.windows.main.settingFragment.AddMusicToListFragment;
+import com.example.mp3player.windows.main.settingFragment.DelectFragment;
+import com.example.mp3player.windows.main.settingFragment.MusicItemSettingFragment;
 
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_ADD_MUSIC_TO_LIST_FRAGMENT;
 import static com.example.mp3player.windows.main.OpenFragmentCount.OPEN_DELECT_FRAGMENT;
@@ -66,6 +67,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     DrawerLayout drawable;
     LinearLayout drawableLayout;
 
+    int num=1;
+    int point = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +78,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         drawable = (DrawerLayout) findViewById(R.id.drawer_main);
         drawableLayout = (LinearLayout) findViewById(R.id.left_drawer);
 
-        //需要解决一开始点击findmusic会崩问题
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_footer, footerPlayerFragment).commit();
         getFragmentManager().beginTransaction()
@@ -182,7 +185,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         .replace(R.id.main_content_outside, localMusicFragment).addToBackStack(null).commit();
                 break;
             case OPEN_FOOTER_PLAYING_LIST_FRAGMENT:
-                getFragmentManager().beginTransaction()
+                getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_in_top,
+                        R.animator.slide_out_bottom,
+                        R.animator.slide_in_bottom,
+                        R.animator.slide_out_top)
                         .replace(R.id.main_outside, new FooterPlayingListFragment()).addToBackStack(null).commit();
                 break;
             case OPEN_DOWNLOAD_FRAGMENT:
@@ -238,29 +244,47 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+        Fragment newFrag = null;
         switch (view.getId()) {
             case R.id.btn_main_header_drawer:
                 drawable.openDrawer(Gravity.LEFT);
                 break;
             case R.id.btn_main_header_find_music:
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.main_content_inside, findMusicFragment).commit();
+                num = 1;
+                newFrag = findMusicFragment;
                 break;
             case R.id.btn_main_header_mine:
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.main_content_inside, mineFragment).commit();
+                num = 2;
+                newFrag = mineFragment;
                 break;
             case R.id.btn_main_header_friends:
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.main_content_inside, friendsFragment).commit();
+                num = 3;
+                newFrag = friendsFragment;
                 break;
             case R.id.btn_main_header_search:
-                getFragmentManager().beginTransaction()
+                getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_in_right,
+                        R.animator.slide_out_left,
+                        R.animator.slide_in_left,
+                        R.animator.slide_out_right)
                         .replace(R.id.main_content_outside, searchFragment).addToBackStack(null).commit();
 
                 break;
             default:
                 break;
+        }
+        if (point < num) {
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.slide_in_right,
+                            R.animator.slide_out_left)
+                    .replace(R.id.main_content_inside, newFrag).commit();
+            point = num;
+        } else if (point > num) {
+
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.slide_in_left,
+                            R.animator.slide_out_right)
+                    .replace(R.id.main_content_inside, newFrag).commit();
+            point = num;
         }
     }
 

@@ -77,6 +77,11 @@ public class SettingActivity extends Activity implements View.OnClickListener{
                         .show();
                 break;
             case R.id.btn_about:
+                new AlertDialog.Builder(this).setTitle("关于").setMessage("当前作品为东莞理工学校毕业设计作品\n" +
+                        "制作人：梁焯彬\n" +
+                        "班级：13软件工程2班\n" )
+                        .setPositiveButton("好的",null)
+                        .show();
 
                 break;
             default:
