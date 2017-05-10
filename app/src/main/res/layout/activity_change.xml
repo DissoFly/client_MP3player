@@ -73,7 +73,7 @@
             android:id="@+id/btn_change_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="注册"/>
+            android:text="修改"/>
     </LinearLayout>
 
 

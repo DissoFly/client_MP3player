@@ -81,6 +81,8 @@ public class ForgetPasswordActivity extends Activity implements View.OnClickList
         }
         if (password.equals("")){
             errors.add("请输入密码");
+        }else if (password.length()<6){
+            errors.add("密码长度必须大于6位");
         }else if (passwordConfirm.equals("")){
             errors.add("请输入确认密码");
         }else if (!password.equals(passwordConfirm)){

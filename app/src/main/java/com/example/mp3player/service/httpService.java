@@ -68,7 +68,7 @@ public class HttpService {
     }
 
     public static Request.Builder requestBuilderWithPath(String path) {
-        return new Request.Builder().url(serverAddress() + "/api/" + path);
+        return new Request.Builder().url(serverAddress() + "api/" + path);
     }
 
     public static void load() {
@@ -93,7 +93,7 @@ public class HttpService {
         FileInputStream in = null;
         BufferedReader reader = null;
         StringBuilder content = new StringBuilder();
-        s = "192.168.253.3:8080";
+        s = "192.168.253.3";
         try {
             in =new FileInputStream("/data/data/com.example.mp3player/files/networkAddressData");
             reader = new BufferedReader(new InputStreamReader(in));
