@@ -10,6 +10,7 @@ import android.view.WindowManager;
  */
 
 public class StatusBarUtils {
+    //设置顶部通知栏颜色
     public static void setWindowStatusBarColor(Activity activity, int colorResId) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

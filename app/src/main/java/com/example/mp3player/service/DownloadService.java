@@ -196,6 +196,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
 
     @Override
     public void update(long totalBytes, boolean done) {
+        //下载更新
         // 注意加上断点的长度
         isDownloading = true;
         this.totalBytes = totalBytes + breakPoints;
@@ -266,6 +267,7 @@ public class DownloadService extends Service implements ProgressResponseBody.Pro
 
     @Override
     public void onPreExecute(long contentLength) {
+        //开始下载
         if (this.contentLength == 0L) {
             this.contentLength = contentLength;
             try {
