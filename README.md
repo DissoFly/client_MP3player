@@ -17,7 +17,7 @@
 ### 1、账号模块功能实现</br>
 账号模块主要包括了用户的登录注册、自动登录，以及资料修改、忘记密码、注销等功能。图2-1所示是用户的登录界面，登录过程判断用户名密码是否正确；图2-2是用户注册界面，用户注册过程会判断用户名是否存在以及注册资料是否正确等；图2-3是用户成功后左侧菜单栏的用户信息，可以进行修改操作和注销操作。</br>
 
-![](https://github.com/DissoFly/client_MP3player/raw/master/github_picture/1.1.jpg =200)</br>
+![](https://github.com/DissoFly/client_MP3player/raw/master/github_picture/1.1.jpg =270x480)</br>
 图2-1 登录界面</br>
 ![](https://github.com/DissoFly/client_MP3player/raw/master/github_picture/1.2.jpg)</br>
 图2-2 注册界面</br>
