@@ -1,7 +1,7 @@
 # MP3player
 毕业设计——MP3播放器
 
-本程序为本人毕业设计《基于Android网络音乐播放器的设计与实现》中的Android客户端程序，此文章简单介绍本程序的各个功能。
+本程序为本人毕业设计《基于Android网络音乐播放器的设计与实现》中的Android客户端程序，此说明简单介绍本程序的各个功能。
 
 ## 一、功能需求分析
 
@@ -9,7 +9,7 @@
 
 结构图如图1-1所示</br>
 
-<div align=center><img width="270" height="480" src="https://github.com/DissoFly/client_MP3player/raw/master/github_picture/1.png"/></div></br>
+<div align=center><img src="https://github.com/DissoFly/client_MP3player/raw/master/github_picture/1.png"/></div></br>
 <div align=center>图1-1 结构图</div></br>
 
 ## 二、各功能实现与截图
